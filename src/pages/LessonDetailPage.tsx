@@ -203,15 +203,15 @@ const LessonDetailPage = () => {
         courseTitle={currentLessonData.courseTitle}
         lessonTitle={currentLessonData.title}
       />
-      <main className="flex-grow container mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2">
+      <main className="flex-grow container mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-2 gap-8"> {/* Changed to lg:grid-cols-2 */}
+        <div className="lg:col-span-1"> {/* Changed to lg:col-span-1 */}
           <LessonHero
             lessonTitle={currentLessonData.title}
             teacherName={currentLessonData.teacher}
             viewsRemaining={currentLessonData.views}
           />
         </div>
-        <div className="lg:col-span-1">
+        <div className="lg:col-span-1"> {/* Changed to lg:col-span-1 */}
           <div className="bg-white p-6 shadow-lg rounded-lg">
             <h2 className="text-2xl font-bold text-orange-600 mb-4">BÀI HỌC</h2>
             <p className="text-gray-700 mb-6">
