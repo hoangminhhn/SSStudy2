@@ -287,7 +287,7 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
                           <div className="flex items-center justify-between pl-8"> {/* pl-8 để căn chỉnh với nội dung hàng trên */}
                             <div className="flex items-center space-x-2">
                               {session.type === 'livestream' && (
-                                <Badge variant="destructive" className="bg-red-500 text-white">
+                                <Badge variant="destructive" className="bg-red-500 text-white px-4 py-2"> {/* Adjusted padding here */}
                                   Livestream {displayTime && `(${displayTime})`}
                                 </Badge>
                               )}
