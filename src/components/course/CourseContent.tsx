@@ -277,14 +277,7 @@ const CourseContent = () => {
                                   Đăng Ký học
                                 </Button>
                               </LivestreamTimeSlotsDialog>
-                            ) : (
-                              <Button
-                                className="bg-gray-400 text-gray-700 cursor-not-allowed rounded-full px-4 py-2 text-sm"
-                                disabled
-                              >
-                                Xem bài học
-                              </Button>
-                            )}
+                            ) : null} {/* Removed the "Xem bài học" button */}
                             <span className="text-gray-500 text-sm">{session.date}</span>
                           </div>
                         </div>
