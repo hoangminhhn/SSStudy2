@@ -164,6 +164,12 @@ const chapters: Chapter[] = [
 ];
 
 const CourseContent = () => {
+  const [openChapters, setOpenChapters] = React.useState<string[]>([]);
+
+  const handleAccordionChange = (values: string[]) => {
+    setOpenChapters(values);
+  };
+
   return (
     <div className="mt-8">
       <h2 className="text-2xl font-bold text-orange-600 mb-4">BÀI HỌC</h2>
@@ -171,39 +177,46 @@ const CourseContent = () => {
         Tổng hợp khóa học chuyên đề gồm 16 chương nhằm lấy lại kiến thức cho các bạn bị mất căn bản và chuẩn bị luyện thi vào đại học
       </p>
 
-      <Accordion type="multiple" className="w-full space-y-4">
-        {chapters.map((chapter) => (
-          <Card key={chapter.id} className="p-4 shadow-sm rounded-lg">
-            <AccordionItem value={chapter.id} className="border-b-0">
-              <AccordionTrigger className="flex items-center justify-between w-full text-left font-medium text-gray-800 hover:no-underline p-0">
-                <div className="flex items-center space-x-4">
-                  <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-md text-sm font-medium">
-                    {chapter.progress}
-                  </span>
-                  <span className="text-orange-600 font-semibold">{chapter.title}</span>
-                </div>
-                <Button variant="outline" className="text-orange-500 border-orange-500 hover:bg-orange-50 hover:text-orange-600 rounded-full px-4 py-2">
-                  Ẩn <FileText size={16} className="ml-2" />
-                </Button>
-              </AccordionTrigger>
-              <AccordionContent className="pt-4 pb-0">
-                <div className="space-y-3 pl-4 border-l-2 border-gray-200 ml-6">
-                  {chapter.sessions.map((session, sessionIndex) => (
-                    <div key={sessionIndex} className="flex items-center justify-between py-2">
-                      <div className="flex items-center space-x-3">
-                        <span className="w-2 h-2 bg-gray-400 rounded-full flex-shrink-0"></span>
-                        <FileText size={18} className="text-orange-500" />
-                        <Play size={18} className="text-orange-500" />
-                        <span className="text-gray-800">{session.title}</span>
+      <Accordion type="multiple" value={openChapters} onValueChange={handleAccordionChange} className="w-full space-y-4">
+        {chapters.map((chapter) => {
+          const isOpen = openChapters.includes(chapter.id);
+          return (
+            <Card key={chapter.id} className="p-4 shadow-sm rounded-lg">
+              <AccordionItem value={chapter.id} className="border-b-0">
+                <AccordionTrigger className="flex items-center justify-between w-full text-left font-medium text-gray-800 hover:no-underline p-0">
+                  <div className="flex items-center space-x-4">
+                    <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-md text-sm font-medium">
+                      {chapter.progress}
+                    </span>
+                    <span className="text-orange-600 font-semibold">{chapter.title}</span>
+                  </div>
+                  <Button
+                    variant="outline"
+                    className="text-orange-500 border-orange-500 hover:bg-orange-50 hover:text-orange-600 rounded-full px-4 py-2"
+                    // Nút này là một phần của AccordionTrigger, nên việc click vào nó sẽ tự động kích hoạt Accordion
+                  >
+                    {isOpen ? "Ẩn" : "Xem"} <FileText size={16} className="ml-2" />
+                  </Button>
+                </AccordionTrigger>
+                <AccordionContent className="pt-4 pb-0">
+                  <div className="space-y-3 pl-4 border-l-2 border-gray-200 ml-6">
+                    {chapter.sessions.map((session, sessionIndex) => (
+                      <div key={sessionIndex} className="flex items-center justify-between py-2">
+                        <div className="flex items-center space-x-3">
+                          <span className="w-2 h-2 bg-gray-400 rounded-full flex-shrink-0"></span>
+                          <FileText size={18} className="text-orange-500" />
+                          <Play size={18} className="text-orange-500" />
+                          <span className="text-gray-800">{session.title}</span>
+                        </div>
+                        <span className="text-gray-500 text-sm">{session.date}</span>
                       </div>
-                      <span className="text-gray-500 text-sm">{session.date}</span>
-                    </div>
-                  ))}
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-          </Card>
-        ))}
+                    ))}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Card>
+          );
+        })}
       </Accordion>
     </div>
   );
