@@ -261,7 +261,7 @@ const CourseContent = () => {
                             <span className="text-gray-800">{session.title}</span>
                             {session.type === 'livestream' && (
                               <Badge variant="destructive" className="ml-2 bg-red-500 text-white">
-                                Livestream
+                                Livestream {displayTime && `(${displayTime})`}
                               </Badge>
                             )}
                           </div>
@@ -283,7 +283,6 @@ const CourseContent = () => {
                             ) : null}
                             <span className="text-gray-500 text-sm">
                               Ngày: {session.date}
-                              {displayTime && ` - Giờ: ${displayTime}`}
                             </span>
                           </div>
                         </div>
