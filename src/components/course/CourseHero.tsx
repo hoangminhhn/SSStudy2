@@ -11,7 +11,7 @@ const CourseHero = () => {
     <Card className="p-6 shadow-lg rounded-lg flex flex-col lg:flex-row gap-6">
       <div className="lg:w-1/3 flex-shrink-0">
         <img
-          src="/images/course-thumbnail.png" // Updated image path
+          src="/images/20250630150800-ugrw2nuezq.png" // Updated image path with the correct filename
           alt="Course Thumbnail"
           className="w-full h-auto rounded-lg object-cover"
         />
