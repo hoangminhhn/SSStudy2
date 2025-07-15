@@ -11,6 +11,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
+import LivestreamTimeSlotsDialog from "./LivestreamTimeSlotsDialog"; // Import the new component
 
 interface TimeSlot {
   time: string; // e.g., "09:00 - 10:00"
@@ -233,52 +234,43 @@ const CourseContent = () => {
                 <AccordionContent className="pt-4 pb-0">
                   <div className="space-y-3 pl-4 border-l-2 border-gray-200 ml-6">
                     {chapter.sessions.map((session, sessionIndex) => (
-                      session.type === 'livestream' && session.timeSlots ? (
-                        session.timeSlots.map((slot, slotIndex) => (
-                          <div key={`${sessionIndex}-${slotIndex}`} className="flex items-center justify-between py-2">
-                            <div className="flex items-center space-x-3">
-                              <span className="w-2 h-2 bg-gray-400 rounded-full flex-shrink-0"></span>
-                              <Play size={18} className="text-orange-500" />
-                              <span className="text-gray-800">{session.title} - {slot.time}</span>
-                              <span className="text-blue-600 text-sm flex items-center ml-2 font-medium">
-                                <User size={14} className="mr-1" /> {slot.teacher}
-                              </span>
-                              <Badge variant="destructive" className="ml-2 bg-red-500 text-white">
-                                Livestream
-                              </Badge>
-                            </div>
-                            <div className="flex items-center space-x-4">
-                              <Button
-                                className={`rounded-full px-4 py-2 text-sm ${
-                                  slot.registrationStatus === 'register'
-                                    ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                                    : slot.registrationStatus === 'registered'
-                                    ? 'bg-gray-400 text-gray-700 cursor-not-allowed'
-                                    : 'bg-red-600 text-white cursor-not-allowed'
-                                }`}
-                                disabled={slot.registrationStatus !== 'register'}
-                              >
-                                {slot.registrationStatus === 'register'
-                                  ? 'Đăng Ký học'
-                                  : slot.registrationStatus === 'registered'
-                                  ? 'Đã đăng ký'
-                                  : 'Đầy'}
-                              </Button>
-                              <span className="text-gray-500 text-sm">{session.date}</span>
-                            </div>
-                          </div>
-                        ))
-                      ) : (
-                        <div key={sessionIndex} className="flex items-center justify-between py-2">
-                          <div className="flex items-center space-x-3">
-                            <span className="w-2 h-2 bg-gray-400 rounded-full flex-shrink-0"></span>
-                            <FileText size={18} className="text-orange-500" />
+                      <div key={sessionIndex} className="flex items-center justify-between py-2">
+                        <div className="flex items-center space-x-3">
+                          <span className="w-2 h-2 bg-gray-400 rounded-full flex-shrink-0"></span>
+                          {session.type === 'livestream' ? (
                             <Play size={18} className="text-orange-500" />
-                            <span className="text-gray-800">{session.title}</span>
-                          </div>
+                          ) : (
+                            <FileText size={18} className="text-orange-500" />
+                          )}
+                          <span className="text-gray-800">{session.title}</span>
+                          {session.type === 'livestream' && (
+                            <Badge variant="destructive" className="ml-2 bg-red-500 text-white">
+                              Livestream
+                            </Badge>
+                          )}
+                        </div>
+                        <div className="flex items-center space-x-4">
+                          {session.type === 'livestream' && session.timeSlots && session.timeSlots.length > 0 ? (
+                            <LivestreamTimeSlotsDialog
+                              sessionTitle={session.title}
+                              sessionDate={session.date}
+                              timeSlots={session.timeSlots}
+                            >
+                              <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-4 py-2 text-sm">
+                                Đăng Ký học
+                              </Button>
+                            </LivestreamTimeSlotsDialog>
+                          ) : (
+                            <Button
+                              className="bg-gray-400 text-gray-700 cursor-not-allowed rounded-full px-4 py-2 text-sm"
+                              disabled
+                            >
+                              Xem bài học
+                            </Button>
+                          )}
                           <span className="text-gray-500 text-sm">{session.date}</span>
                         </div>
-                      )
+                      </div>
                     ))}
                   </div>
                 </AccordionContent>
