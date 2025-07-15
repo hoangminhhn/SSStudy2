@@ -264,48 +264,53 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
                         : '';
 
                       return (
-                        <div key={sessionIndex} className="flex flex-col sm:flex-row sm:items-center justify-between py-2">
-                          <div className="flex flex-col items-start mb-2 sm:mb-0">
-                            <div className="flex items-center space-x-3">
-                              <span className="w-2 h-2 bg-gray-400 rounded-full flex-shrink-0"></span>
+                        <div key={sessionIndex} className="flex flex-col py-2">
+                          {/* Hàng trên: Icon + Tiêu đề + Ngày */}
+                          <div className="flex items-start justify-between mb-2">
+                            <div className="flex items-center space-x-3 flex-grow">
+                              <span className="w-2 h-2 bg-gray-400 rounded-full flex-shrink-0 mt-2"></span> {/* Adjusted margin-top for alignment */}
                               {session.type === 'livestream' ? (
-                                <Play size={18} className="text-orange-500" />
+                                <Play size={18} className="text-orange-500 flex-shrink-0 mt-2" />
                               ) : (
-                                <FileText size={18} className="text-orange-500" />
+                                <FileText size={18} className="text-orange-500 flex-shrink-0 mt-2" />
                               )}
-                              <Link to={`/lesson/${session.sessionId}`} className="text-gray-800 hover:underline">
+                              <Link to={`/lesson/${session.sessionId}`} className="text-gray-800 hover:underline flex-grow">
                                 {session.title}
                               </Link>
                             </div>
-                            <div className="flex items-center space-x-2 mt-2 ml-8"> {/* Adjusted margin for alignment */}
+                            <span className="text-gray-500 text-sm flex-shrink-0 ml-4 mt-2">
+                              Ngày: {session.date}
+                            </span>
+                          </div>
+
+                          {/* Hàng dưới: Livestream Badge + Buttons */}
+                          <div className="flex items-center justify-between pl-8"> {/* pl-8 để căn chỉnh với nội dung hàng trên */}
+                            <div className="flex items-center space-x-2">
                               {session.type === 'livestream' && (
                                 <Badge variant="destructive" className="bg-red-500 text-white">
                                   Livestream {displayTime && `(${displayTime})`}
                                 </Badge>
                               )}
-                              <span className="text-gray-500 text-sm">
-                                Ngày: {session.date}
-                              </span>
                             </div>
-                          </div>
-                          <div className="flex items-center space-x-4 mt-2 sm:mt-0">
-                            {isLiveToday ? (
-                              <Link to={`/lesson/${session.sessionId}`}>
-                                <Button className="bg-purple-600 hover:bg-purple-700 text-white rounded-full px-4 py-2 text-sm">
-                                  Vào học
-                                </Button>
-                              </Link>
-                            ) : session.type === 'livestream' && session.timeSlots && session.timeSlots.length > 0 ? (
-                              <LivestreamTimeSlotsDialog
-                                sessionTitle={session.title}
-                                sessionDate={session.date}
-                                timeSlots={session.timeSlots}
-                              >
-                                <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-4 py-2 text-sm">
-                                  Đăng Ký học
-                                </Button>
-                              </LivestreamTimeSlotsDialog>
-                            ) : null}
+                            <div className="flex items-center space-x-4">
+                              {isLiveToday ? (
+                                <Link to={`/lesson/${session.sessionId}`}>
+                                  <Button className="bg-purple-600 hover:bg-purple-700 text-white rounded-full px-4 py-2 text-sm">
+                                    Vào học
+                                  </Button>
+                                </Link>
+                              ) : session.type === 'livestream' && session.timeSlots && session.timeSlots.length > 0 ? (
+                                <LivestreamTimeSlotsDialog
+                                  sessionTitle={session.title}
+                                  sessionDate={session.date}
+                                  timeSlots={session.timeSlots}
+                                >
+                                  <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-4 py-2 text-sm">
+                                    Đăng Ký học
+                                  </Button>
+                                </LivestreamTimeSlotsDialog>
+                              ) : null}
+                            </div>
                           </div>
                         </div>
                       );
