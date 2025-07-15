@@ -13,17 +13,37 @@ const LessonDetailPage = () => {
 
   // Dummy data for the lesson based on lessonId
   // In a real app, you would fetch this data from an API
-  const lessonData = {
+  const lessonData: { [key: string]: { title: string; teacher: string; views: number; courseTitle: string } } = {
     "buoi-1-tong-on-luong-giac-phan-1": {
       title: "Buổi 1: Tổng ôn lượng giác (phần 1)",
       teacher: "Thầy Nguyễn Tiến Đạt",
       views: 19,
       courseTitle: "[2K8 - SSLIVE] S1: Chuyên đề - Toán học 12",
     },
+    "buoi-2-tong-on-luong-giac-phan-2": {
+      title: "Buổi 2: Tổng ôn lượng giác (phần 2)",
+      teacher: "Thầy Nguyễn Tiến Đạt",
+      views: 15,
+      courseTitle: "[2K8 - SSLIVE] S1: Chuyên đề - Toán học 12",
+    },
+    "buoi-1-gioi-thieu-hinh-hoc": {
+      title: "Buổi 1: Giới thiệu hình học",
+      teacher: "Cô Trần Thị B",
+      views: 22,
+      courseTitle: "Tổng ôn kiến thức lớp 11 phần Hình học",
+    },
+    "buoi-1-khai-niem-ham-so": {
+      title: "Buổi 1: Khái niệm hàm số",
+      teacher: "Thầy Nguyễn Tiến Đạt",
+      views: 10,
+      courseTitle: "[Classin] Chương 1: Hàm số",
+    },
     // Add more dummy data for other lessons as needed
-  }[lessonId || ""]; // Default to empty string if lessonId is undefined
+  };
 
-  if (!lessonData) {
+  const currentLessonData = lessonData[lessonId || ""];
+
+  if (!currentLessonData) {
     // Handle case where lessonId is not found
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -36,15 +56,15 @@ const LessonDetailPage = () => {
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
       <BreadcrumbNav
-        courseTitle={lessonData.courseTitle}
-        lessonTitle={lessonData.title}
+        courseTitle={currentLessonData.courseTitle}
+        lessonTitle={currentLessonData.title}
       />
       <main className="flex-grow container mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
           <LessonHero
-            lessonTitle={lessonData.title}
-            teacherName={lessonData.teacher}
-            viewsRemaining={lessonData.views}
+            lessonTitle={currentLessonData.title}
+            teacherName={currentLessonData.teacher}
+            viewsRemaining={currentLessonData.views}
           />
         </div>
         <div className="lg:col-span-1">
