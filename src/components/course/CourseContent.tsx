@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import LivestreamTimeSlotsDialog from "./LivestreamTimeSlotsDialog"; // Import the new component
+import { isToday, parse } from 'date-fns'; // Import date-fns utilities
 
 interface TimeSlot {
   time: string; // e.g., "09:00 - 10:00"
@@ -41,7 +42,7 @@ const chapters: Chapter[] = [
     sessions: [
       {
         title: "Buổi 1: Tổng ôn lượng giác (phần 1)",
-        date: "15/06/2025",
+        date: "29/07/2024", // Changed to today's date for demonstration
         type: 'livestream',
         timeSlots: [
           { time: "09:00 - 10:00", teacher: "Thầy Nguyễn Tiến Đạt", registrationStatus: 'register' },
@@ -199,6 +200,7 @@ const chapters: Chapter[] = [
 
 const CourseContent = () => {
   const [openChapters, setOpenChapters] = React.useState<string[]>([]);
+  const today = new Date();
 
   const handleAccordionChange = (values: string[]) => {
     setOpenChapters(values);
@@ -233,45 +235,54 @@ const CourseContent = () => {
                 </AccordionTrigger>
                 <AccordionContent className="pt-4 pb-0">
                   <div className="space-y-3 pl-4 border-l-2 border-gray-200 ml-6">
-                    {chapter.sessions.map((session, sessionIndex) => (
-                      <div key={sessionIndex} className="flex items-center justify-between py-2">
-                        <div className="flex items-center space-x-3">
-                          <span className="w-2 h-2 bg-gray-400 rounded-full flex-shrink-0"></span>
-                          {session.type === 'livestream' ? (
-                            <Play size={18} className="text-orange-500" />
-                          ) : (
-                            <FileText size={18} className="text-orange-500" />
-                          )}
-                          <span className="text-gray-800">{session.title}</span>
-                          {session.type === 'livestream' && (
-                            <Badge variant="destructive" className="ml-2 bg-red-500 text-white">
-                              Livestream
-                            </Badge>
-                          )}
-                        </div>
-                        <div className="flex items-center space-x-4">
-                          {session.type === 'livestream' && session.timeSlots && session.timeSlots.length > 0 ? (
-                            <LivestreamTimeSlotsDialog
-                              sessionTitle={session.title}
-                              sessionDate={session.date}
-                              timeSlots={session.timeSlots}
-                            >
-                              <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-4 py-2 text-sm">
-                                Đăng Ký học
+                    {chapter.sessions.map((session, sessionIndex) => {
+                      const sessionDate = parse(session.date, 'dd/MM/yyyy', new Date());
+                      const isLiveToday = session.type === 'livestream' && isToday(sessionDate);
+
+                      return (
+                        <div key={sessionIndex} className="flex items-center justify-between py-2">
+                          <div className="flex items-center space-x-3">
+                            <span className="w-2 h-2 bg-gray-400 rounded-full flex-shrink-0"></span>
+                            {session.type === 'livestream' ? (
+                              <Play size={18} className="text-orange-500" />
+                            ) : (
+                              <FileText size={18} className="text-orange-500" />
+                            )}
+                            <span className="text-gray-800">{session.title}</span>
+                            {session.type === 'livestream' && (
+                              <Badge variant="destructive" className="ml-2 bg-red-500 text-white">
+                                Livestream
+                              </Badge>
+                            )}
+                          </div>
+                          <div className="flex items-center space-x-4">
+                            {isLiveToday ? (
+                              <Button className="bg-green-600 hover:bg-green-700 text-white rounded-full px-4 py-2 text-sm">
+                                Vào học
                               </Button>
-                            </LivestreamTimeSlotsDialog>
-                          ) : (
-                            <Button
-                              className="bg-gray-400 text-gray-700 cursor-not-allowed rounded-full px-4 py-2 text-sm"
-                              disabled
-                            >
-                              Xem bài học
-                            </Button>
-                          )}
-                          <span className="text-gray-500 text-sm">{session.date}</span>
+                            ) : session.type === 'livestream' && session.timeSlots && session.timeSlots.length > 0 ? (
+                              <LivestreamTimeSlotsDialog
+                                sessionTitle={session.title}
+                                sessionDate={session.date}
+                                timeSlots={session.timeSlots}
+                              >
+                                <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-4 py-2 text-sm">
+                                  Đăng Ký học
+                                </Button>
+                              </LivestreamTimeSlotsDialog>
+                            ) : (
+                              <Button
+                                className="bg-gray-400 text-gray-700 cursor-not-allowed rounded-full px-4 py-2 text-sm"
+                                disabled
+                              >
+                                Xem bài học
+                              </Button>
+                            )}
+                            <span className="text-gray-500 text-sm">{session.date}</span>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </AccordionContent>
               </AccordionItem>
