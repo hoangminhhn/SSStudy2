@@ -3,6 +3,7 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button"; // Added this import
 import { Star, User, CalendarDays, BookOpen } from "lucide-react";
 
 const CourseHero = () => {
