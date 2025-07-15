@@ -42,7 +42,7 @@ const chapters: Chapter[] = [
     sessions: [
       {
         title: "Buổi 1: Tổng ôn lượng giác (phần 1)",
-        date: "29/07/2024", // Changed to today's date for demonstration
+        date: "15/06/2025", // Changed back to a future date
         type: 'livestream',
         timeSlots: [
           { time: "09:00 - 10:00", teacher: "Thầy Nguyễn Tiến Đạt", registrationStatus: 'register' },
@@ -50,7 +50,14 @@ const chapters: Chapter[] = [
           { time: "19:00 - 20:00", teacher: "Thầy Nguyễn Tiến Đạt", registrationStatus: 'registered' },
         ]
       },
-      { title: "Buổi 2: Tổng ôn lượng giác (phần 2)", date: "15/06/2025" },
+      {
+        title: "Buổi 2: Tổng ôn lượng giác (phần 2)",
+        date: "29/07/2024", // Set to today's date for demonstration
+        type: 'livestream', // Ensure it's a livestream
+        timeSlots: [ // Add time slots for consistency, even if not used by "Vào học" button
+          { time: "10:00 - 11:00", teacher: "Thầy Nguyễn Tiến Đạt", registrationStatus: 'register' },
+        ]
+      },
       { title: "Buổi 3: Tổng ôn CSC – CSN", date: "15/06/2025" },
       { title: "Buổi 4: Tổng ôn hàm số mũ loga", date: "15/06/2025" },
       { title: "Buổi 5: Tổng ôn PT, BPT mũ loga", date: "15/06/2025" },
