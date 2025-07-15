@@ -10,10 +10,13 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Badge } from "@/components/ui/badge"; // Import Badge component
 
 interface Session {
   title: string;
   date: string;
+  type?: 'normal' | 'livestream'; // 'normal' or 'livestream'
+  registrationStatus?: 'register' | 'registered' | 'full'; // 'register', 'registered', 'full'
 }
 
 interface Chapter {
@@ -29,7 +32,7 @@ const chapters: Chapter[] = [
     progress: "0/8",
     title: "Tổng ôn kiến thức lớp 11 phần Đại số",
     sessions: [
-      { title: "Buổi 1: Tổng ôn lượng giác (phần 1)", date: "15/06/2025" },
+      { title: "Buổi 1: Tổng ôn lượng giác (phần 1)", date: "15/06/2025", type: 'livestream', registrationStatus: 'register' },
       { title: "Buổi 2: Tổng ôn lượng giác (phần 2)", date: "15/06/2025" },
       { title: "Buổi 3: Tổng ôn CSC – CSN", date: "15/06/2025" },
       { title: "Buổi 4: Tổng ôn hàm số mũ loga", date: "15/06/2025" },
@@ -44,7 +47,7 @@ const chapters: Chapter[] = [
     progress: "0/9",
     title: "Tổng ôn kiến thức lớp 11 phần Hình học",
     sessions: [
-      { title: "Buổi 1: Giới thiệu hình học", date: "16/06/2025" },
+      { title: "Buổi 1: Giới thiệu hình học", date: "16/06/2025", type: 'livestream', registrationStatus: 'registered' },
       { title: "Buổi 2: Các dạng bài tập", date: "17/06/2025" },
     ],
   },
@@ -53,7 +56,7 @@ const chapters: Chapter[] = [
     progress: "0/43",
     title: "[Classin] Chương 1: Hàm số",
     sessions: [
-      { title: "Buổi 1: Khái niệm hàm số", date: "18/06/2025" },
+      { title: "Buổi 1: Khái niệm hàm số", date: "18/06/2025", type: 'livestream', registrationStatus: 'full' },
       { title: "Buổi 2: Đồ thị hàm số", date: "19/06/2025" },
     ],
   },
@@ -193,7 +196,6 @@ const CourseContent = () => {
                   <Button
                     variant="outline"
                     className="text-orange-500 border-orange-500 hover:bg-orange-50 hover:text-orange-600 rounded-full px-4 py-2"
-                    // Nút này là một phần của AccordionTrigger, nên việc click vào nó sẽ tự động kích hoạt Accordion
                   >
                     {isOpen ? "Ẩn" : "Xem"} <FileText size={16} className="ml-2" />
                   </Button>
@@ -207,8 +209,33 @@ const CourseContent = () => {
                           <FileText size={18} className="text-orange-500" />
                           <Play size={18} className="text-orange-500" />
                           <span className="text-gray-800">{session.title}</span>
+                          {session.type === 'livestream' && (
+                            <Badge variant="destructive" className="ml-2 bg-red-500 text-white">
+                              Livestream
+                            </Badge>
+                          )}
                         </div>
-                        <span className="text-gray-500 text-sm">{session.date}</span>
+                        <div className="flex items-center space-x-4">
+                          <span className="text-gray-500 text-sm">{session.date}</span>
+                          {session.type === 'livestream' && (
+                            <Button
+                              className={`rounded-full px-4 py-2 text-sm ${
+                                session.registrationStatus === 'register'
+                                  ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                                  : session.registrationStatus === 'registered'
+                                  ? 'bg-gray-400 text-gray-700 cursor-not-allowed'
+                                  : 'bg-red-600 text-white cursor-not-allowed'
+                              }`}
+                              disabled={session.registrationStatus !== 'register'}
+                            >
+                              {session.registrationStatus === 'register'
+                                ? 'Đăng Ký học'
+                                : session.registrationStatus === 'registered'
+                                ? 'Đã đăng ký'
+                                : 'Đầy'}
+                            </Button>
+                          )}
+                        </div>
                       </div>
                     ))}
                   </div>
