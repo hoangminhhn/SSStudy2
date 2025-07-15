@@ -3,7 +3,7 @@
 import React from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BookOpen, FileText, Play, User } from "lucide-react"; // Import User icon
+import { BookOpen, FileText, Play, User } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -12,12 +12,17 @@ import {
 } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 
+interface TimeSlot {
+  time: string; // e.g., "09:00 - 10:00"
+  teacher: string;
+  registrationStatus: 'register' | 'registered' | 'full';
+}
+
 interface Session {
   title: string;
-  date: string;
-  type?: 'normal' | 'livestream'; // 'normal' or 'livestream'
-  registrationStatus?: 'register' | 'registered' | 'full'; // 'register', 'registered', 'full'
-  teacher?: string; // New: Teacher's name
+  date: string; // Date for normal sessions, or the day for livestream sessions
+  type?: 'normal' | 'livestream';
+  timeSlots?: TimeSlot[]; // Only for livestream sessions
 }
 
 interface Chapter {
@@ -33,7 +38,16 @@ const chapters: Chapter[] = [
     progress: "0/8",
     title: "Tổng ôn kiến thức lớp 11 phần Đại số",
     sessions: [
-      { title: "Buổi 1: Tổng ôn lượng giác (phần 1)", date: "15/06/2025", type: 'livestream', registrationStatus: 'register', teacher: "Thầy Nguyễn Tiến Đạt" },
+      {
+        title: "Buổi 1: Tổng ôn lượng giác (phần 1)",
+        date: "15/06/2025",
+        type: 'livestream',
+        timeSlots: [
+          { time: "09:00 - 10:00", teacher: "Thầy Nguyễn Tiến Đạt", registrationStatus: 'register' },
+          { time: "14:00 - 15:00", teacher: "Thầy Nguyễn Tiến Đạt", registrationStatus: 'full' },
+          { time: "19:00 - 20:00", teacher: "Thầy Nguyễn Tiến Đạt", registrationStatus: 'registered' },
+        ]
+      },
       { title: "Buổi 2: Tổng ôn lượng giác (phần 2)", date: "15/06/2025" },
       { title: "Buổi 3: Tổng ôn CSC – CSN", date: "15/06/2025" },
       { title: "Buổi 4: Tổng ôn hàm số mũ loga", date: "15/06/2025" },
@@ -48,7 +62,15 @@ const chapters: Chapter[] = [
     progress: "0/9",
     title: "Tổng ôn kiến thức lớp 11 phần Hình học",
     sessions: [
-      { title: "Buổi 1: Giới thiệu hình học", date: "16/06/2025", type: 'livestream', registrationStatus: 'registered', teacher: "Cô Trần Thị B" },
+      {
+        title: "Buổi 1: Giới thiệu hình học",
+        date: "16/06/2025",
+        type: 'livestream',
+        timeSlots: [
+          { time: "10:00 - 11:00", teacher: "Cô Trần Thị B", registrationStatus: 'registered' },
+          { time: "16:00 - 17:00", teacher: "Cô Trần Thị B", registrationStatus: 'register' },
+        ]
+      },
       { title: "Buổi 2: Các dạng bài tập", date: "17/06/2025" },
     ],
   },
@@ -57,7 +79,14 @@ const chapters: Chapter[] = [
     progress: "0/43",
     title: "[Classin] Chương 1: Hàm số",
     sessions: [
-      { title: "Buổi 1: Khái niệm hàm số", date: "18/06/2025", type: 'livestream', registrationStatus: 'full', teacher: "Thầy Nguyễn Tiến Đạt" },
+      {
+        title: "Buổi 1: Khái niệm hàm số",
+        date: "18/06/2025",
+        type: 'livestream',
+        timeSlots: [
+          { time: "08:00 - 09:00", teacher: "Thầy Nguyễn Tiến Đạt", registrationStatus: 'full' },
+        ]
+      },
       { title: "Buổi 2: Đồ thị hàm số", date: "19/06/2025" },
     ],
   },
@@ -204,45 +233,52 @@ const CourseContent = () => {
                 <AccordionContent className="pt-4 pb-0">
                   <div className="space-y-3 pl-4 border-l-2 border-gray-200 ml-6">
                     {chapter.sessions.map((session, sessionIndex) => (
-                      <div key={sessionIndex} className="flex items-center justify-between py-2">
-                        <div className="flex items-center space-x-3">
-                          <span className="w-2 h-2 bg-gray-400 rounded-full flex-shrink-0"></span>
-                          <FileText size={18} className="text-orange-500" />
-                          <Play size={18} className="text-orange-500" />
-                          <span className="text-gray-800">{session.title}</span>
-                          {session.type === 'livestream' && session.teacher && (
-                            <span className="text-blue-600 text-sm flex items-center ml-2 font-medium">
-                              <User size={14} className="mr-1" /> {session.teacher}
-                            </span>
-                          )}
-                          {session.type === 'livestream' && (
-                            <Badge variant="destructive" className="ml-2 bg-red-500 text-white">
-                              Livestream
-                            </Badge>
-                          )}
-                        </div>
-                        <div className="flex items-center space-x-4">
-                          {session.type === 'livestream' && (
-                            <Button
-                              className={`rounded-full px-4 py-2 text-sm ${
-                                session.registrationStatus === 'register'
-                                  ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                                  : session.registrationStatus === 'registered'
-                                  ? 'bg-gray-400 text-gray-700 cursor-not-allowed'
-                                  : 'bg-red-600 text-white cursor-not-allowed'
-                              }`}
-                              disabled={session.registrationStatus !== 'register'}
-                            >
-                              {session.registrationStatus === 'register'
-                                ? 'Đăng Ký học'
-                                : session.registrationStatus === 'registered'
-                                ? 'Đã đăng ký'
-                                : 'Đầy'}
-                            </Button>
-                          )}
+                      session.type === 'livestream' && session.timeSlots ? (
+                        session.timeSlots.map((slot, slotIndex) => (
+                          <div key={`${sessionIndex}-${slotIndex}`} className="flex items-center justify-between py-2">
+                            <div className="flex items-center space-x-3">
+                              <span className="w-2 h-2 bg-gray-400 rounded-full flex-shrink-0"></span>
+                              <Play size={18} className="text-orange-500" />
+                              <span className="text-gray-800">{session.title} - {slot.time}</span>
+                              <span className="text-blue-600 text-sm flex items-center ml-2 font-medium">
+                                <User size={14} className="mr-1" /> {slot.teacher}
+                              </span>
+                              <Badge variant="destructive" className="ml-2 bg-red-500 text-white">
+                                Livestream
+                              </Badge>
+                            </div>
+                            <div className="flex items-center space-x-4">
+                              <Button
+                                className={`rounded-full px-4 py-2 text-sm ${
+                                  slot.registrationStatus === 'register'
+                                    ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                                    : slot.registrationStatus === 'registered'
+                                    ? 'bg-gray-400 text-gray-700 cursor-not-allowed'
+                                    : 'bg-red-600 text-white cursor-not-allowed'
+                                }`}
+                                disabled={slot.registrationStatus !== 'register'}
+                              >
+                                {slot.registrationStatus === 'register'
+                                  ? 'Đăng Ký học'
+                                  : slot.registrationStatus === 'registered'
+                                  ? 'Đã đăng ký'
+                                  : 'Đầy'}
+                              </Button>
+                              <span className="text-gray-500 text-sm">{session.date}</span>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div key={sessionIndex} className="flex items-center justify-between py-2">
+                          <div className="flex items-center space-x-3">
+                            <span className="w-2 h-2 bg-gray-400 rounded-full flex-shrink-0"></span>
+                            <FileText size={18} className="text-orange-500" />
+                            <Play size={18} className="text-orange-500" />
+                            <span className="text-gray-800">{session.title}</span>
+                          </div>
                           <span className="text-gray-500 text-sm">{session.date}</span>
                         </div>
-                      </div>
+                      )
                     ))}
                   </div>
                 </AccordionContent>
