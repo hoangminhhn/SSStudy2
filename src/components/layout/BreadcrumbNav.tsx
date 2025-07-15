@@ -11,7 +11,12 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
-const BreadcrumbNav = () => {
+interface BreadcrumbNavProps {
+  courseTitle?: string;
+  lessonTitle?: string;
+}
+
+const BreadcrumbNav: React.FC<BreadcrumbNavProps> = ({ courseTitle, lessonTitle }) => {
   return (
     <div className="bg-orange-500 py-3 px-6 text-white">
       <Breadcrumb>
@@ -33,14 +38,30 @@ const BreadcrumbNav = () => {
               </Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
-          <BreadcrumbSeparator>
-            <ChevronRight className="h-4 w-4 text-white" />
-          </BreadcrumbSeparator>
-          <BreadcrumbItem>
-            <span className="text-white font-semibold">
-              [2K8 - SSLIVE] S1: Chuyên đề - Toán học 12
-            </span>
-          </BreadcrumbItem>
+          {courseTitle && (
+            <>
+              <BreadcrumbSeparator>
+                <ChevronRight className="h-4 w-4 text-white" />
+              </BreadcrumbSeparator>
+              <BreadcrumbItem>
+                <span className="text-white font-semibold">
+                  {courseTitle}
+                </span>
+              </BreadcrumbItem>
+            </>
+          )}
+          {lessonTitle && (
+            <>
+              <BreadcrumbSeparator>
+                <ChevronRight className="h-4 w-4 text-white" />
+              </BreadcrumbSeparator>
+              <BreadcrumbItem>
+                <span className="text-white font-semibold">
+                  {lessonTitle}
+                </span>
+              </BreadcrumbItem>
+            </>
+          )}
         </BreadcrumbList>
       </Breadcrumb>
     </div>

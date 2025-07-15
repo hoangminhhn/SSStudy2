@@ -11,20 +11,22 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
-import LivestreamTimeSlotsDialog from "./LivestreamTimeSlotsDialog"; // Import the new component
-import { isToday, parse } from 'date-fns'; // Import date-fns utilities
+import LivestreamTimeSlotsDialog from "./LivestreamTimeSlotsDialog";
+import { isToday, parse } from 'date-fns';
+import { Link } from "react-router-dom"; // Import Link
 
 interface TimeSlot {
-  time: string; // e.g., "09:00 - 10:00"
+  time: string;
   teacher: string;
   registrationStatus: 'register' | 'registered' | 'full';
 }
 
 interface Session {
+  sessionId: string; // Added sessionId
   title: string;
-  date: string; // Date for normal sessions, or the day for livestream sessions
+  date: string;
   type?: 'normal' | 'livestream';
-  timeSlots?: TimeSlot[]; // Only for livestream sessions
+  timeSlots?: TimeSlot[];
 }
 
 interface Chapter {
@@ -41,8 +43,9 @@ const chapters: Chapter[] = [
     title: "Tổng ôn kiến thức lớp 11 phần Đại số",
     sessions: [
       {
+        sessionId: "buoi-1-tong-on-luong-giac-phan-1", // Unique ID for the lesson
         title: "Buổi 1: Tổng ôn lượng giác (phần 1)",
-        date: "15/06/2025", // Changed back to a future date
+        date: "15/06/2025",
         type: 'livestream',
         timeSlots: [
           { time: "09:00 - 10:00", teacher: "Thầy Nguyễn Tiến Đạt", registrationStatus: 'register' },
@@ -51,19 +54,20 @@ const chapters: Chapter[] = [
         ]
       },
       {
+        sessionId: "buoi-2-tong-on-luong-giac-phan-2",
         title: "Buổi 2: Tổng ôn lượng giác (phần 2)",
-        date: new Date().toLocaleDateString('en-GB'), // Set to today's date dynamically
-        type: 'livestream', // Ensure it's a livestream
-        timeSlots: [ // Add time slots for consistency, even if not used by "Vào học" button
+        date: new Date().toLocaleDateString('en-GB'),
+        type: 'livestream',
+        timeSlots: [
           { time: "10:00 - 11:00", teacher: "Thầy Nguyễn Tiến Đạt", registrationStatus: 'register' },
         ]
       },
-      { title: "Buổi 3: Tổng ôn CSC – CSN", date: "15/06/2025" },
-      { title: "Buổi 4: Tổng ôn hàm số mũ loga", date: "15/06/2025" },
-      { title: "Buổi 5: Tổng ôn PT, BPT mũ loga", date: "15/06/2025" },
-      { title: "Buổi 6: Tổng ôn bài toán tăng trưởng, lãi suất", date: "15/06/2025" },
-      { title: "Buổi 7: Tổng ôn giới hạn", date: "15/06/2025" },
-      { title: "Buổi 8: Tổng ôn phương trình tiếp tuyến & đạo hàm", date: "15/06/2025" },
+      { sessionId: "buoi-3-tong-on-csc-csn", title: "Buổi 3: Tổng ôn CSC – CSN", date: "15/06/2025" },
+      { sessionId: "buoi-4-tong-on-ham-so-mu-loga", title: "Buổi 4: Tổng ôn hàm số mũ loga", date: "15/06/2025" },
+      { sessionId: "buoi-5-tong-on-pt-bpt-mu-loga", title: "Buổi 5: Tổng ôn PT, BPT mũ loga", date: "15/06/2025" },
+      { sessionId: "buoi-6-tong-on-bai-toan-tang-truong-lai-suat", title: "Buổi 6: Tổng ôn bài toán tăng trưởng, lãi suất", date: "15/06/2025" },
+      { sessionId: "buoi-7-tong-on-gioi-han", title: "Buổi 7: Tổng ôn giới hạn", date: "15/06/2025" },
+      { sessionId: "buoi-8-tong-on-phuong-trinh-tiep-tuyen-dao-ham", title: "Buổi 8: Tổng ôn phương trình tiếp tuyến & đạo hàm", date: "15/06/2025" },
     ],
   },
   {
@@ -72,6 +76,7 @@ const chapters: Chapter[] = [
     title: "Tổng ôn kiến thức lớp 11 phần Hình học",
     sessions: [
       {
+        sessionId: "buoi-1-gioi-thieu-hinh-hoc",
         title: "Buổi 1: Giới thiệu hình học",
         date: "16/06/2025",
         type: 'livestream',
@@ -80,7 +85,7 @@ const chapters: Chapter[] = [
           { time: "16:00 - 17:00", teacher: "Cô Trần Thị B", registrationStatus: 'register' },
         ]
       },
-      { title: "Buổi 2: Các dạng bài tập", date: "17/06/2025" },
+      { sessionId: "buoi-2-cac-dang-bai-tap", title: "Buổi 2: Các dạng bài tập", date: "17/06/2025" },
     ],
   },
   {
@@ -89,6 +94,7 @@ const chapters: Chapter[] = [
     title: "[Classin] Chương 1: Hàm số",
     sessions: [
       {
+        sessionId: "buoi-1-khai-niem-ham-so",
         title: "Buổi 1: Khái niệm hàm số",
         date: "18/06/2025",
         type: 'livestream',
@@ -96,7 +102,7 @@ const chapters: Chapter[] = [
           { time: "08:00 - 09:00", teacher: "Thầy Nguyễn Tiến Đạt", registrationStatus: 'full' },
         ]
       },
-      { title: "Buổi 2: Đồ thị hàm số", date: "19/06/2025" },
+      { sessionId: "buoi-2-do-thi-ham-so", title: "Buổi 2: Đồ thị hàm số", date: "19/06/2025" },
     ],
   },
   {
@@ -104,7 +110,7 @@ const chapters: Chapter[] = [
     progress: "0/1",
     title: "[Classin] Chương 2: Mẫu số liệu ghép nhóm",
     sessions: [
-      { title: "Buổi 1: Giới thiệu", date: "20/06/2025" },
+      { sessionId: "buoi-1-gioi-thieu-mau-so-lieu", title: "Buổi 1: Giới thiệu", date: "20/06/2025" },
     ],
   },
   {
@@ -112,7 +118,7 @@ const chapters: Chapter[] = [
     progress: "0/20",
     title: "[Classin] Chương 3: Nguyên hàm tích phân",
     sessions: [
-      { title: "Buổi 1: Nguyên hàm cơ bản", date: "21/06/2025" },
+      { sessionId: "buoi-1-nguyen-ham-co-ban", title: "Buổi 1: Nguyên hàm cơ bản", date: "21/06/2025" },
     ],
   },
   {
@@ -120,7 +126,7 @@ const chapters: Chapter[] = [
     progress: "0/12",
     title: "[Classin] Chương 4: Xác suất có điều kiện",
     sessions: [
-      { title: "Buổi 1: Giới thiệu", date: "22/06/2025" },
+      { sessionId: "buoi-1-gioi-thieu-xac-suat", title: "Buổi 1: Giới thiệu", date: "22/06/2025" },
     ],
   },
   {
@@ -128,7 +134,7 @@ const chapters: Chapter[] = [
     progress: "0/32",
     title: "[Classin] Chương 5: Oxyz",
     sessions: [
-      { title: "Buổi 1: Hệ tọa độ Oxyz", date: "23/06/2025" },
+      { sessionId: "buoi-1-he-toa-do-oxyz", title: "Buổi 1: Hệ tọa độ Oxyz", date: "23/06/2025" },
     ],
   },
   {
@@ -136,7 +142,7 @@ const chapters: Chapter[] = [
     progress: "0/4",
     title: "[Classin] Ôn tập giữa kì 1",
     sessions: [
-      { title: "Buổi 1: Tổng ôn", date: "24/06/2025" },
+      { sessionId: "buoi-1-tong-on-giua-ki-1", title: "Buổi 1: Tổng ôn", date: "24/06/2025" },
     ],
   },
   {
@@ -144,7 +150,7 @@ const chapters: Chapter[] = [
     progress: "0/6",
     title: "[Classin] Ôn tập học kì 1",
     sessions: [
-      { title: "Buổi 1: Tổng ôn", date: "25/06/2025" },
+      { sessionId: "buoi-1-tong-on-hoc-ki-1", title: "Buổi 1: Tổng ôn", date: "25/06/2025" },
     ],
   },
   {
@@ -152,7 +158,7 @@ const chapters: Chapter[] = [
     progress: "0/4",
     title: "[Classin] Ôn tập giữa kì 2",
     sessions: [
-      { title: "Buổi 1: Tổng ôn", date: "26/06/2025" },
+      { sessionId: "buoi-1-tong-on-giua-ki-2", title: "Buổi 1: Tổng ôn", date: "26/06/2025" },
     ],
   },
   {
@@ -160,7 +166,7 @@ const chapters: Chapter[] = [
     progress: "0/6",
     title: "[Classin] Ôn tập học kì 2",
     sessions: [
-      { title: "Buổi 1: Tổng ôn", date: "27/06/2025" },
+      { sessionId: "buoi-1-tong-on-hoc-ki-2", title: "Buổi 1: Tổng ôn", date: "27/06/2025" },
     ],
   },
   {
@@ -168,7 +174,7 @@ const chapters: Chapter[] = [
     progress: "0/45",
     title: "[SSVOD] Chương 1: Hàm số",
     sessions: [
-      { title: "Buổi 1: Giới thiệu", date: "28/06/2025" },
+      { sessionId: "buoi-1-gioi-thieu-ssvod-ham-so", title: "Buổi 1: Giới thiệu", date: "28/06/2025" },
     ],
   },
   {
@@ -176,7 +182,7 @@ const chapters: Chapter[] = [
     progress: "0/2",
     title: "[SSVOD] Chương 2: Mẫu số liệu ghép nhóm",
     sessions: [
-      { title: "Buổi 1: Giới thiệu", date: "29/06/2025" },
+      { sessionId: "buoi-1-gioi-thieu-ssvod-mau-so-lieu", title: "Buổi 1: Giới thiệu", date: "29/06/2025" },
     ],
   },
   {
@@ -184,7 +190,7 @@ const chapters: Chapter[] = [
     progress: "0/24",
     title: "[SSVOD] Chương 3: Nguyên hàm tích phân",
     sessions: [
-      { title: "Buổi 1: Giới thiệu", date: "30/06/2025" },
+      { sessionId: "buoi-1-gioi-thieu-ssvod-nguyen-ham", title: "Buổi 1: Giới thiệu", date: "30/06/2025" },
     ],
   },
   {
@@ -192,7 +198,7 @@ const chapters: Chapter[] = [
     progress: "0/12",
     title: "[SSVOD] Chương 4: Xác suất có điều kiện",
     sessions: [
-      { title: "Buổi 1: Giới thiệu", date: "01/07/2025" },
+      { sessionId: "buoi-1-gioi-thieu-ssvod-xac-suat", title: "Buổi 1: Giới thiệu", date: "01/07/2025" },
     ],
   },
   {
@@ -200,12 +206,16 @@ const chapters: Chapter[] = [
     progress: "0/26",
     title: "[SSVOD] Chương 5: Oxyz",
     sessions: [
-      { title: "Buổi 1: Giới thiệu", date: "02/07/2025" },
+      { sessionId: "buoi-1-gioi-thieu-ssvod-oxyz", title: "Buổi 1: Giới thiệu", date: "02/07/2025" },
     ],
   },
 ];
 
-const CourseContent = () => {
+interface CourseContentProps {
+  isSidebar?: boolean; // New prop to adjust styling if used as a sidebar
+}
+
+const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
   const [openChapters, setOpenChapters] = React.useState<string[]>([]);
   const today = new Date();
 
@@ -214,11 +224,15 @@ const CourseContent = () => {
   };
 
   return (
-    <div className="mt-8">
-      <h2 className="text-2xl font-bold text-orange-600 mb-4">BÀI HỌC</h2>
-      <p className="text-gray-700 mb-6">
-        Tổng hợp khóa học chuyên đề gồm 16 chương nhằm lấy lại kiến thức cho các bạn bị mất căn bản và chuẩn bị luyện thi vào đại học
-      </p>
+    <div className={isSidebar ? "" : "mt-8"}>
+      {!isSidebar && (
+        <>
+          <h2 className="text-2xl font-bold text-orange-600 mb-4">BÀI HỌC</h2>
+          <p className="text-gray-700 mb-6">
+            Tổng hợp khóa học chuyên đề gồm 16 chương nhằm lấy lại kiến thức cho các bạn bị mất căn bản và chuẩn bị luyện thi vào đại học
+          </p>
+        </>
+      )}
 
       <Accordion type="multiple" value={openChapters} onValueChange={handleAccordionChange} className="w-full space-y-4">
         {chapters.map((chapter) => {
@@ -267,9 +281,11 @@ const CourseContent = () => {
                           </div>
                           <div className="flex items-center space-x-4">
                             {isLiveToday ? (
-                              <Button className="bg-purple-600 hover:bg-purple-700 text-white rounded-full px-4 py-2 text-sm">
-                                Vào học
-                              </Button>
+                              <Link to={`/lesson/${session.sessionId}`}>
+                                <Button className="bg-purple-600 hover:bg-purple-700 text-white rounded-full px-4 py-2 text-sm">
+                                  Vào học
+                                </Button>
+                              </Link>
                             ) : session.type === 'livestream' && session.timeSlots && session.timeSlots.length > 0 ? (
                               <LivestreamTimeSlotsDialog
                                 sessionTitle={session.title}
