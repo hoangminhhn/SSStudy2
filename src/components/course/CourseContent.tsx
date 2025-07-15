@@ -52,7 +52,7 @@ const chapters: Chapter[] = [
       },
       {
         title: "Buổi 2: Tổng ôn lượng giác (phần 2)",
-        date: "29/07/2024", // Set to today's date for demonstration
+        date: new Date().toLocaleDateString('en-GB'), // Set to today's date dynamically
         type: 'livestream', // Ensure it's a livestream
         timeSlots: [ // Add time slots for consistency, even if not used by "Vào học" button
           { time: "10:00 - 11:00", teacher: "Thầy Nguyễn Tiến Đạt", registrationStatus: 'register' },
@@ -264,7 +264,7 @@ const CourseContent = () => {
                           </div>
                           <div className="flex items-center space-x-4">
                             {isLiveToday ? (
-                              <Button className="bg-green-600 hover:bg-green-700 text-white rounded-full px-4 py-2 text-sm">
+                              <Button className="bg-purple-600 hover:bg-purple-700 text-white rounded-full px-4 py-2 text-sm">
                                 Vào học
                               </Button>
                             ) : session.type === 'livestream' && session.timeSlots && session.timeSlots.length > 0 ? (
