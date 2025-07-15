@@ -3,7 +3,7 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button"; // Added this import
+import { Button } from "@/components/ui/button";
 import { Star, User, CalendarDays, BookOpen } from "lucide-react";
 
 const CourseHero = () => {
@@ -11,7 +11,7 @@ const CourseHero = () => {
     <Card className="p-6 shadow-lg rounded-lg flex flex-col lg:flex-row gap-6">
       <div className="lg:w-1/3 flex-shrink-0">
         <img
-          src="https://via.placeholder.com/400x300?text=Course+Image"
+          src="/images/course-thumbnail.png" // Updated image path
           alt="Course Thumbnail"
           className="w-full h-auto rounded-lg object-cover"
         />
