@@ -245,6 +245,9 @@ const CourseContent = () => {
                     {chapter.sessions.map((session, sessionIndex) => {
                       const sessionDate = parse(session.date, 'dd/MM/yyyy', new Date());
                       const isLiveToday = session.type === 'livestream' && isToday(sessionDate);
+                      const displayTime = session.type === 'livestream' && session.timeSlots && session.timeSlots.length > 0
+                        ? session.timeSlots[0].time
+                        : '';
 
                       return (
                         <div key={sessionIndex} className="flex items-center justify-between py-2">
@@ -277,8 +280,11 @@ const CourseContent = () => {
                                   Đăng Ký học
                                 </Button>
                               </LivestreamTimeSlotsDialog>
-                            ) : null} {/* Removed the "Xem bài học" button */}
-                            <span className="text-gray-500 text-sm">{session.date}</span>
+                            ) : null}
+                            <span className="text-gray-500 text-sm">
+                              Ngày: {session.date}
+                              {displayTime && ` - Giờ: ${displayTime}`}
+                            </span>
                           </div>
                         </div>
                       );
