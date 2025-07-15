@@ -272,7 +272,9 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
                             ) : (
                               <FileText size={18} className="text-orange-500" />
                             )}
-                            <span className="text-gray-800">{session.title}</span>
+                            <Link to={`/lesson/${session.sessionId}`} className="text-gray-800 hover:underline">
+                              {session.title}
+                            </Link>
                             {session.type === 'livestream' && (
                               <Badge variant="destructive" className="ml-2 bg-red-500 text-white">
                                 Livestream {displayTime && `(${displayTime})`}
