@@ -183,7 +183,7 @@ const CourseContent = () => {
           return (
             <Card key={chapter.id} className="p-4 shadow-sm rounded-lg">
               <AccordionItem value={chapter.id} className="border-b-0">
-                <AccordionTrigger className="flex items-center justify-between w-full text-left font-medium text-gray-800 hover:no-underline p-0">
+                <AccordionTrigger className="flex items-center justify-between w-full text-left font-medium text-gray-800 hover:no-underline p-0 [&>svg]:hidden">
                   <div className="flex items-center space-x-4">
                     <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-md text-sm font-medium">
                       {chapter.progress}
