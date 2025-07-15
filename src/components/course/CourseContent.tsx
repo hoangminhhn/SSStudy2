@@ -3,20 +3,21 @@
 import React from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BookOpen, FileText, Play } from "lucide-react";
+import { BookOpen, FileText, Play, User } from "lucide-react"; // Import User icon
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Badge } from "@/components/ui/badge"; // Import Badge component
+import { Badge } from "@/components/ui/badge";
 
 interface Session {
   title: string;
   date: string;
   type?: 'normal' | 'livestream'; // 'normal' or 'livestream'
   registrationStatus?: 'register' | 'registered' | 'full'; // 'register', 'registered', 'full'
+  teacher?: string; // New: Teacher's name
 }
 
 interface Chapter {
@@ -32,7 +33,7 @@ const chapters: Chapter[] = [
     progress: "0/8",
     title: "Tổng ôn kiến thức lớp 11 phần Đại số",
     sessions: [
-      { title: "Buổi 1: Tổng ôn lượng giác (phần 1)", date: "15/06/2025", type: 'livestream', registrationStatus: 'register' },
+      { title: "Buổi 1: Tổng ôn lượng giác (phần 1)", date: "15/06/2025", type: 'livestream', registrationStatus: 'register', teacher: "Thầy Nguyễn Tiến Đạt" },
       { title: "Buổi 2: Tổng ôn lượng giác (phần 2)", date: "15/06/2025" },
       { title: "Buổi 3: Tổng ôn CSC – CSN", date: "15/06/2025" },
       { title: "Buổi 4: Tổng ôn hàm số mũ loga", date: "15/06/2025" },
@@ -47,7 +48,7 @@ const chapters: Chapter[] = [
     progress: "0/9",
     title: "Tổng ôn kiến thức lớp 11 phần Hình học",
     sessions: [
-      { title: "Buổi 1: Giới thiệu hình học", date: "16/06/2025", type: 'livestream', registrationStatus: 'registered' },
+      { title: "Buổi 1: Giới thiệu hình học", date: "16/06/2025", type: 'livestream', registrationStatus: 'registered', teacher: "Cô Trần Thị B" },
       { title: "Buổi 2: Các dạng bài tập", date: "17/06/2025" },
     ],
   },
@@ -56,7 +57,7 @@ const chapters: Chapter[] = [
     progress: "0/43",
     title: "[Classin] Chương 1: Hàm số",
     sessions: [
-      { title: "Buổi 1: Khái niệm hàm số", date: "18/06/2025", type: 'livestream', registrationStatus: 'full' },
+      { title: "Buổi 1: Khái niệm hàm số", date: "18/06/2025", type: 'livestream', registrationStatus: 'full', teacher: "Thầy Nguyễn Tiến Đạt" },
       { title: "Buổi 2: Đồ thị hàm số", date: "19/06/2025" },
     ],
   },
@@ -209,6 +210,11 @@ const CourseContent = () => {
                           <FileText size={18} className="text-orange-500" />
                           <Play size={18} className="text-orange-500" />
                           <span className="text-gray-800">{session.title}</span>
+                          {session.type === 'livestream' && session.teacher && (
+                            <span className="text-blue-600 text-sm flex items-center ml-2 font-medium">
+                              <User size={14} className="mr-1" /> {session.teacher}
+                            </span>
+                          )}
                           {session.type === 'livestream' && (
                             <Badge variant="destructive" className="ml-2 bg-red-500 text-white">
                               Livestream
