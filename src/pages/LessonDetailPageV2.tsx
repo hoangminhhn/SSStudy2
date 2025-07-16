@@ -6,7 +6,7 @@ import LessonHeader from "@/components/layout/LessonHeader";
 import LessonVideoPlayer from "@/components/lesson/LessonVideoPlayer";
 import LessonNavigation from "@/components/lesson/LessonNavigation";
 import CourseContent from "@/components/course/CourseContent"; // Reusing CourseContent for the sidebar
-import Footer from "@/components/layout/Footer";
+// import Footer from "@/components/layout/Footer"; // Removed Footer import
 
 // Dummy data for lessons, derived from CourseContent's chapters for consistency
 const allChaptersData = [
@@ -215,7 +215,8 @@ const LessonDetailPageV2 = () => {
         </div>
 
         {/* Sidebar (Course Content) */}
-        <div className="lg:col-span-1 bg-white border-l border-gray-200 p-6 overflow-y-auto max-h-[calc(100vh-64px)]"> {/* Adjust max-h based on header height */}
+        {/* Adjusted max-h to account for both header and navigation bar */}
+        <div className="lg:col-span-1 bg-white border-l border-gray-200 p-6 overflow-y-auto max-h-[calc(100vh-128px)]">
           <h2 className="text-xl font-bold text-gray-800 mb-4">Nội dung khóa học</h2>
           <CourseContent isSidebar={true} />
         </div>
@@ -226,7 +227,7 @@ const LessonDetailPageV2 = () => {
         onAddNote={() => console.log("Add note clicked")}
         onAskQuestion={() => console.log("Ask question clicked")}
       />
-      <Footer />
+      {/* <Footer /> Removed Footer component */}
     </div>
   );
 };
