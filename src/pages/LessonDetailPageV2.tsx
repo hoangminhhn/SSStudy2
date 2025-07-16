@@ -206,9 +206,9 @@ const LessonDetailPageV2 = () => {
         totalLessonCount={totalLessons}
       />
       {/* Main content area: takes all available vertical space, is a flex row */}
-      <div className="flex-grow flex lg:flex-row"> {/* Removed overflow-hidden and min-h-0 */}
+      <div className="flex-grow flex lg:flex-row overflow-hidden"> {/* Added overflow-hidden here */}
         {/* Left Column: Video Player + Lesson Details (Main scrollable content) */}
-        <div className="flex flex-col lg:w-2/3 bg-white overflow-y-auto h-full"> {/* h-full is key here */}
+        <div className="flex flex-col lg:w-2/3 bg-white overflow-y-auto h-full">
           <div className="p-6">
             <LessonVideoPlayer
               lessonTitle={currentLesson.title}
@@ -233,7 +233,7 @@ const LessonDetailPageV2 = () => {
         </div>
 
         {/* Right Column: Course Content Sidebar (Fixed and independently scrollable) */}
-        <div className="lg:w-1/3 bg-white border-l border-gray-200 p-6 overflow-y-auto h-full"> {/* h-full is key here */}
+        <div className="lg:w-1/3 bg-white border-l border-gray-200 p-6 overflow-y-auto h-full">
           <h2 className="text-xl font-bold text-gray-800 mb-4">Nội dung khóa học</h2>
           <CourseContent isSidebar={true} />
         </div>
