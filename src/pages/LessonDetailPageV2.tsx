@@ -206,7 +206,7 @@ const LessonDetailPageV2 = () => {
         totalLessonCount={totalLessons}
       />
       {/* Main content area: takes all available vertical space, is a flex row */}
-      <div className="flex-grow flex lg:flex-row overflow-hidden"> {/* Added overflow-hidden here */}
+      <div className="flex-grow flex lg:flex-row overflow-hidden">
         {/* Left Column: Video Player + Lesson Details (Main scrollable content) */}
         <div className="flex flex-col lg:w-2/3 bg-white overflow-y-auto h-full">
           <div className="p-6">
@@ -220,16 +220,6 @@ const LessonDetailPageV2 = () => {
             updatedDate="tháng 11 năm 2022" // Placeholder for now
             onAddNote={() => console.log("Add note clicked from LessonDetails")}
           />
-          {/* Add more dummy content to force scroll on left column */}
-          <div className="p-6 text-gray-700">
-            <h3 className="text-xl font-bold mb-3">Nội dung bổ sung</h3>
-            {/* Repeat paragraphs many times to ensure overflow */}
-            {Array.from({ length: 20 }).map((_, i) => (
-              <p key={i} className="mb-2">
-                Đây là đoạn văn bản bổ sung để làm cho cột bên trái dài hơn và kích hoạt thanh cuộn. Chúng ta cần đảm bảo rằng có đủ nội dung để vượt quá chiều cao hiển thị của cột. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-              </p>
-            ))}
-          </div>
         </div>
 
         {/* Right Column: Course Content Sidebar (Fixed and independently scrollable) */}
