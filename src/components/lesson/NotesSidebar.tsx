@@ -25,37 +25,43 @@ interface NotesSidebarProps {
   notes?: Note[]; // Optional prop for notes data
 }
 
-// Dummy data for notes
+// Dummy data for notes, updated to be relevant to course content
 const dummyNotes: Note[] = [
   {
     id: "note-1",
     timestamp: "00:40",
-    title: "Làm quen với Dev tools",
-    content: "Đây là ghi chú đầu tiên của tôi về cách sử dụng Dev tools để kiểm tra các phần tử trên trang web.",
+    title: "Tổng ôn lượng giác (phần 1)",
+    content: "Ghi chú về các công thức lượng giác cơ bản và cách áp dụng chúng trong giải phương trình.",
   },
   {
     id: "note-2",
     timestamp: "01:25",
-    title: "Cấu trúc HTML cơ bản",
-    content: "Ghi chú về các thẻ HTML quan trọng như <div>, <p>, <h1> và cách chúng được sử dụng để xây dựng bố cục.",
+    title: "Hàm số mũ loga",
+    content: "Các tính chất quan trọng của hàm số mũ và logarit, bao gồm đạo hàm và đồ thị.",
   },
   {
     id: "note-3",
     timestamp: "03:10",
-    title: "CSS Flexbox",
-    content: "Tìm hiểu về Flexbox để căn chỉnh các phần tử một cách linh hoạt. Các thuộc tính như display: flex, justify-content, align-items rất hữu ích.",
+    title: "Nguyên hàm cơ bản",
+    content: "Tổng hợp các nguyên hàm cơ bản và phương pháp tính nguyên hàm bằng phương pháp đổi biến.",
   },
   {
     id: "note-4",
     timestamp: "05:00",
-    title: "JavaScript DOM Manipulation",
-    content: "Cách tương tác với DOM bằng JavaScript để thay đổi nội dung, kiểu dáng và cấu trúc của trang web.",
+    title: "Hệ tọa độ Oxyz",
+    content: "Ghi chú về các khái niệm cơ bản trong không gian Oxyz: điểm, vector, phương trình mặt phẳng.",
   },
   {
     id: "note-5",
     timestamp: "07:30",
-    title: "React Components",
-    content: "Ghi chú về cách tạo và sử dụng các React component, props và state để xây dựng giao diện người dùng động.",
+    title: "Bài toán tăng trưởng, lãi suất",
+    content: "Công thức tính lãi kép và các bài toán ứng dụng thực tế liên quan đến tăng trưởng dân số, lãi suất ngân hàng.",
+  },
+  {
+    id: "note-6",
+    timestamp: "09:15",
+    title: "Giới hạn hàm số",
+    content: "Các quy tắc tính giới hạn và các dạng vô định thường gặp trong bài tập.",
   },
 ];
 
