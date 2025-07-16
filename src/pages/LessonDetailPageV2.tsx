@@ -183,10 +183,10 @@ const allLessons = allChaptersData.flatMap(chapter =>
 const LessonDetailPageV2 = () => {
   const { lessonId } = useParams<{ lessonId: string }>();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [isTourActive, setIsTourActive] = useState(false); // New state for tour
-  const [currentTourStepIndex, setCurrentTourStepIndex] = useState(0); // New state for tour step
+  const [isTourActive, setIsTourActive] = useState(false);
+  const [currentTourStepIndex, setCurrentTourStepIndex] = useState(0);
 
-  // Define tour steps
+  // Define tour steps (unchanged)
   const tourSteps = [
     {
       selector: '#tour-video-player',
@@ -284,23 +284,20 @@ const LessonDetailPageV2 = () => {
         progressValue={progressValue}
         currentLessonCount={currentLessonIndex + 1}
         totalLessonCount={totalLessons}
-        onHelpClick={startTour} // Pass the startTour function
+        onHelpClick={startTour}
       />
-      {/* Main content area: takes all available vertical space, is a flex row */}
       <div className="flex-grow flex lg:flex-row overflow-hidden">
-        {/* Left Column: Video Player + Action Buttons + Floating Ask Question Button */}
         <div className={`flex flex-col bg-white overflow-y-auto h-full relative ${isSidebarOpen ? 'lg:w-2/3' : 'lg:w-full'}`}>
           <div className="px-6 pt-6 pb-0">
             <LessonVideoPlayer
-              rootId="tour-video-player" // Add ID here
+              rootId="tour-video-player"
               lessonTitle={currentLesson.title}
-              updatedDate="tháng 11 năm 2022" // Placeholder for now
-              onAddNote={() => console.log("Add note clicked from LessonVideoPlayer")}
-              addNoteButtonId="tour-add-note-button" // Add ID here
+              updatedDate="tháng 11 năm 2022"
+              onAddNote={(content) => console.log("Note added from LessonDetailPageV2:", content)} // Updated console log
+              addNoteButtonId="tour-add-note-button"
             />
           </div>
 
-          {/* Action Buttons Section */}
           <div className="flex flex-wrap items-center gap-4 mt-0 px-6 pb-6 pr-24">
             <Button id="tour-download-no-ans" variant="ghost" className="text-orange-500 hover:text-orange-600 hover:bg-orange-50 rounded-full px-4 py-2">
               <Download size={16} className="mr-2" />
@@ -318,12 +315,10 @@ const LessonDetailPageV2 = () => {
             </Button>
           </div>
 
-          {/* Floating "Hỏi đáp" button, positioned sticky within the left column */}
           <FloatingAskQuestionButton onClick={() => console.log("Ask question clicked")} />
         </div>
 
-        {/* Right Column: Course Content Sidebar */}
-        {isSidebarOpen && ( // Conditionally render based on state
+        {isSidebarOpen && (
           <div className="lg:w-1/3 bg-white border-l border-gray-200 p-6 overflow-y-auto h-full">
             <h2 className="text-xl font-bold text-gray-800 mb-4">Nội dung khóa học</h2>
             <CourseContent isSidebar={true} />
@@ -333,9 +328,9 @@ const LessonDetailPageV2 = () => {
       <LessonNavigation
         prevLessonId={prevLessonId}
         nextLessonId={nextLessonId}
-        isSidebarOpen={isSidebarOpen} // Pass state
-        onToggleSidebar={toggleSidebar} // Pass toggle function
-        toggleSidebarButtonId="tour-toggle-sidebar-button" // Add ID here
+        isSidebarOpen={isSidebarOpen}
+        onToggleSidebar={toggleSidebar}
+        toggleSidebarButtonId="tour-toggle-sidebar-button"
       />
 
       {isTourActive && (
