@@ -6,7 +6,7 @@ import LessonHeader from "@/components/layout/LessonHeader";
 import LessonVideoPlayer from "@/components/lesson/LessonVideoPlayer";
 import LessonNavigation from "@/components/lesson/LessonNavigation";
 import CourseContent from "@/components/course/CourseContent"; // Reusing CourseContent for the sidebar
-// import Footer from "@/components/layout/Footer"; // Removed Footer import
+import LessonDetails from "@/components/lesson/LessonDetails"; // Import the new LessonDetails component
 
 // Dummy data for lessons, derived from CourseContent's chapters for consistency
 const allChaptersData = [
@@ -205,29 +205,33 @@ const LessonDetailPageV2 = () => {
         currentLessonCount={currentLessonIndex + 1}
         totalLessonCount={totalLessons}
       />
-      <main className="flex-grow grid grid-cols-1 lg:grid-cols-3 gap-0">
-        {/* Main content area (Video Player) */}
-        <div className="lg:col-span-2 bg-white p-6">
-          <LessonVideoPlayer
+      <div className="flex-grow flex"> {/* This div will take remaining height and contain the two columns */}
+        {/* Left Column: Video Player + Lesson Details */}
+        <div className="flex flex-col lg:w-2/3 bg-white overflow-y-auto"> {/* flex-col to stack video and details, overflow-y-auto for scrolling */}
+          <div className="p-6"> {/* Padding for video player */}
+            <LessonVideoPlayer
+              lessonTitle={currentLesson.title}
+              // You can add videoUrl and thumbnailUrl here if available
+            />
+          </div>
+          <LessonDetails
             lessonTitle={currentLesson.title}
-            // You can add videoUrl and thumbnailUrl here if available
+            updatedDate="tháng 11 năm 2022" // Placeholder for now
+            onAddNote={() => console.log("Add note clicked from LessonDetails")}
           />
         </div>
 
-        {/* Sidebar (Course Content) */}
-        {/* Adjusted max-h to account for both header and navigation bar */}
-        <div className="lg:col-span-1 bg-white border-l border-gray-200 p-6 overflow-y-auto max-h-[calc(100vh-128px)]">
+        {/* Right Column: Course Content Sidebar */}
+        <div className="lg:w-1/3 bg-white border-l border-gray-200 p-6 overflow-y-auto"> {/* This column should also scroll */}
           <h2 className="text-xl font-bold text-gray-800 mb-4">Nội dung khóa học</h2>
           <CourseContent isSidebar={true} />
         </div>
-      </main>
+      </div>
       <LessonNavigation
         prevLessonId={prevLessonId}
         nextLessonId={nextLessonId}
-        onAddNote={() => console.log("Add note clicked")}
         onAskQuestion={() => console.log("Ask question clicked")}
       />
-      {/* <Footer /> Removed Footer component */}
     </div>
   );
 };
