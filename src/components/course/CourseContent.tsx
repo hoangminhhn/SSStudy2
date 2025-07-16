@@ -12,8 +12,8 @@ import {
 } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import LivestreamTimeSlotsDialog from "./LivestreamTimeSlotsDialog";
-import { isToday, parse, isAfter, compareAsc } from 'date-fns';
-import { Link } from "react-router-dom";
+import { isToday, parse } from 'date-fns';
+import { Link } from "react-router-dom"; // Import Link
 
 interface TimeSlot {
   time: string;
@@ -22,7 +22,7 @@ interface TimeSlot {
 }
 
 interface Session {
-  sessionId: string;
+  sessionId: string; // Added sessionId
   title: string;
   date: string;
   type?: 'normal' | 'livestream';
@@ -36,16 +36,6 @@ interface Chapter {
   sessions: Session[];
 }
 
-// Helper to get tomorrow's date in 'dd/MM/yyyy' format
-const getTomorrowDateString = () => {
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  const day = String(tomorrow.getDate()).padStart(2, '0');
-  const month = String(tomorrow.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed
-  const year = tomorrow.getFullYear();
-  return `${day}/${month}/${year}`;
-};
-
 const chapters: Chapter[] = [
   {
     id: "chapter-1",
@@ -53,21 +43,20 @@ const chapters: Chapter[] = [
     title: "Tổng ôn kiến thức lớp 11 phần Đại số",
     sessions: [
       {
-        sessionId: "buoi-1-tong-on-luong-giac-phan-1",
+        sessionId: "buoi-1-tong-on-luong-giac-phan-1", // Unique ID for the lesson
         title: "Buổi 1: Tổng ôn lượng giác (phần 1)",
-        date: getTomorrowDateString(), // Set to tomorrow's date
+        date: "15/06/2025",
         type: 'livestream',
         timeSlots: [
           { time: "09:00 - 10:00", teacher: "Thầy Nguyễn Tiến Đạt", registrationStatus: 'register' },
           { time: "14:00 - 15:00", teacher: "Thầy Nguyễn Tiến Đạt", registrationStatus: 'full' },
           { time: "19:00 - 20:00", teacher: "Thầy Nguyễn Tiến Đạt", registrationStatus: 'registered' },
-          { time: "20:00 - 21:00", teacher: "Thầy Nguyễn Tiến Đạt", registrationStatus: 'register' },
         ]
       },
       {
         sessionId: "buoi-2-tong-on-luong-giac-phan-2",
         title: "Buổi 2: Tổng ôn lượng giác (phần 2)",
-        date: "15/06/2025", // Changed back to a fixed date
+        date: new Date().toLocaleDateString('en-GB'),
         type: 'livestream',
         timeSlots: [
           { time: "10:00 - 11:00", teacher: "Thầy Nguyễn Tiến Đạt", registrationStatus: 'register' },
@@ -220,71 +209,6 @@ const chapters: Chapter[] = [
       { sessionId: "buoi-1-gioi-thieu-ssvod-oxyz", title: "Buổi 1: Giới thiệu", date: "02/07/2025" },
     ],
   },
-  // Duplicate some chapters to ensure content overflows
-  {
-    id: "chapter-17",
-    progress: "0/8",
-    title: "Tổng ôn kiến thức lớp 11 phần Đại số (Tiếp)",
-    sessions: [
-      {
-        sessionId: "buoi-9-tong-on-luong-giac-phan-3",
-        title: "Buổi 9: Tổng ôn lượng giác (phần 3)",
-        date: "03/07/2025",
-        type: 'livestream',
-        timeSlots: [
-          { time: "09:00 - 10:00", teacher: "Thầy Nguyễn Tiến Đạt", registrationStatus: 'register' },
-        ]
-      },
-      { sessionId: "buoi-10-tong-on-luong-giac-phan-4", title: "Buổi 10: Tổng ôn lượng giác (phần 4)", date: "04/07/2025" },
-      { sessionId: "buoi-11-tong-on-csc-csn-2", title: "Buổi 11: Tổng ôn CSC – CSN (phần 2)", date: "05/07/2025" },
-      { sessionId: "buoi-12-tong-on-ham-so-mu-loga-2", title: "Buổi 12: Tổng ôn hàm số mũ loga (phần 2)", date: "06/07/2025" },
-    ],
-  },
-  {
-    id: "chapter-18",
-    progress: "0/9",
-    title: "Tổng ôn kiến thức lớp 11 phần Hình học (Tiếp)",
-    sessions: [
-      {
-        sessionId: "buoi-3-gioi-thieu-hinh-hoc-2",
-        title: "Buổi 3: Giới thiệu hình học (phần 2)",
-        date: "07/07/2025",
-        type: 'livestream',
-        timeSlots: [
-          { time: "10:00 - 11:00", teacher: "Cô Trần Thị B", registrationStatus: 'register' },
-        ]
-      },
-      { sessionId: "buoi-4-cac-dang-bai-tap-2", title: "Buổi 4: Các dạng bài tập (phần 2)", date: "08/07/2025" },
-    ],
-  },
-  {
-    id: "chapter-19",
-    progress: "0/43",
-    title: "[Classin] Chương 1: Hàm số (Tiếp)",
-    sessions: [
-      {
-        sessionId: "buoi-3-khai-niem-ham-so-2",
-        title: "Buổi 3: Khái niệm hàm số (phần 2)",
-        date: "09/07/2025",
-        type: 'livestream',
-        timeSlots: [
-          { time: "08:00 - 09:00", teacher: "Thầy Nguyễn Tiến Đạt", registrationStatus: 'register' },
-        ]
-      },
-      { sessionId: "buoi-4-do-thi-ham-so-2", title: "Buổi 4: Đồ thị hàm số (phần 2)", date: "10/07/2025" },
-    ],
-  },
-  {
-    id: "chapter-20",
-    progress: "0/20",
-    title: "[Classin] Chương 3: Nguyên hàm tích phân (Tiếp)",
-    sessions: [
-      { sessionId: "buoi-2-nguyen-ham-co-ban-2", title: "Buổi 2: Nguyên hàm cơ bản (phần 2)", date: "11/07/2025" },
-      { sessionId: "buoi-3-nguyen-ham-nang-cao", title: "Buổi 3: Nguyên hàm nâng cao", date: "12/07/2025" },
-      { sessionId: "buoi-4-tich-phan-co-ban", title: "Buổi 4: Tích phân cơ bản", date: "13/07/2025" },
-      { sessionId: "buoi-5-tich-phan-nang-cao", title: "Buổi 5: Tích phân nâng cao", date: "14/07/2025" },
-    ],
-  },
 ];
 
 interface CourseContentProps {
@@ -293,104 +217,21 @@ interface CourseContentProps {
 
 const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
   const [openChapters, setOpenChapters] = React.useState<string[]>([]);
-  const [nextLiveSessionInfo, setNextLiveSessionInfo] = React.useState<{ chapterId: string; sessionId: string } | null>(null);
-  const sessionRefs = React.useRef<Record<string, HTMLDivElement | null>>({});
-
-  React.useEffect(() => {
-    let closestLiveSession: { chapterId: string; sessionId: string; dateTime: Date } | null = null;
-    const now = new Date();
-
-    chapters.forEach(chapter => {
-      chapter.sessions.forEach(session => {
-        if (session.type === 'livestream' && session.timeSlots && session.timeSlots.length > 0) {
-          const sessionDate = parse(session.date, 'dd/MM/yyyy', new Date());
-
-          session.timeSlots.forEach(slot => {
-            try {
-              // Combine date and time for full comparison
-              const [hours, minutes] = slot.time.split(' ')[0].split(':').map(Number);
-              const liveDateTime = new Date(sessionDate.getFullYear(), sessionDate.getMonth(), sessionDate.getDate(), hours, minutes);
-
-              // Only consider future or current live sessions
-              if (isAfter(liveDateTime, now)) {
-                if (!closestLiveSession || compareAsc(liveDateTime, closestLiveSession.dateTime) < 0) {
-                  closestLiveSession = {
-                    chapterId: chapter.id,
-                    sessionId: session.sessionId,
-                    dateTime: liveDateTime,
-                  };
-                }
-              }
-            } catch (e) {
-              console.error("Error parsing time slot:", slot.time, e);
-            }
-          });
-        }
-      });
-    });
-
-    if (closestLiveSession) {
-      setNextLiveSessionInfo({
-        chapterId: closestLiveSession.chapterId,
-        sessionId: closestLiveSession.sessionId,
-      });
-      // Automatically open the chapter containing the next live session
-      setOpenChapters(prev => {
-        if (!prev.includes(closestLiveSession!.chapterId)) {
-          return [...prev, closestLiveSession!.chapterId];
-        }
-        return prev;
-      });
-    }
-  }, []); // Run once on mount
+  const today = new Date();
 
   const handleAccordionChange = (values: string[]) => {
     setOpenChapters(values);
   };
 
-  const scrollToNextLiveSession = () => {
-    if (nextLiveSessionInfo && sessionRefs.current[nextLiveSessionInfo.sessionId]) {
-      sessionRefs.current[nextLiveSessionInfo.sessionId]?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center',
-      });
-    }
-  };
-
   return (
     <div className={isSidebar ? "" : "mt-8"}>
-      {!isSidebar ? (
+      {!isSidebar && (
         <>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-2xl font-bold text-orange-600">BÀI HỌC</h2>
-            {nextLiveSessionInfo && (
-              <Button
-                onClick={scrollToNextLiveSession}
-                className="bg-green-600 hover:bg-green-700 text-white rounded-full px-4 py-2 text-sm"
-              >
-                <Play size={16} className="mr-1" />
-                Live sắp tới
-              </Button>
-            )}
-          </div>
+          <h2 className="text-2xl font-bold text-orange-600 mb-4">BÀI HỌC</h2>
           <p className="text-gray-700 mb-6">
             Tổng hợp khóa học chuyên đề gồm 16 chương nhằm lấy lại kiến thức cho các bạn bị mất căn bản và chuẩn bị luyện thi vào đại học
           </p>
         </>
-      ) : (
-        // For sidebar, the h2 is rendered by the parent component (LessonDetailPageV2)
-        // So we just render the button if it exists, at the top of this component's content
-        nextLiveSessionInfo && (
-          <div className="mb-4 pt-0">
-            <Button
-              onClick={scrollToNextLiveSession}
-              className="bg-green-600 hover:bg-green-700 text-white rounded-full px-4 py-2 text-sm"
-            >
-              <Play size={16} className="mr-1" />
-              Live sắp tới
-            </Button>
-          </div>
-        )
       )}
 
       <Accordion type="multiple" value={openChapters} onValueChange={handleAccordionChange} className="w-full space-y-4">
@@ -418,60 +259,62 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
                     {chapter.sessions.map((session, sessionIndex) => {
                       const sessionDate = parse(session.date, 'dd/MM/yyyy', new Date());
                       const isLiveToday = session.type === 'livestream' && isToday(sessionDate);
-                      const isNextLiveSession = nextLiveSessionInfo && nextLiveSessionInfo.sessionId === session.sessionId;
+                      const displayTime = session.type === 'livestream' && session.timeSlots && session.timeSlots.length > 0
+                        ? session.timeSlots[0].time
+                        : '';
 
                       return (
-                        <div
-                          key={session.sessionId}
-                          ref={el => { sessionRefs.current[session.sessionId] = el; }}
-                          className={`py-2 ${isNextLiveSession ? 'bg-blue-50 border-l-4 border-blue-500 pl-2 -ml-2 rounded-r-md' : ''} ${isSidebar ? 'flex flex-col' : 'flex items-center justify-between'}`}
-                        >
-                          <div className="flex items-center space-x-3 flex-grow min-w-0">
-                            <span className="w-2 h-2 bg-gray-400 rounded-full flex-shrink-0"></span>
-                            {session.type === 'livestream' ? (
-                              <Play size={18} className="text-orange-500 flex-shrink-0" />
-                            ) : (
-                              <FileText size={18} className="text-orange-500 flex-shrink-0" />
-                            )}
-                            <Link
+                        <div key={session.sessionId} className="flex flex-col py-2">
+                          {/* Hàng trên: Icon + Tiêu đề + Ngày */}
+                          <div className="flex items-start justify-between mb-2">
+                            <div className="flex items-center space-x-3 flex-grow">
+                              <span className="w-2 h-2 bg-gray-400 rounded-full flex-shrink-0 mt-2"></span> {/* Adjusted margin-top for alignment */}
+                              {session.type === 'livestream' ? (
+                                <Play size={18} className="text-orange-500 flex-shrink-0 mt-2" />
+                              ) : (
+                                <FileText size={18} className="text-orange-500 flex-shrink-0 mt-2" />
+                              )}
+                              <Link
                                 to={`/lesson/${session.sessionId}`}
-                                className="text-gray-800 hover:underline flex-1 min-w-0 overflow-hidden whitespace-nowrap text-ellipsis"
-                                id={sessionIndex === 0 && chapter.id === "chapter-1" ? "tour-first-lesson-item" : undefined}
-                            >
-                                {session.title}
-                            </Link>
-                            {!isSidebar && session.type === 'livestream' && session.timeSlots && session.timeSlots.length > 0 && (
-                              <Badge variant="destructive" className="ml-2 bg-red-500 text-white flex-shrink-0">
-                                Live ({session.timeSlots[0].time})
-                              </Badge>
-                            )}
-                          </div>
-                          <div className={`flex items-center space-x-4 flex-shrink-0 ${isSidebar ? 'justify-end w-full mt-2' : ''}`}>
-                            {isSidebar && session.type === 'livestream' && session.timeSlots && session.timeSlots.length > 0 && (
-                              <Badge variant="destructive" className="bg-red-500 text-white flex-shrink-0">
-                                Live ({session.timeSlots[0].time})
-                              </Badge>
-                            )}
-                            {isLiveToday ? (
-                              <Link to={`/lesson/${session.sessionId}`}>
-                                <Button className="bg-purple-600 hover:bg-purple-700 text-white rounded-full px-4 py-2 text-sm">
-                                  Vào học
-                                </Button>
-                              </Link>
-                            ) : session.type === 'livestream' && session.timeSlots && session.timeSlots.length > 0 ? (
-                              <LivestreamTimeSlotsDialog
-                                sessionTitle={session.title}
-                                sessionDate={session.date}
-                                timeSlots={session.timeSlots}
+                                className="text-gray-800 hover:underline flex-grow"
+                                id={sessionIndex === 0 && chapter.id === "chapter-1" ? "tour-first-lesson-item" : undefined} // Add ID to the first session of the first chapter
                               >
-                                <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-4 py-2 text-sm">
-                                  Đăng Ký học
-                                </Button>
-                              </LivestreamTimeSlotsDialog>
-                            ) : null}
-                            <span className="text-gray-500 text-sm">
+                                {session.title}
+                              </Link>
+                            </div>
+                            <span className="text-gray-500 text-sm flex-shrink-0 ml-4 mt-2">
                               Ngày: {session.date}
                             </span>
+                          </div>
+
+                          {/* Hàng dưới: Livestream Badge + Buttons */}
+                          <div className="flex items-center justify-between pl-8"> {/* pl-8 để căn chỉnh với nội dung hàng trên */}
+                            <div className="flex items-center space-x-2">
+                              {session.type === 'livestream' && (
+                                <Badge variant="destructive" className="bg-red-500 text-white px-4 py-2">
+                                  Livestream {displayTime && `(${displayTime})`}
+                                </Badge>
+                              )}
+                            </div>
+                            <div className="flex items-center space-x-4">
+                              {isLiveToday ? (
+                                <Link to={`/lesson/${session.sessionId}`}>
+                                  <Button className="bg-purple-600 hover:bg-purple-700 text-white rounded-full px-4 py-2 text-sm">
+                                    Vào học
+                                  </Button>
+                                </Link>
+                              ) : session.type === 'livestream' && session.timeSlots && session.timeSlots.length > 0 ? (
+                                <LivestreamTimeSlotsDialog
+                                  sessionTitle={session.title}
+                                  sessionDate={session.date}
+                                  timeSlots={session.timeSlots}
+                                >
+                                  <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-4 py-2 text-sm">
+                                    Đăng Ký học
+                                  </Button>
+                                </LivestreamTimeSlotsDialog>
+                              ) : null}
+                            </div>
                           </div>
                         </div>
                       );
