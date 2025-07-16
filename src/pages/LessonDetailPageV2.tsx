@@ -205,9 +205,10 @@ const LessonDetailPageV2 = () => {
         currentLessonCount={currentLessonIndex + 1}
         totalLessonCount={totalLessons}
       />
-      <div className="flex flex-grow overflow-hidden">
+      {/* Main content area: takes all available vertical space, is a flex row */}
+      <div className="flex-grow flex lg:flex-row"> {/* Removed overflow-hidden and min-h-0 */}
         {/* Left Column: Video Player + Lesson Details (Main scrollable content) */}
-        <div className="flex flex-col lg:w-2/3 bg-white overflow-y-auto">
+        <div className="flex flex-col lg:w-2/3 bg-white overflow-y-auto h-full"> {/* h-full is key here */}
           <div className="p-6">
             <LessonVideoPlayer
               lessonTitle={currentLesson.title}
@@ -222,18 +223,17 @@ const LessonDetailPageV2 = () => {
           {/* Add more dummy content to force scroll on left column */}
           <div className="p-6 text-gray-700">
             <h3 className="text-xl font-bold mb-3">Nội dung bổ sung</h3>
-            <p className="mb-2">Đây là đoạn văn bản bổ sung để làm cho cột bên trái dài hơn và kích hoạt thanh cuộn. Chúng ta cần đảm bảo rằng có đủ nội dung để vượt quá chiều cao hiển thị của cột.</p>
-            <p className="mb-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-            <p className="mb-2">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-            <p className="mb-2">Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius, turpis et commodo pharetra, est eros bibendum elit, nec luctus magna felis sollicitudin mauris. Integer in mauris eu nibh euismod gravida. Duis ac tellus et risus vulputate vehicula. Nulla facilisi.</p>
-            <p className="mb-2">Aliquam erat volutpat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Sed ut massa in lectus scelerisque aliquam. Ut ac urna. Nulla facilisi. Sed non neque. Sed ut massa in lectus scelerisque aliquam. Ut ac urna. Nulla facilisi. Sed non neque.</p>
-            <p className="mb-2">Proin at urna vel lectus tristique eleifend. Proin at urna vel lectus tristique eleifend. Proin at urna vel lectus tristique eleifend. Proin at urna vel lectus tristique eleifend. Proin at urna vel lectus tristique eleifend. Proin at urna vel lectus tristique eleifend.</p>
-            <p className="mb-2">Final paragraph to ensure enough content for scrolling. This should definitely make the left column scrollable.</p>
+            {/* Repeat paragraphs many times to ensure overflow */}
+            {Array.from({ length: 20 }).map((_, i) => (
+              <p key={i} className="mb-2">
+                Đây là đoạn văn bản bổ sung để làm cho cột bên trái dài hơn và kích hoạt thanh cuộn. Chúng ta cần đảm bảo rằng có đủ nội dung để vượt quá chiều cao hiển thị của cột. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+              </p>
+            ))}
           </div>
         </div>
 
         {/* Right Column: Course Content Sidebar (Fixed and independently scrollable) */}
-        <div className="lg:w-1/3 bg-white border-l border-gray-200 p-6 overflow-y-auto">
+        <div className="lg:w-1/3 bg-white border-l border-gray-200 p-6 overflow-y-auto h-full"> {/* h-full is key here */}
           <h2 className="text-xl font-bold text-gray-800 mb-4">Nội dung khóa học</h2>
           <CourseContent isSidebar={true} />
         </div>
