@@ -39,7 +39,7 @@ const LessonVideoPlayer: React.FC<LessonVideoPlayerProps> = ({
           </>
         )}
       </div>
-      <div className="flex justify-between items-center mt-0 pr-24"> {/* Added pr-24 here */}
+      <div className="flex justify-between items-center mt-0 pr-24"> {/* This pr-24 is correct for the button */}
         <div>
           <h1 className="text-2xl font-bold text-gray-800 mb-0">{lessonTitle}</h1>
           <p className="text-sm text-gray-500 mb-0">Cập nhật {updatedDate}</p>

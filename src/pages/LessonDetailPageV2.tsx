@@ -211,30 +211,30 @@ const LessonDetailPageV2 = () => {
       <div className="flex-grow flex lg:flex-row overflow-hidden">
         {/* Left Column: Video Player + Action Buttons + Floating Ask Question Button */}
         <div className="flex flex-col lg:w-2/3 bg-white overflow-y-auto h-full relative">
-          <div className="px-6 pt-6 pb-0 pr-24"> {/* Added pr-24 here */}
+          <div className="px-6 pt-6 pb-0"> {/* Removed pr-24 here */}
             <LessonVideoPlayer
               lessonTitle={currentLesson.title}
               updatedDate="tháng 11 năm 2022" // Placeholder for now
               onAddNote={() => console.log("Add note clicked from LessonVideoPlayer")}
             />
+          </div>
 
-            {/* Action Buttons Section */}
-            <div className="flex flex-wrap items-center gap-4 mt-0">
-              <Button variant="ghost" className="text-orange-500 hover:text-orange-600 hover:bg-orange-50 rounded-full px-4 py-2">
-                <Download size={16} className="mr-2" />
-                Tải đề (không đáp án)
-              </Button>
-              <Button variant="ghost" className="text-orange-500 hover:text-orange-600 hover:bg-orange-50 rounded-full px-4 py-2">
-                <Download size={16} className="mr-2" />
-                Tải đề (có đáp án)
-              </Button>
-              <Button className="bg-gray-300 text-gray-700 rounded-full px-6 py-3 cursor-not-allowed" disabled>
-                Làm bài tập <Edit size={16} className="ml-2" />
-              </Button>
-              <Button variant="outline" className="text-gray-700 border-gray-300 hover:bg-gray-100 rounded-full px-6 py-3">
-                Báo lỗi <AlertTriangle size={16} className="ml-2" />
-              </Button>
-            </div>
+          {/* Action Buttons Section - now with its own pr-24 */}
+          <div className="flex flex-wrap items-center gap-4 mt-0 px-6 pb-6 pr-24"> {/* Added px-6, pb-6, pr-24 here */}
+            <Button variant="ghost" className="text-orange-500 hover:text-orange-600 hover:bg-orange-50 rounded-full px-4 py-2">
+              <Download size={16} className="mr-2" />
+              Tải đề (không đáp án)
+            </Button>
+            <Button variant="ghost" className="text-orange-500 hover:text-orange-600 hover:bg-orange-50 rounded-full px-4 py-2">
+              <Download size={16} className="mr-2" />
+              Tải đề (có đáp án)
+            </Button>
+            <Button className="bg-gray-300 text-gray-700 rounded-full px-6 py-3 cursor-not-allowed" disabled>
+              Làm bài tập <Edit size={16} className="ml-2" />
+            </Button>
+            <Button variant="outline" className="text-gray-700 border-gray-300 hover:bg-gray-100 rounded-full px-6 py-3">
+              Báo lỗi <AlertTriangle size={16} className="ml-2" />
+            </Button>
           </div>
 
           {/* Floating "Hỏi đáp" button, positioned sticky within the left column */}
