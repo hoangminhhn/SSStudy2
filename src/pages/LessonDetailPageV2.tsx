@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useParams } => "react-router-dom";
+import { useParams } from "react-router-dom";
 import LessonHeader from "@/components/layout/LessonHeader";
 import LessonVideoPlayer from "@/components/lesson/LessonVideoPlayer";
 import LessonNavigation from "@/components/lesson/LessonNavigation";
@@ -220,6 +220,12 @@ const LessonDetailPageV2 = () => {
           <CourseContent isSidebar={true} />
         </div>
       </main>
+      <LessonNavigation
+        prevLessonId={prevLessonId}
+        nextLessonId={nextLessonId}
+        onAddNote={() => console.log("Add note clicked")}
+        onAskQuestion={() => console.log("Ask question clicked")}
+      />
       <Footer />
     </div>
   );
