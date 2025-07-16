@@ -24,7 +24,7 @@ const LessonHeader: React.FC<LessonHeaderProps> = ({
       <div className="flex items-center space-x-4">
         <Link to="/" className="flex items-center text-gray-300 hover:text-white transition-colors">
           <ChevronLeft size={20} className="mr-2" />
-          <span className="font-semibold text-lg">F8</span>
+          <span className="font-semibold text-lg">SSStudy</span>
         </Link>
         <span className="text-lg font-medium hidden md:block">{courseTitle}</span>
       </div>
