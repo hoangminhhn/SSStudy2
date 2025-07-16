@@ -7,6 +7,8 @@ import LessonVideoPlayer from "@/components/lesson/LessonVideoPlayer";
 import LessonNavigation from "@/components/lesson/LessonNavigation";
 import CourseContent from "@/components/course/CourseContent"; // Reusing CourseContent for the sidebar
 import FloatingAskQuestionButton from "@/components/lesson/FloatingAskQuestionButton"; // Import the new floating button
+import { Button } from "@/components/ui/button"; // Import Button
+import { Download, Edit, AlertTriangle } from "lucide-react"; // Import icons
 
 // Dummy data for lessons, derived from CourseContent's chapters for consistency
 const allChaptersData = [
@@ -207,8 +209,7 @@ const LessonDetailPageV2 = () => {
       />
       {/* Main content area: takes all available vertical space, is a flex row */}
       <div className="flex-grow flex lg:flex-row overflow-hidden">
-        {/* Left Column: Video Player + Community Links + Floating Ask Question Button */}
-        {/* Added overflow-y-auto to this div to enable sticky positioning within it */}
+        {/* Left Column: Video Player + Action Buttons + Floating Ask Question Button */}
         <div className="flex flex-col lg:w-2/3 bg-white overflow-y-auto h-full relative">
           <div className="p-6 flex-grow">
             <LessonVideoPlayer
@@ -217,10 +218,25 @@ const LessonDetailPageV2 = () => {
               onAddNote={() => console.log("Add note clicked from LessonVideoPlayer")}
             />
 
-            {/* Removed Community links section */}
+            {/* Action Buttons Section */}
+            <div className="flex flex-wrap items-center gap-4 mt-4">
+              <Button variant="ghost" className="text-orange-500 hover:text-orange-600 hover:bg-orange-50 rounded-full px-4 py-2">
+                <Download size={16} className="mr-2" />
+                Tải đề (không đáp án)
+              </Button>
+              <Button variant="ghost" className="text-orange-500 hover:text-orange-600 hover:bg-orange-50 rounded-full px-4 py-2">
+                <Download size={16} className="mr-2" />
+                Tải đề (có đáp án)
+              </Button>
+              <Button className="bg-gray-300 text-gray-700 rounded-full px-6 py-3 cursor-not-allowed" disabled>
+                Làm bài tập <Edit size={16} className="ml-2" />
+              </Button>
+              <Button variant="outline" className="text-gray-700 border-gray-300 hover:bg-gray-100 rounded-full px-6 py-3">
+                Báo lỗi <AlertTriangle size={16} className="ml-2" />
+              </Button>
+            </div>
           </div>
 
-          {/* Removed "Made with Dyad" text at the bottom of the scrollable content */}
           {/* Floating "Hỏi đáp" button, positioned sticky within the left column */}
           <FloatingAskQuestionButton onClick={() => console.log("Ask question clicked")} />
         </div>
