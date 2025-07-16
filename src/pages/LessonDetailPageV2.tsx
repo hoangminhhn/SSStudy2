@@ -28,7 +28,7 @@ const allChaptersData = [
         views: 15,
       },
       { sessionId: "buoi-3-tong-on-csc-csn", title: "Buổi 3: Tổng ôn CSC – CSN", teacher: "Thầy Nguyễn Tiến Đạt", views: 10 },
-      { sessionId: "buoi-4-tong-on-ham-so-mu-loga", title: "Buổi 4: Tổng ôn hàm số mũ loga", teacher: "Thầy Nguyễn Tiến Đạt", views: 12 },
+      { sessionId: "buoi-4-tong-on-ham-so-mu-loga", title: "Buổi 4: Tổng ôn hàm số mũ loga", teacher: "Thầy Nguyễn Tiến Đầy", views: 12 },
       { sessionId: "buoi-5-tong-on-pt-bpt-mu-loga", title: "Buổi 5: Tổng ôn PT, BPT mũ loga", teacher: "Thầy Nguyễn Tiến Đạt", views: 8 },
       { sessionId: "buoi-6-tong-on-bai-toan-tang-truong-lai-suat", title: "Buổi 6: Tổng ôn bài toán tăng trưởng, lãi suất", teacher: "Thầy Nguyễn Tiến Đạt", views: 7 },
       { sessionId: "buoi-7-tong-on-gioi-han", title: "Buổi 7: Tổng ôn giới hạn", teacher: "Thầy Nguyễn Tiến Đạt", views: 11 },
@@ -177,7 +177,7 @@ const allLessons = allChaptersData.flatMap(chapter =>
   }))
 );
 
-const LessonDetailPage2 = () => {
+const LessonDetailPageV2 = () => {
   const { lessonId } = useParams<{ lessonId: string }>();
 
   const currentLessonIndex = allLessons.findIndex(lesson => lesson.sessionId === lessonId);
@@ -231,4 +231,4 @@ const LessonDetailPage2 = () => {
   );
 };
 
-export default LessonDetailPage2;
+export default LessonDetailPageV2;
