@@ -24,8 +24,11 @@ const LessonVideoPlayer: React.FC<LessonVideoPlayerProps> = ({
   addNoteButtonId,
 }) => {
   return (
-    <div className="flex flex-col h-full" id={rootId}>
-      <div className="relative w-full aspect-video bg-black rounded-lg overflow-hidden flex items-center justify-center">
+    <div className="flex flex-col h-full">
+      <div
+        id={rootId} {/* Moved the ID here to target only the video frame */}
+        className="relative w-full aspect-video bg-black rounded-lg overflow-hidden flex items-center justify-center"
+      >
         {videoUrl ? (
           <video controls src={videoUrl} className="w-full h-full object-cover">
             Your browser does not support the video tag.
