@@ -199,7 +199,7 @@ const chapters: Chapter[] = [
     progress: "0/12",
     title: "[SSVOD] Chương 4: Xác suất có điều kiện",
     sessions: [
-      { sessionId: "buoi-1-gioi-thieu-xac-suat", title: "Buổi 1: Giới thiệu", date: "01/07/2025" },
+      { sessionId: "buoi-1-gioi-thieu-ssvod-xac-suat", title: "Buổi 1: Giới thiệu", date: "01/07/2025" },
     ],
   },
   {
@@ -342,9 +342,9 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
                             >
                                 {session.title}
                             </Link>
-                            {session.type === 'livestream' && (
+                            {session.type === 'livestream' && session.timeSlots && session.timeSlots.length > 0 && (
                               <Badge variant="destructive" className="ml-2 bg-red-500 text-white">
-                                Livestream
+                                Live ({session.timeSlots[0].time})
                               </Badge>
                             )}
                           </div>
