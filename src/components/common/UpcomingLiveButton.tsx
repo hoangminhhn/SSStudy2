@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { LiveTv } from "lucide-react"; // Using LiveTv for a live icon
+import { Radio } from "lucide-react"; // Changed from LiveTv to Radio
 import { findNextLiveSession } from "@/utils/liveSessionUtils";
 import { Chapter } from "@/data/courseData";
 
@@ -31,12 +31,12 @@ const UpcomingLiveButton: React.FC<UpcomingLiveButtonProps> = ({ chaptersData })
     >
       {nextLiveSessionId ? (
         <Link to={`/lesson-v2/${nextLiveSessionId}`}>
-          <LiveTv size={16} className="mr-2" />
+          <Radio size={16} className="mr-2" /> {/* Changed icon here */}
           Buổi live sắp tới
         </Link>
       ) : (
         <>
-          <LiveTv size={16} className="mr-2" />
+          <Radio size={16} className="mr-2" /> {/* Changed icon here */}
           Không có buổi live sắp tới
         </>
       )}
