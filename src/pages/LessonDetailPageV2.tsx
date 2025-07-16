@@ -219,7 +219,7 @@ const LessonDetailPageV2 = () => {
             />
 
             {/* Action Buttons Section */}
-            <div className="flex flex-wrap items-center gap-4 mt-2"> {/* Changed mt-4 to mt-2 */}
+            <div className="flex flex-wrap items-center gap-4 mt-0"> {/* Changed mt-2 to mt-0 */}
               <Button variant="ghost" className="text-orange-500 hover:text-orange-600 hover:bg-orange-50 rounded-full px-4 py-2">
                 <Download size={16} className="mr-2" />
                 Tải đề (không đáp án)
