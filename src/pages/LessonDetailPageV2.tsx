@@ -217,24 +217,10 @@ const LessonDetailPageV2 = () => {
               onAddNote={() => console.log("Add note clicked from LessonVideoPlayer")}
             />
 
-            {/* Community links section */}
-            <div className="mt-6 p-6 bg-white rounded-lg shadow-sm">
-              <p className="text-gray-700 mb-4">
-                Tham gia các cộng đồng để cùng học hỏi, chia sẻ và "thăm thính" xem F8 sắp có gì mới nhé!
-              </p>
-              <ul className="list-disc list-inside text-blue-600 space-y-2">
-                <li><a href="https://www.facebook.com/f8vnofficial" target="_blank" rel="noopener noreferrer" className="hover:underline">Fanpage: https://www.facebook.com/f8vnofficial</a></li>
-                <li><a href="https://www.facebook.com/groups/649972919142215" target="_blank" rel="noopener noreferrer" className="hover:underline">Group: https://www.facebook.com/groups/649972919142215</a></li>
-                <li><a href="https://www.youtube.com/F8VNOfficial" target="_blank" rel="noopener noreferrer" className="hover:underline">Youtube: https://www.youtube.com/F8VNOfficial</a></li>
-                <li><a href="https://www.facebook.com/sondnf8" target="_blank" rel="noopener noreferrer" className="hover:underline">Sơn Đặng: https://www.facebook.com/sondnf8</a></li>
-              </ul>
-            </div>
+            {/* Removed Community links section */}
           </div>
 
-          {/* "Made with Dyad" text at the bottom of the scrollable content */}
-          <div className="p-6 border-t border-gray-200 bg-white flex flex-col items-center justify-center">
-            <p className="text-sm text-gray-500 mb-4">Made with ❤️ Powered by F8</p>
-          </div>
+          {/* Removed "Made with Dyad" text at the bottom of the scrollable content */}
           {/* Floating "Hỏi đáp" button, positioned sticky within the left column */}
           <FloatingAskQuestionButton onClick={() => console.log("Ask question clicked")} />
         </div>
