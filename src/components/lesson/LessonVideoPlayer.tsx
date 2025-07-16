@@ -10,6 +10,8 @@ interface LessonVideoPlayerProps {
   thumbnailUrl?: string; // Optional thumbnail URL
   updatedDate: string; // Added updatedDate prop
   onAddNote?: () => void; // Added onAddNote prop
+  rootId?: string; // New prop for the root div's ID
+  addNoteButtonId?: string; // New prop for the add note button's ID
 }
 
 const LessonVideoPlayer: React.FC<LessonVideoPlayerProps> = ({
@@ -18,9 +20,11 @@ const LessonVideoPlayer: React.FC<LessonVideoPlayerProps> = ({
   thumbnailUrl = "https://via.placeholder.com/1280x720?text=Video+Placeholder",
   updatedDate,
   onAddNote,
+  rootId,
+  addNoteButtonId,
 }) => {
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full" id={rootId}>
       <div className="relative w-full aspect-video bg-black rounded-lg overflow-hidden flex items-center justify-center">
         {videoUrl ? (
           <video controls src={videoUrl} className="w-full h-full object-cover">
@@ -39,13 +43,14 @@ const LessonVideoPlayer: React.FC<LessonVideoPlayerProps> = ({
           </>
         )}
       </div>
-      <div className="flex justify-between items-center mt-0 pr-32"> {/* Changed pr-24 to pr-32 here */}
+      <div className="flex justify-between items-center mt-0 pr-32">
         <div>
           <h1 className="text-2xl font-bold text-gray-800 mb-0">{lessonTitle}</h1>
           <p className="text-sm text-gray-500 mb-0">Cập nhật {updatedDate}</p>
         </div>
         {onAddNote && (
           <Button
+            id={addNoteButtonId}
             variant="outline"
             className="text-gray-700 border-gray-300 hover:bg-gray-100 rounded-full px-4 py-2"
             onClick={onAddNote}

@@ -9,6 +9,7 @@ import CourseContent from "@/components/course/CourseContent"; // Reusing Course
 import FloatingAskQuestionButton from "@/components/lesson/FloatingAskQuestionButton"; // Import the new floating button
 import { Button } from "@/components/ui/button"; // Import Button
 import { Download, Edit, AlertTriangle } from "lucide-react"; // Import icons
+import GuidedTourOverlay from "@/components/tour/GuidedTourOverlay"; // Import the new GuidedTourOverlay
 
 // Dummy data for lessons, derived from CourseContent's chapters for consistency
 const allChaptersData = [
@@ -181,7 +182,79 @@ const allLessons = allChaptersData.flatMap(chapter =>
 
 const LessonDetailPageV2 = () => {
   const { lessonId } = useParams<{ lessonId: string }>();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true); // State for sidebar visibility
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isTourActive, setIsTourActive] = useState(false); // New state for tour
+  const [currentTourStepIndex, setCurrentTourStepIndex] = useState(0); // New state for tour step
+
+  // Define tour steps
+  const tourSteps = [
+    {
+      selector: '#tour-video-player',
+      title: 'Khu vực video bài học',
+      description: 'Đây là nơi bạn sẽ xem các bài giảng video. Bạn có thể điều khiển phát/tạm dừng, tua nhanh/chậm tại đây.',
+      position: 'bottom',
+    },
+    {
+      selector: '#tour-add-note-button',
+      title: 'Thêm ghi chú',
+      description: 'Nhấn vào đây để thêm ghi chú tại thời điểm hiện tại của video. Ghi chú sẽ giúp bạn ôn tập hiệu quả hơn.',
+      position: 'bottom',
+    },
+    {
+      selector: '#tour-download-no-ans',
+      title: 'Tải đề (không đáp án)',
+      description: 'Bạn có thể tải về đề bài tập mà không có đáp án để tự luyện tập.',
+      position: 'bottom',
+    },
+    {
+      selector: '#tour-do-exercise',
+      title: 'Làm bài tập',
+      description: 'Sau khi xem xong bài giảng, hãy nhấn vào đây để làm bài tập thực hành và củng cố kiến thức.',
+      position: 'bottom',
+    },
+    {
+      selector: '#tour-first-lesson-item',
+      title: 'Nội dung khóa học',
+      description: 'Đây là danh sách các chương và bài học trong khóa. Bạn có thể chọn bài học tiếp theo tại đây.',
+      position: 'left', // Position relative to the sidebar item
+    },
+    {
+      selector: '#tour-toggle-sidebar-button',
+      title: 'Thu gọn/Mở rộng nội dung',
+      description: 'Sử dụng nút này để thu gọn hoặc mở rộng cột nội dung khóa học, giúp bạn tập trung vào video hơn.',
+      position: 'top',
+    },
+    {
+      selector: '#tour-help-button',
+      title: 'Nút Hướng dẫn',
+      description: 'Bạn có thể nhấn vào nút này bất cứ lúc nào để xem lại hướng dẫn sử dụng các tính năng của trang.',
+      position: 'bottom',
+    },
+  ];
+
+  const startTour = () => {
+    setIsTourActive(true);
+    setCurrentTourStepIndex(0);
+  };
+
+  const handleNextTourStep = () => {
+    if (currentTourStepIndex < tourSteps.length - 1) {
+      setCurrentTourStepIndex(prev => prev + 1);
+    } else {
+      setIsTourActive(false); // End tour
+    }
+  };
+
+  const handlePrevTourStep = () => {
+    if (currentTourStepIndex > 0) {
+      setCurrentTourStepIndex(prev => prev - 1);
+    }
+  };
+
+  const handleCloseTour = () => {
+    setIsTourActive(false);
+    setCurrentTourStepIndex(0); // Reset for next time
+  };
 
   const currentLessonIndex = allLessons.findIndex(lesson => lesson.sessionId === lessonId);
   const currentLesson = allLessons[currentLessonIndex];
@@ -211,6 +284,7 @@ const LessonDetailPageV2 = () => {
         progressValue={progressValue}
         currentLessonCount={currentLessonIndex + 1}
         totalLessonCount={totalLessons}
+        onHelpClick={startTour} // Pass the startTour function
       />
       {/* Main content area: takes all available vertical space, is a flex row */}
       <div className="flex-grow flex lg:flex-row overflow-hidden">
@@ -218,15 +292,17 @@ const LessonDetailPageV2 = () => {
         <div className={`flex flex-col bg-white overflow-y-auto h-full relative ${isSidebarOpen ? 'lg:w-2/3' : 'lg:w-full'}`}>
           <div className="px-6 pt-6 pb-0">
             <LessonVideoPlayer
+              rootId="tour-video-player" // Add ID here
               lessonTitle={currentLesson.title}
               updatedDate="tháng 11 năm 2022" // Placeholder for now
               onAddNote={() => console.log("Add note clicked from LessonVideoPlayer")}
+              addNoteButtonId="tour-add-note-button" // Add ID here
             />
           </div>
 
           {/* Action Buttons Section */}
           <div className="flex flex-wrap items-center gap-4 mt-0 px-6 pb-6 pr-24">
-            <Button variant="ghost" className="text-orange-500 hover:text-orange-600 hover:bg-orange-50 rounded-full px-4 py-2">
+            <Button id="tour-download-no-ans" variant="ghost" className="text-orange-500 hover:text-orange-600 hover:bg-orange-50 rounded-full px-4 py-2">
               <Download size={16} className="mr-2" />
               Tải đề (không đáp án)
             </Button>
@@ -234,7 +310,7 @@ const LessonDetailPageV2 = () => {
               <Download size={16} className="mr-2" />
               Tải đề (có đáp án)
             </Button>
-            <Button className="bg-gray-300 text-gray-700 rounded-full px-6 py-3 cursor-not-allowed" disabled>
+            <Button id="tour-do-exercise" className="bg-gray-300 text-gray-700 rounded-full px-6 py-3 cursor-not-allowed" disabled>
               Làm bài tập <Edit size={16} className="ml-2" />
             </Button>
             <Button variant="outline" className="text-gray-700 border-gray-300 hover:bg-gray-100 rounded-full px-6 py-3">
@@ -259,7 +335,19 @@ const LessonDetailPageV2 = () => {
         nextLessonId={nextLessonId}
         isSidebarOpen={isSidebarOpen} // Pass state
         onToggleSidebar={toggleSidebar} // Pass toggle function
+        toggleSidebarButtonId="tour-toggle-sidebar-button" // Add ID here
       />
+
+      {isTourActive && (
+        <GuidedTourOverlay
+          isOpen={isTourActive}
+          steps={tourSteps}
+          currentStepIndex={currentTourStepIndex}
+          onNext={handleNextTourStep}
+          onPrev={handlePrevTourStep}
+          onClose={handleCloseTour}
+        />
+      )}
     </div>
   );
 };

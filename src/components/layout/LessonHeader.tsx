@@ -11,6 +11,7 @@ interface LessonHeaderProps {
   progressValue: number;
   currentLessonCount: number;
   totalLessonCount: number;
+  onHelpClick?: () => void; // New prop
 }
 
 const LessonHeader: React.FC<LessonHeaderProps> = ({
@@ -18,6 +19,7 @@ const LessonHeader: React.FC<LessonHeaderProps> = ({
   progressValue,
   currentLessonCount,
   totalLessonCount,
+  onHelpClick,
 }) => {
   return (
     <header className="bg-gray-800 text-white py-3 px-6 flex items-center justify-between sticky top-0 z-50">
@@ -39,7 +41,12 @@ const LessonHeader: React.FC<LessonHeaderProps> = ({
           <BookOpen size={18} className="mr-2" />
           Ghi chú
         </Button>
-        <Button variant="ghost" className="text-gray-300 hover:text-white px-2">
+        <Button
+          id="tour-help-button" // Add ID here
+          variant="ghost"
+          className="text-gray-300 hover:text-white px-2"
+          onClick={onHelpClick} // Call the prop function
+        >
           <HelpCircle size={18} className="mr-2" />
           Hướng dẫn
         </Button>

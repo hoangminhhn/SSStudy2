@@ -339,7 +339,11 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
                               ) : (
                                 <FileText size={18} className="text-orange-500 flex-shrink-0 mt-2" />
                               )}
-                              <Link to={`/lesson/${session.sessionId}`} className="text-gray-800 hover:underline flex-grow">
+                              <Link
+                                to={`/lesson/${session.sessionId}`}
+                                className="text-gray-800 hover:underline flex-grow"
+                                id={sessionIndex === 0 && chapter.id === "chapter-1" ? "tour-first-lesson-item" : undefined} // Add ID to the first session of the first chapter
+                              >
                                 {session.title}
                               </Link>
                             </div>
