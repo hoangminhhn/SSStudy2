@@ -6,6 +6,7 @@ import LessonHeader from "@/components/layout/LessonHeader";
 import LessonVideoPlayer from "@/components/lesson/LessonVideoPlayer";
 import LessonNavigation from "@/components/lesson/LessonNavigation";
 import CourseContent from "@/components/course/CourseContent"; // Reusing CourseContent for the sidebar
+import FloatingAskQuestionButton from "@/components/lesson/FloatingAskQuestionButton"; // Import the new floating button
 
 // Dummy data for lessons, derived from CourseContent's chapters for consistency
 const allChaptersData = [
@@ -226,8 +227,8 @@ const LessonDetailPageV2 = () => {
       <LessonNavigation
         prevLessonId={prevLessonId}
         nextLessonId={nextLessonId}
-        onAskQuestion={() => console.log("Ask question clicked")}
       />
+      <FloatingAskQuestionButton onClick={() => console.log("Floating Ask question clicked")} />
     </div>
   );
 };

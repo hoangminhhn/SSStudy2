@@ -3,18 +3,16 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, MessageCircle } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface LessonNavigationProps {
   prevLessonId?: string;
   nextLessonId?: string;
-  onAskQuestion?: () => void;
 }
 
 const LessonNavigation: React.FC<LessonNavigationProps> = ({
   prevLessonId,
   nextLessonId,
-  onAskQuestion,
 }) => {
   return (
     <div className="bg-white shadow-md py-4 px-6 flex flex-col sm:flex-row items-center justify-between border-t border-gray-200">
@@ -53,17 +51,6 @@ const LessonNavigation: React.FC<LessonNavigationProps> = ({
               <ChevronRight size={16} className="ml-2" />
             </>
           )}
-        </Button>
-      </div>
-
-      <div className="flex space-x-4">
-        <Button
-          variant="outline"
-          className="text-orange-600 border-orange-600 hover:bg-orange-50 rounded-full px-4 py-2"
-          onClick={onAskQuestion}
-        >
-          <MessageCircle size={16} className="mr-2" />
-          Hỏi đáp
         </Button>
       </div>
     </div>
