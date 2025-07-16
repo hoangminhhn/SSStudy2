@@ -6,7 +6,6 @@ import LessonHeader from "@/components/layout/LessonHeader";
 import LessonVideoPlayer from "@/components/lesson/LessonVideoPlayer";
 import LessonNavigation from "@/components/lesson/LessonNavigation";
 import CourseContent from "@/components/course/CourseContent"; // Reusing CourseContent for the sidebar
-import LessonDetails from "@/components/lesson/LessonDetails"; // Import the new LessonDetails component
 
 // Dummy data for lessons, derived from CourseContent's chapters for consistency
 const allChaptersData = [
@@ -212,14 +211,10 @@ const LessonDetailPageV2 = () => {
           <div className="p-6">
             <LessonVideoPlayer
               lessonTitle={currentLesson.title}
-              // You can add videoUrl and thumbnailUrl here if available
+              updatedDate="tháng 11 năm 2022" // Placeholder for now
+              onAddNote={() => console.log("Add note clicked from LessonVideoPlayer")}
             />
           </div>
-          <LessonDetails
-            lessonTitle={currentLesson.title}
-            updatedDate="tháng 11 năm 2022" // Placeholder for now
-            onAddNote={() => console.log("Add note clicked from LessonDetails")}
-          />
         </div>
 
         {/* Right Column: Course Content Sidebar (Fixed and independently scrollable) */}
