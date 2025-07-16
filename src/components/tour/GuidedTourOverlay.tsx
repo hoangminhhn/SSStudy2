@@ -131,7 +131,7 @@ const GuidedTourOverlay: React.FC<GuidedTourOverlayProps> = ({
       {/* Instruction Card */}
       <div
         ref={cardRef}
-        className="absolute bg-white p-6 rounded-lg shadow-xl max-w-sm text-gray-800 pointer-events-auto"
+        className="absolute bg-white p-6 rounded-lg shadow-xl max-w-sm text-gray-800 pointer-events-auto z-[10001]" // Added z-[10001] here
         style={getCardPosition()}
       >
         <h3 className="font-bold text-lg mb-2">{currentStep.title}</h3>
