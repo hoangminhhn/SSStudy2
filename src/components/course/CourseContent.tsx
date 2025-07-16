@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import LivestreamTimeSlotsDialog from "./LivestreamTimeSlotsDialog";
-import { isToday, parse, isAfter, compareAsc } from 'date-fns'; // Added isAfter, compareAsc
+import { isToday, parse, isAfter, compareAsc } from 'date-fns';
 import { Link } from "react-router-dom";
 
 interface TimeSlot {
@@ -36,6 +36,16 @@ interface Chapter {
   sessions: Session[];
 }
 
+// Helper to get tomorrow's date in 'dd/MM/yyyy' format
+const getTomorrowDateString = () => {
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const day = String(tomorrow.getDate()).padStart(2, '0');
+  const month = String(tomorrow.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed
+  const year = tomorrow.getFullYear();
+  return `${day}/${month}/${year}`;
+};
+
 const chapters: Chapter[] = [
   {
     id: "chapter-1",
@@ -45,7 +55,7 @@ const chapters: Chapter[] = [
       {
         sessionId: "buoi-1-tong-on-luong-giac-phan-1",
         title: "Buổi 1: Tổng ôn lượng giác (phần 1)",
-        date: "15/06/2025",
+        date: getTomorrowDateString(), // Set to tomorrow's date
         type: 'livestream',
         timeSlots: [
           { time: "09:00 - 10:00", teacher: "Thầy Nguyễn Tiến Đạt", registrationStatus: 'register' },
@@ -57,7 +67,7 @@ const chapters: Chapter[] = [
       {
         sessionId: "buoi-2-tong-on-luong-giac-phan-2",
         title: "Buổi 2: Tổng ôn lượng giác (phần 2)",
-        date: new Date().toLocaleDateString('en-GB'), // Set to today for testing "Vào học"
+        date: "15/06/2025", // Changed back to a fixed date
         type: 'livestream',
         timeSlots: [
           { time: "10:00 - 11:00", teacher: "Thầy Nguyễn Tiến Đạt", registrationStatus: 'register' },
