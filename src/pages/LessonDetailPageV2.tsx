@@ -207,18 +207,37 @@ const LessonDetailPageV2 = () => {
       />
       {/* Main content area: takes all available vertical space, is a flex row */}
       <div className="flex-grow flex lg:flex-row overflow-hidden">
-        {/* Left Column: Video Player + Lesson Details (Main scrollable content) */}
+        {/* Left Column: Video Player + Community Links + Ask Question Button */}
         <div className="flex flex-col lg:w-2/3 bg-white overflow-y-auto h-full">
-          <div className="p-6">
+          <div className="p-6 flex-grow"> {/* This div will contain video player and community links, and grow */}
             <LessonVideoPlayer
               lessonTitle={currentLesson.title}
               updatedDate="tháng 11 năm 2022" // Placeholder for now
               onAddNote={() => console.log("Add note clicked from LessonVideoPlayer")}
             />
+
+            {/* Re-adding the community links section */}
+            <div className="mt-6 p-6 bg-white rounded-lg shadow-sm">
+              <p className="text-gray-700 mb-4">
+                Tham gia các cộng đồng để cùng học hỏi, chia sẻ và "thăm thính" xem F8 sắp có gì mới nhé!
+              </p>
+              <ul className="list-disc list-inside text-blue-600 space-y-2">
+                <li><a href="https://www.facebook.com/f8vnofficial" target="_blank" rel="noopener noreferrer" className="hover:underline">Fanpage: https://www.facebook.com/f8vnofficial</a></li>
+                <li><a href="https://www.facebook.com/groups/649972919142215" target="_blank" rel="noopener noreferrer" className="hover:underline">Group: https://www.facebook.com/groups/649972919142215</a></li>
+                <li><a href="https://www.youtube.com/F8VNOfficial" target="_blank" rel="noopener noreferrer" className="hover:underline">Youtube: https://www.youtube.com/F8VNOfficial</a></li>
+                <li><a href="https://www.facebook.com/sondnf8" target="_blank" rel="noopener noreferrer" className="hover:underline">Sơn Đặng: https://www.facebook.com/sondnf8</a></li>
+              </ul>
+            </div>
+          </div>
+
+          {/* "Made with Dyad" and "Hỏi đáp" button at the bottom of the left column */}
+          <div className="p-6 border-t border-gray-200 bg-white flex flex-col items-center justify-center">
+            <p className="text-sm text-gray-500 mb-4">Made with ❤️ Powered by F8</p>
+            <FloatingAskQuestionButton onClick={() => console.log("Ask question clicked")} />
           </div>
         </div>
 
-        {/* Right Column: Course Content Sidebar (Fixed and independently scrollable) */}
+        {/* Right Column: Course Content Sidebar */}
         <div className="lg:w-1/3 bg-white border-l border-gray-200 p-6 overflow-y-auto h-full">
           <h2 className="text-xl font-bold text-gray-800 mb-4">Nội dung khóa học</h2>
           <CourseContent isSidebar={true} />
@@ -228,7 +247,6 @@ const LessonDetailPageV2 = () => {
         prevLessonId={prevLessonId}
         nextLessonId={nextLessonId}
       />
-      <FloatingAskQuestionButton onClick={() => console.log("Floating Ask question clicked")} />
     </div>
   );
 };
