@@ -113,9 +113,6 @@ const GuidedTourOverlay: React.FC<GuidedTourOverlayProps> = ({
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center pointer-events-none">
-      {/* Overlay background */}
-      <div className="absolute inset-0 bg-black opacity-70"></div>
-
       {/* Highlighted element "spotlight" */}
       {highlightRect && (
         <div
