@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useParams } => "react-router-dom";
 import LessonHeader from "@/components/layout/LessonHeader";
 import LessonVideoPlayer from "@/components/lesson/LessonVideoPlayer";
 import LessonNavigation from "@/components/lesson/LessonNavigation";
@@ -28,7 +28,7 @@ const allChaptersData = [
         views: 15,
       },
       { sessionId: "buoi-3-tong-on-csc-csn", title: "Buổi 3: Tổng ôn CSC – CSN", teacher: "Thầy Nguyễn Tiến Đạt", views: 10 },
-      { sessionId: "buoi-4-tong-on-ham-so-mu-loga", title: "Buổi 4: Tổng ôn hàm số mũ loga", teacher: "Thầy Nguyễn Tiến Đầy", views: 12 },
+      { sessionId: "buoi-4-tong-on-ham-so-mu-loga", title: "Buổi 4: Tổng ôn hàm số mũ loga", teacher: "Thầy Nguyễn Tiến Đạt", views: 12 },
       { sessionId: "buoi-5-tong-on-pt-bpt-mu-loga", title: "Buổi 5: Tổng ôn PT, BPT mũ loga", teacher: "Thầy Nguyễn Tiến Đạt", views: 8 },
       { sessionId: "buoi-6-tong-on-bai-toan-tang-truong-lai-suat", title: "Buổi 6: Tổng ôn bài toán tăng trưởng, lãi suất", teacher: "Thầy Nguyễn Tiến Đạt", views: 7 },
       { sessionId: "buoi-7-tong-on-gioi-han", title: "Buổi 7: Tổng ôn giới hạn", teacher: "Thầy Nguyễn Tiến Đạt", views: 11 },
@@ -200,7 +200,7 @@ const LessonDetailPageV2 = () => {
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
       <LessonHeader
-        courseTitle={currentLesson.courseTitle}
+        courseTitle={`${currentLesson.courseTitle} (Trang chi tiết bài học v2)`}
         progressValue={progressValue}
         currentLessonCount={currentLessonIndex + 1}
         totalLessonCount={totalLessons}
@@ -220,12 +220,6 @@ const LessonDetailPageV2 = () => {
           <CourseContent isSidebar={true} />
         </div>
       </main>
-      <LessonNavigation
-        prevLessonId={prevLessonId}
-        nextLessonId={nextLessonId}
-        onAddNote={() => console.log("Add note clicked")}
-        onAskQuestion={() => console.log("Ask question clicked")}
-      />
       <Footer />
     </div>
   );
