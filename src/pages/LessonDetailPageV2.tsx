@@ -198,16 +198,16 @@ const LessonDetailPageV2 = () => {
   const progressValue = Math.round(((currentLessonIndex + 1) / totalLessons) * 100);
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col">
+    <div className="min-h-screen bg-gray-100 flex flex-col h-screen"> {/* Added h-screen here */}
       <LessonHeader
         courseTitle={`${currentLesson.courseTitle} (Trang chi tiết bài học v2)`}
         progressValue={progressValue}
         currentLessonCount={currentLessonIndex + 1}
         totalLessonCount={totalLessons}
       />
-      <div className="flex-grow flex"> {/* This div will take remaining height and contain the two columns */}
+      <div className="flex-grow flex h-full"> {/* This div takes remaining height and is a flex container */}
         {/* Left Column: Video Player + Lesson Details */}
-        <div className="flex flex-col lg:w-2/3 bg-white overflow-y-auto"> {/* flex-col to stack video and details, overflow-y-auto for scrolling */}
+        <div className="flex flex-col lg:w-2/3 bg-white overflow-y-auto h-full"> {/* This column should scroll */}
           <div className="p-6"> {/* Padding for video player */}
             <LessonVideoPlayer
               lessonTitle={currentLesson.title}
@@ -222,7 +222,7 @@ const LessonDetailPageV2 = () => {
         </div>
 
         {/* Right Column: Course Content Sidebar */}
-        <div className="lg:w-1/3 bg-white border-l border-gray-200 p-6 overflow-y-auto"> {/* This column should also scroll */}
+        <div className="lg:w-1/3 bg-white border-l border-gray-200 p-6 overflow-y-auto h-full"> {/* This column should also scroll */}
           <h2 className="text-xl font-bold text-gray-800 mb-4">Nội dung khóa học</h2>
           <CourseContent isSidebar={true} />
         </div>
