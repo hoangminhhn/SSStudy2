@@ -220,6 +220,17 @@ const LessonDetailPageV2 = () => {
             updatedDate="tháng 11 năm 2022" // Placeholder for now
             onAddNote={() => console.log("Add note clicked from LessonDetails")}
           />
+          {/* Add more dummy content to force scroll on left column */}
+          <div className="p-6 text-gray-700">
+            <h3 className="text-xl font-bold mb-3">Nội dung bổ sung</h3>
+            <p className="mb-2">Đây là đoạn văn bản bổ sung để làm cho cột bên trái dài hơn và kích hoạt thanh cuộn. Chúng ta cần đảm bảo rằng có đủ nội dung để vượt quá chiều cao hiển thị của cột.</p>
+            <p className="mb-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+            <p className="mb-2">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p className="mb-2">Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius, turpis et commodo pharetra, est eros bibendum elit, nec luctus magna felis sollicitudin mauris. Integer in mauris eu nibh euismod gravida. Duis ac tellus et risus vulputate vehicula. Nulla facilisi.</p>
+            <p className="mb-2">Aliquam erat volutpat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Sed ut massa in lectus scelerisque aliquam. Ut ac urna. Nulla facilisi. Sed non neque. Sed ut massa in lectus scelerisque aliquam. Ut ac urna. Nulla facilisi. Sed non neque.</p>
+            <p className="mb-2">Proin at urna vel lectus tristique eleifend. Proin at urna vel lectus tristique eleifend. Proin at urna vel lectus tristique eleifend. Proin at urna vel lectus tristique eleifend. Proin at urna vel lectus tristique eleifend. Proin at urna vel lectus tristique eleifend.</p>
+            <p className="mb-2">Final paragraph to ensure enough content for scrolling. This should definitely make the left column scrollable.</p>
+          </div>
         </div>
 
         {/* Right Column: Course Content Sidebar */}

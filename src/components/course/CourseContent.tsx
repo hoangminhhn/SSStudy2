@@ -209,6 +209,71 @@ const chapters: Chapter[] = [
       { sessionId: "buoi-1-gioi-thieu-ssvod-oxyz", title: "Buổi 1: Giới thiệu", date: "02/07/2025" },
     ],
   },
+  // Duplicate some chapters to ensure content overflows
+  {
+    id: "chapter-17",
+    progress: "0/8",
+    title: "Tổng ôn kiến thức lớp 11 phần Đại số (Tiếp)",
+    sessions: [
+      {
+        sessionId: "buoi-9-tong-on-luong-giac-phan-3",
+        title: "Buổi 9: Tổng ôn lượng giác (phần 3)",
+        date: "03/07/2025",
+        type: 'livestream',
+        timeSlots: [
+          { time: "09:00 - 10:00", teacher: "Thầy Nguyễn Tiến Đạt", registrationStatus: 'register' },
+        ]
+      },
+      { sessionId: "buoi-10-tong-on-luong-giac-phan-4", title: "Buổi 10: Tổng ôn lượng giác (phần 4)", date: "04/07/2025" },
+      { sessionId: "buoi-11-tong-on-csc-csn-2", title: "Buổi 11: Tổng ôn CSC – CSN (phần 2)", date: "05/07/2025" },
+      { sessionId: "buoi-12-tong-on-ham-so-mu-loga-2", title: "Buổi 12: Tổng ôn hàm số mũ loga (phần 2)", date: "06/07/2025" },
+    ],
+  },
+  {
+    id: "chapter-18",
+    progress: "0/9",
+    title: "Tổng ôn kiến thức lớp 11 phần Hình học (Tiếp)",
+    sessions: [
+      {
+        sessionId: "buoi-3-gioi-thieu-hinh-hoc-2",
+        title: "Buổi 3: Giới thiệu hình học (phần 2)",
+        date: "07/07/2025",
+        type: 'livestream',
+        timeSlots: [
+          { time: "10:00 - 11:00", teacher: "Cô Trần Thị B", registrationStatus: 'register' },
+        ]
+      },
+      { sessionId: "buoi-4-cac-dang-bai-tap-2", title: "Buổi 4: Các dạng bài tập (phần 2)", date: "08/07/2025" },
+    ],
+  },
+  {
+    id: "chapter-19",
+    progress: "0/43",
+    title: "[Classin] Chương 1: Hàm số (Tiếp)",
+    sessions: [
+      {
+        sessionId: "buoi-3-khai-niem-ham-so-2",
+        title: "Buổi 3: Khái niệm hàm số (phần 2)",
+        date: "09/07/2025",
+        type: 'livestream',
+        timeSlots: [
+          { time: "08:00 - 09:00", teacher: "Thầy Nguyễn Tiến Đạt", registrationStatus: 'register' },
+        ]
+      },
+      { sessionId: "buoi-4-do-thi-ham-so-2", title: "Buổi 4: Đồ thị hàm số (phần 2)", date: "10/07/2025" },
+    ],
+  },
+  {
+    id: "chapter-20",
+    progress: "0/20",
+    title: "[Classin] Chương 3: Nguyên hàm tích phân (Tiếp)",
+    sessions: [
+      { sessionId: "buoi-2-nguyen-ham-co-ban-2", title: "Buổi 2: Nguyên hàm cơ bản (phần 2)", date: "11/07/2025" },
+      { sessionId: "buoi-3-nguyen-ham-nang-cao", title: "Buổi 3: Nguyên hàm nâng cao", date: "12/07/2025" },
+      { sessionId: "buoi-4-tich-phan-co-ban", title: "Buổi 4: Tích phân cơ bản", date: "13/07/2025" },
+      { sessionId: "buoi-5-tich-phan-nang-cao", title: "Buổi 5: Tích phân nâng cao", date: "14/07/2025" },
+    ],
+  },
 ];
 
 interface CourseContentProps {
