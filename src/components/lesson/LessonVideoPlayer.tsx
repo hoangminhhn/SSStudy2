@@ -39,7 +39,7 @@ const LessonVideoPlayer: React.FC<LessonVideoPlayerProps> = ({
           </>
         )}
       </div>
-      <div className="flex justify-between items-center mt-0 mb-2"> {/* Changed mt-4 to mt-0 */}
+      <div className="flex justify-between items-center mt-0"> {/* Removed mb-2 */}
         <div>
           <h1 className="text-2xl font-bold text-gray-800">{lessonTitle}</h1>
           <p className="text-sm text-gray-500">Cập nhật {updatedDate}</p>
