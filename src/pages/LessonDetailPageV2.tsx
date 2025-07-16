@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react"; // Import useState
 import { useParams } from "react-router-dom";
 import LessonHeader from "@/components/layout/LessonHeader";
 import LessonVideoPlayer from "@/components/lesson/LessonVideoPlayer";
@@ -181,6 +181,7 @@ const allLessons = allChaptersData.flatMap(chapter =>
 
 const LessonDetailPageV2 = () => {
   const { lessonId } = useParams<{ lessonId: string }>();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true); // State for sidebar visibility
 
   const currentLessonIndex = allLessons.findIndex(lesson => lesson.sessionId === lessonId);
   const currentLesson = allLessons[currentLessonIndex];
@@ -199,6 +200,10 @@ const LessonDetailPageV2 = () => {
   const totalLessons = allLessons.length;
   const progressValue = Math.round(((currentLessonIndex + 1) / totalLessons) * 100);
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen(prev => !prev);
+  };
+
   return (
     <div className="h-screen flex flex-col bg-gray-100">
       <LessonHeader
@@ -210,8 +215,8 @@ const LessonDetailPageV2 = () => {
       {/* Main content area: takes all available vertical space, is a flex row */}
       <div className="flex-grow flex lg:flex-row overflow-hidden">
         {/* Left Column: Video Player + Action Buttons + Floating Ask Question Button */}
-        <div className="flex flex-col lg:w-2/3 bg-white overflow-y-auto h-full relative">
-          <div className="px-6 pt-6 pb-0"> {/* Removed pr-24 here */}
+        <div className={`flex flex-col bg-white overflow-y-auto h-full relative ${isSidebarOpen ? 'lg:w-2/3' : 'lg:w-full'}`}>
+          <div className="px-6 pt-6 pb-0">
             <LessonVideoPlayer
               lessonTitle={currentLesson.title}
               updatedDate="tháng 11 năm 2022" // Placeholder for now
@@ -219,8 +224,8 @@ const LessonDetailPageV2 = () => {
             />
           </div>
 
-          {/* Action Buttons Section - now with its own pr-24 */}
-          <div className="flex flex-wrap items-center gap-4 mt-0 px-6 pb-6 pr-24"> {/* Added px-6, pb-6, pr-24 here */}
+          {/* Action Buttons Section */}
+          <div className="flex flex-wrap items-center gap-4 mt-0 px-6 pb-6 pr-24">
             <Button variant="ghost" className="text-orange-500 hover:text-orange-600 hover:bg-orange-50 rounded-full px-4 py-2">
               <Download size={16} className="mr-2" />
               Tải đề (không đáp án)
@@ -242,14 +247,18 @@ const LessonDetailPageV2 = () => {
         </div>
 
         {/* Right Column: Course Content Sidebar */}
-        <div className="lg:w-1/3 bg-white border-l border-gray-200 p-6 overflow-y-auto h-full">
-          <h2 className="text-xl font-bold text-gray-800 mb-4">Nội dung khóa học</h2>
-          <CourseContent isSidebar={true} />
-        </div>
+        {isSidebarOpen && ( // Conditionally render based on state
+          <div className="lg:w-1/3 bg-white border-l border-gray-200 p-6 overflow-y-auto h-full">
+            <h2 className="text-xl font-bold text-gray-800 mb-4">Nội dung khóa học</h2>
+            <CourseContent isSidebar={true} />
+          </div>
+        )}
       </div>
       <LessonNavigation
         prevLessonId={prevLessonId}
         nextLessonId={nextLessonId}
+        isSidebarOpen={isSidebarOpen} // Pass state
+        onToggleSidebar={toggleSidebar} // Pass toggle function
       />
     </div>
   );

@@ -8,11 +8,15 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 interface LessonNavigationProps {
   prevLessonId?: string;
   nextLessonId?: string;
+  isSidebarOpen: boolean; // New prop to indicate sidebar state
+  onToggleSidebar: () => void; // New prop for toggling sidebar
 }
 
 const LessonNavigation: React.FC<LessonNavigationProps> = ({
   prevLessonId,
   nextLessonId,
+  isSidebarOpen,
+  onToggleSidebar,
 }) => {
   return (
     <div className="bg-white shadow-md py-4 px-6 flex flex-col sm:flex-row items-center justify-between border-t border-gray-200">
@@ -53,6 +57,20 @@ const LessonNavigation: React.FC<LessonNavigationProps> = ({
           )}
         </Button>
       </div>
+
+      {/* New button for toggling sidebar */}
+      <Button
+        variant="ghost"
+        size="icon"
+        className="text-gray-600 hover:bg-gray-100"
+        onClick={onToggleSidebar}
+      >
+        {isSidebarOpen ? (
+          <ChevronRight size={24} /> // Icon to close sidebar
+        ) : (
+          <ChevronLeft size={24} /> // Icon to open sidebar
+        )}
+      </Button>
     </div>
   );
 };
