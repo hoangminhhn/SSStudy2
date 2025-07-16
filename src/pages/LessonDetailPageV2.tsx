@@ -208,7 +208,7 @@ const LessonDetailPageV2 = () => {
       {/* Main content area: takes all available vertical space, is a flex row */}
       <div className="flex-grow flex lg:flex-row overflow-hidden">
         {/* Left Column: Video Player + Community Links + Ask Question Button */}
-        <div className="flex flex-col lg:w-2/3 bg-white overflow-y-auto h-full">
+        <div className="flex flex-col lg:w-2/3 bg-white overflow-y-auto h-full relative"> {/* Added relative here */}
           <div className="p-6 flex-grow"> {/* This div will contain video player and community links, and grow */}
             <LessonVideoPlayer
               lessonTitle={currentLesson.title}
@@ -230,11 +230,12 @@ const LessonDetailPageV2 = () => {
             </div>
           </div>
 
-          {/* "Made with Dyad" and "Hỏi đáp" button at the bottom of the left column */}
+          {/* "Made with Dyad" text at the bottom of the scrollable content */}
           <div className="p-6 border-t border-gray-200 bg-white flex flex-col items-center justify-center">
             <p className="text-sm text-gray-500 mb-4">Made with ❤️ Powered by F8</p>
-            <FloatingAskQuestionButton onClick={() => console.log("Ask question clicked")} />
           </div>
+          {/* Floating "Hỏi đáp" button, positioned absolutely within the relative parent */}
+          <FloatingAskQuestionButton onClick={() => console.log("Ask question clicked")} />
         </div>
 
         {/* Right Column: Course Content Sidebar */}
