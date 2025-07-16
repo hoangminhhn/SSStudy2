@@ -1,15 +1,16 @@
 "use client";
 
-import React, { useState } from "react"; // Import useState
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import LessonHeader from "@/components/layout/LessonHeader";
 import LessonVideoPlayer from "@/components/lesson/LessonVideoPlayer";
 import LessonNavigation from "@/components/lesson/LessonNavigation";
-import CourseContent from "@/components/course/CourseContent"; // Reusing CourseContent for the sidebar
-import FloatingAskQuestionButton from "@/components/lesson/FloatingAskQuestionButton"; // Import the new floating button
-import { Button } from "@/components/ui/button"; // Import Button
-import { Download, Edit, AlertTriangle } from "lucide-react"; // Import icons
-import GuidedTourOverlay from "@/components/tour/GuidedTourOverlay"; // Import the new GuidedTourOverlay
+import CourseContent from "@/components/course/CourseContent";
+import FloatingAskQuestionButton from "@/components/lesson/FloatingAskQuestionButton";
+import { Button } from "@/components/ui/button";
+import { Download, Edit, AlertTriangle } from "lucide-react";
+import GuidedTourOverlay from "@/components/tour/GuidedTourOverlay";
+import NotesSidebar from "@/components/lesson/NotesSidebar"; // Import the new NotesSidebar
 
 // Dummy data for lessons, derived from CourseContent's chapters for consistency
 const allChaptersData = [
@@ -185,6 +186,7 @@ const LessonDetailPageV2 = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isTourActive, setIsTourActive] = useState(false);
   const [currentTourStepIndex, setCurrentTourStepIndex] = useState(0);
+  const [isNotesSidebarOpen, setIsNotesSidebarOpen] = useState(false); // New state for notes sidebar
 
   // Define tour steps (unchanged)
   const tourSteps = [
@@ -285,6 +287,7 @@ const LessonDetailPageV2 = () => {
         currentLessonCount={currentLessonIndex + 1}
         totalLessonCount={totalLessons}
         onHelpClick={startTour}
+        onNotesClick={() => setIsNotesSidebarOpen(true)} // Pass handler to open notes sidebar
       />
       <div className="flex-grow flex lg:flex-row overflow-hidden">
         <div className={`flex flex-col bg-white overflow-y-auto h-full relative ${isSidebarOpen ? 'lg:w-2/3' : 'lg:w-full'}`}>
@@ -293,7 +296,7 @@ const LessonDetailPageV2 = () => {
               rootId="tour-video-player"
               lessonTitle={currentLesson.title}
               updatedDate="tháng 11 năm 2022"
-              onAddNote={(content) => console.log("Note added from LessonDetailPageV2:", content)} // Updated console log
+              onAddNote={(content) => console.log("Note added from LessonDetailPageV2:", content)}
               addNoteButtonId="tour-add-note-button"
             />
           </div>
@@ -343,6 +346,11 @@ const LessonDetailPageV2 = () => {
           onClose={handleCloseTour}
         />
       )}
+
+      <NotesSidebar
+        isOpen={isNotesSidebarOpen}
+        onClose={() => setIsNotesSidebarOpen(false)}
+      />
     </div>
   );
 };

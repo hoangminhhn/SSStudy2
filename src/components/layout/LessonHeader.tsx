@@ -11,7 +11,8 @@ interface LessonHeaderProps {
   progressValue: number;
   currentLessonCount: number;
   totalLessonCount: number;
-  onHelpClick?: () => void; // New prop
+  onHelpClick?: () => void;
+  onNotesClick?: () => void; // New prop for notes button click
 }
 
 const LessonHeader: React.FC<LessonHeaderProps> = ({
@@ -20,6 +21,7 @@ const LessonHeader: React.FC<LessonHeaderProps> = ({
   currentLessonCount,
   totalLessonCount,
   onHelpClick,
+  onNotesClick, // Destructure new prop
 }) => {
   return (
     <header className="bg-gray-800 text-white py-3 px-6 flex items-center justify-between sticky top-0 z-50">
@@ -37,15 +39,15 @@ const LessonHeader: React.FC<LessonHeaderProps> = ({
           <span className="text-sm text-gray-300">{currentLessonCount}/{totalLessonCount} bài học</span>
           <Progress value={progressValue} className="w-24 h-2 bg-gray-600" indicatorClassName="bg-green-500" />
         </div>
-        <Button variant="ghost" className="text-gray-300 hover:text-white px-2">
+        <Button variant="ghost" className="text-gray-300 hover:text-white px-2" onClick={onNotesClick}> {/* Add onClick handler */}
           <BookOpen size={18} className="mr-2" />
           Ghi chú
         </Button>
         <Button
-          id="tour-help-button" // Add ID here
+          id="tour-help-button"
           variant="ghost"
           className="text-gray-300 hover:text-white px-2"
-          onClick={onHelpClick} // Call the prop function
+          onClick={onHelpClick}
         >
           <HelpCircle size={18} className="mr-2" />
           Hướng dẫn
