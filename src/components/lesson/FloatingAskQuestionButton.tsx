@@ -13,7 +13,7 @@ const FloatingAskQuestionButton: React.FC<FloatingAskQuestionButtonProps> = ({
 }) => {
   return (
     <Button
-      className="absolute bottom-6 right-6 bg-orange-500 hover:bg-orange-600 text-white rounded-full px-6 py-3 shadow-lg flex items-center space-x-2 z-50"
+      className="fixed bottom-24 right-6 bg-orange-500 hover:bg-orange-600 text-white rounded-full px-6 py-3 shadow-lg flex items-center space-x-2 z-50"
       onClick={onClick}
     >
       <MessageCircle size={20} />
