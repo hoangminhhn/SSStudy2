@@ -359,25 +359,38 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
 
   return (
     <div className={isSidebar ? "" : "mt-8"}>
-      {!isSidebar && (
+      {!isSidebar ? (
         <>
-          <h2 className="text-2xl font-bold text-orange-600 mb-4">BÀI HỌC</h2>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-2xl font-bold text-orange-600">BÀI HỌC</h2>
+            {nextLiveSessionInfo && (
+              <Button
+                onClick={scrollToNextLiveSession}
+                className="bg-green-600 hover:bg-green-700 text-white rounded-full px-4 py-2 text-sm"
+              >
+                <Play size={16} className="mr-1" />
+                Live sắp tới
+              </Button>
+            )}
+          </div>
           <p className="text-gray-700 mb-6">
             Tổng hợp khóa học chuyên đề gồm 16 chương nhằm lấy lại kiến thức cho các bạn bị mất căn bản và chuẩn bị luyện thi vào đại học
           </p>
         </>
-      )}
-
-      {nextLiveSessionInfo && (
-        <div className={`mb-4 ${isSidebar ? 'pt-0' : ''}`}>
-          <Button
-            onClick={scrollToNextLiveSession}
-            className="bg-green-600 hover:bg-green-700 text-white rounded-full px-4 py-2 text-sm"
-          >
-            <Play size={16} className="mr-1" />
-            Live sắp tới
-          </Button>
-        </div>
+      ) : (
+        // For sidebar, the h2 is rendered by the parent component (LessonDetailPageV2)
+        // So we just render the button if it exists, at the top of this component's content
+        nextLiveSessionInfo && (
+          <div className="mb-4 pt-0">
+            <Button
+              onClick={scrollToNextLiveSession}
+              className="bg-green-600 hover:bg-green-700 text-white rounded-full px-4 py-2 text-sm"
+            >
+              <Play size={16} className="mr-1" />
+              Live sắp tới
+            </Button>
+          </div>
+        )
       )}
 
       <Accordion type="multiple" value={openChapters} onValueChange={handleAccordionChange} className="w-full space-y-4">
