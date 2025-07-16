@@ -10,6 +10,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, User, ThumbsUp, MoreHorizontal } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"; // Import DropdownMenu components
 
 interface Comment {
   id: string;
@@ -115,15 +121,22 @@ const AskQuestionSidebar: React.FC<AskQuestionSidebarProps> = ({
                     <Button variant="ghost" className="p-0 h-auto text-sm hover:underline">
                       Phản hồi
                     </Button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" className="p-0 h-auto text-gray-500 hover:text-gray-700">
+                          <MoreHorizontal size={16} />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem className="text-red-600">Báo cáo vi phạm</DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                     {comment.likes !== undefined && comment.likes > 0 && (
                       <div className="flex items-center space-x-1 ml-auto">
                         <ThumbsUp size={14} className="text-blue-500" />
                         <span>{comment.likes}</span>
                       </div>
                     )}
-                    <Button variant="ghost" size="icon" className="p-0 h-auto text-gray-500 hover:text-gray-700">
-                      <MoreHorizontal size={16} />
-                    </Button>
                   </div>
                 </div>
               </div>
