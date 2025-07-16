@@ -206,7 +206,7 @@ const LessonDetailPageV2 = () => {
         totalLessonCount={totalLessons}
       />
       {/* Main content area: takes all available vertical space, is a flex row */}
-      <div className="flex-grow flex overflow-hidden"> {/* flex-grow, flex row, and overflow-hidden to prevent main content area from causing page scroll */}
+      <div className="flex-grow flex overflow-hidden min-h-0"> {/* Added min-h-0 here */}
         {/* Left Column: Video Player + Lesson Details */}
         <div className="flex flex-col lg:w-2/3 bg-white overflow-y-auto h-full"> {/* flex-col, width, bg, and crucially overflow-y-auto */}
           <div className="p-6"> {/* Padding for video player */}
