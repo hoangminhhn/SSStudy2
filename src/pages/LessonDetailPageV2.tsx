@@ -142,7 +142,7 @@ const allChaptersData = [
     progress: "0/2",
     title: "[SSVOD] Chương 2: Mẫu số liệu ghép nhóm",
     sessions: [
-      { sessionId: "buoi-1-gioi-thieu-ssvod-mau-so-lieu", title: "Buoi 1: Giới thiệu", teacher: "Thầy Nguyễn Tiến Đạt", views: 4 },
+      { sessionId: "buoi-1-gioi-thieu-ssvod-mau-so-lieu", title: "Buổi 1: Giới thiệu", teacher: "Thầy Nguyễn Tiến Đạt", views: 4 },
     ],
   },
   {
@@ -211,7 +211,7 @@ const LessonDetailPageV2 = () => {
       <div className="flex-grow flex lg:flex-row overflow-hidden">
         {/* Left Column: Video Player + Action Buttons + Floating Ask Question Button */}
         <div className="flex flex-col lg:w-2/3 bg-white overflow-y-auto h-full relative">
-          <div className="px-6 pt-6 pb-0">
+          <div className="px-6 pt-6 pb-0 pr-24"> {/* Added pr-24 here */}
             <LessonVideoPlayer
               lessonTitle={currentLesson.title}
               updatedDate="tháng 11 năm 2022" // Placeholder for now
@@ -219,7 +219,7 @@ const LessonDetailPageV2 = () => {
             />
 
             {/* Action Buttons Section */}
-            <div className="flex flex-wrap items-center gap-4 mt-0"> {/* Changed mt-4 to mt-0 */}
+            <div className="flex flex-wrap items-center gap-4 mt-0">
               <Button variant="ghost" className="text-orange-500 hover:text-orange-600 hover:bg-orange-50 rounded-full px-4 py-2">
                 <Download size={16} className="mr-2" />
                 Tải đề (không đáp án)
