@@ -198,7 +198,7 @@ const LessonDetailPageV2 = () => {
   const progressValue = Math.round(((currentLessonIndex + 1) / totalLessons) * 100);
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col h-screen"> {/* Outer container, flex column, full height */}
+    <div className="min-h-screen bg-gray-100 flex flex-col"> {/* Outer container: flex column, min-h-screen */}
       <LessonHeader
         courseTitle={`${currentLesson.courseTitle} (Trang chi tiết bài học v2)`}
         progressValue={progressValue}
@@ -206,9 +206,9 @@ const LessonDetailPageV2 = () => {
         totalLessonCount={totalLessons}
       />
       {/* Main content area: takes all available vertical space, is a flex row */}
-      <div className="flex-grow flex"> {/* flex-grow handles height */}
+      <div className="flex-grow flex overflow-hidden"> {/* flex-grow, flex row, and overflow-hidden to prevent main content area from causing page scroll */}
         {/* Left Column: Video Player + Lesson Details */}
-        <div className="flex flex-col lg:w-2/3 bg-white overflow-y-auto h-full"> {/* h-full to fill parent height, overflow-y-auto for scrolling */}
+        <div className="flex flex-col lg:w-2/3 bg-white overflow-y-auto h-full"> {/* flex-col, width, bg, and crucially overflow-y-auto */}
           <div className="p-6"> {/* Padding for video player */}
             <LessonVideoPlayer
               lessonTitle={currentLesson.title}
@@ -223,7 +223,7 @@ const LessonDetailPageV2 = () => {
         </div>
 
         {/* Right Column: Course Content Sidebar */}
-        <div className="lg:w-1/3 bg-white border-l border-gray-200 p-6 overflow-y-auto h-full"> {/* h-full to fill parent height, overflow-y-auto for scrolling */}
+        <div className="lg:w-1/3 bg-white border-l border-gray-200 p-6 overflow-y-auto h-full"> {/* width, bg, border, padding, and crucially overflow-y-auto */}
           <h2 className="text-xl font-bold text-gray-800 mb-4">Nội dung khóa học</h2>
           <CourseContent isSidebar={true} />
         </div>
