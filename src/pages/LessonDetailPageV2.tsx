@@ -207,8 +207,9 @@ const LessonDetailPageV2 = () => {
       />
       {/* Main content area: takes all available vertical space, is a flex row */}
       <div className="flex-grow flex lg:flex-row overflow-hidden">
-        {/* Left Column: Video Player + Community Links */}
-        <div className="flex flex-col lg:w-2/3 bg-white overflow-y-auto h-full">
+        {/* Left Column: Video Player + Community Links + Floating Ask Question Button */}
+        {/* Added overflow-y-auto to this div to enable sticky positioning within it */}
+        <div className="flex flex-col lg:w-2/3 bg-white overflow-y-auto h-full relative">
           <div className="p-6 flex-grow">
             <LessonVideoPlayer
               lessonTitle={currentLesson.title}
@@ -234,6 +235,8 @@ const LessonDetailPageV2 = () => {
           <div className="p-6 border-t border-gray-200 bg-white flex flex-col items-center justify-center">
             <p className="text-sm text-gray-500 mb-4">Made with ❤️ Powered by F8</p>
           </div>
+          {/* Floating "Hỏi đáp" button, positioned sticky within the left column */}
+          <FloatingAskQuestionButton onClick={() => console.log("Ask question clicked")} />
         </div>
 
         {/* Right Column: Course Content Sidebar */}
@@ -246,8 +249,6 @@ const LessonDetailPageV2 = () => {
         prevLessonId={prevLessonId}
         nextLessonId={nextLessonId}
       />
-      {/* Floating "Hỏi đáp" button, positioned fixed relative to the viewport */}
-      <FloatingAskQuestionButton onClick={() => console.log("Ask question clicked")} />
     </div>
   );
 };
