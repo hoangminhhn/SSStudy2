@@ -9,8 +9,14 @@ import {
 } from "@/components/ui/sheet";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { Edit, Trash2 } from "lucide-react";
+import { Edit, Trash2, HelpCircle } from "lucide-react"; // Import HelpCircle
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"; // Import Tooltip components
 
 interface Note {
   id: string;
@@ -69,8 +75,20 @@ const NotesSidebar: React.FC<NotesSidebarProps> = ({ isOpen, onClose, notes = du
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent side="right" className="w-full sm:max-w-md flex flex-col">
-        <SheetHeader className="pb-4 border-b border-gray-200">
-          <SheetTitle className="text-2xl font-bold text-gray-800">Ghi chú của tôi</SheetTitle>
+        <SheetHeader className="pb-4 border-b border-gray-200 flex flex-row items-center justify-between"> {/* Adjusted for flex row */}
+          <SheetTitle className="text-2xl font-bold text-gray-800 flex items-center space-x-2">
+            <span>Ghi chú của tôi</span>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <HelpCircle size={20} className="text-gray-500 cursor-help" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Click vào ghi chú thì video sẽ nhảy đến thời điểm đánh dấu ghi chú</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </SheetTitle>
         </SheetHeader>
 
         <div className="flex items-center space-x-2 py-4">
