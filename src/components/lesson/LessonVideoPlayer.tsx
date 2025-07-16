@@ -26,7 +26,7 @@ const LessonVideoPlayer: React.FC<LessonVideoPlayerProps> = ({
   return (
     <div className="flex flex-col h-full">
       <div
-        id={rootId} {/* Corrected: ID is now on the video frame div */}
+        id={rootId} {/* Moved the ID here to target only the video frame */}
         className="relative w-full aspect-video bg-black rounded-lg overflow-hidden flex items-center justify-center"
       >
         {videoUrl ? (
