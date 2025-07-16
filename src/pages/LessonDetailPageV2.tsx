@@ -211,7 +211,7 @@ const LessonDetailPageV2 = () => {
       <div className="flex-grow flex lg:flex-row overflow-hidden">
         {/* Left Column: Video Player + Action Buttons + Floating Ask Question Button */}
         <div className="flex flex-col lg:w-2/3 bg-white overflow-y-auto h-full relative">
-          <div className="p-6 flex-grow">
+          <div className="px-6 pt-6 pb-0"> {/* Adjusted padding: removed pb-6 */}
             <LessonVideoPlayer
               lessonTitle={currentLesson.title}
               updatedDate="tháng 11 năm 2022" // Placeholder for now
@@ -219,7 +219,7 @@ const LessonDetailPageV2 = () => {
             />
 
             {/* Action Buttons Section */}
-            <div className="flex flex-wrap items-center gap-4 mt-0">
+            <div className="flex flex-wrap items-center gap-4 mt-4"> {/* Added mt-4 for controlled spacing */}
               <Button variant="ghost" className="text-orange-500 hover:text-orange-600 hover:bg-orange-50 rounded-full px-4 py-2">
                 <Download size={16} className="mr-2" />
                 Tải đề (không đáp án)
