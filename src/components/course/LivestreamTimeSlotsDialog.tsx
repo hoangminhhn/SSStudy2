@@ -54,7 +54,7 @@ const LivestreamTimeSlotsDialog: React.FC<LivestreamTimeSlotsDialogProps> = ({
                 <div className="flex flex-col">
                   <div className="flex items-center text-gray-800 font-medium">
                     <Clock size={16} className="mr-2 text-blue-500" />
-                    {slot.time}
+                    Livestream {index + 1}: {slot.time}
                   </div>
                   <div className="flex items-center text-gray-600 text-sm mt-1">
                     <User size={14} className="mr-2 text-gray-500" />

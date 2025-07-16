@@ -191,7 +191,7 @@ const chapters: Chapter[] = [
     progress: "0/24",
     title: "[SSVOD] Chương 3: Nguyên hàm tích phân",
     sessions: [
-      { sessionId: "buoi-1-gioi-thieu-ssvod-nguyen-ham", title: "Buổi 1: Giới thiệu", date: "30/06/2025" },
+      { sessionId: "buoi-1-nguyen-ham-co-ban", title: "Buổi 1: Nguyên hàm cơ bản", date: "30/06/2025" },
     ],
   },
   {
@@ -199,7 +199,7 @@ const chapters: Chapter[] = [
     progress: "0/12",
     title: "[SSVOD] Chương 4: Xác suất có điều kiện",
     sessions: [
-      { sessionId: "buoi-1-gioi-thieu-ssvod-xac-suat", title: "Buổi 1: Giới thiệu", date: "01/07/2025" },
+      { sessionId: "buoi-1-gioi-thieu-xac-suat", title: "Buổi 1: Giới thiệu", date: "01/07/2025" },
     ],
   },
   {
@@ -324,65 +324,52 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
                   <div className="space-y-3 pl-4 border-l-2 border-gray-200 ml-6">
                     {chapter.sessions.map((session, sessionIndex) => {
                       const sessionDate = parse(session.date, 'dd/MM/yyyy', new Date());
-                      const isLiveToday = isToday(sessionDate);
+                      const isLiveToday = session.type === 'livestream' && isToday(sessionDate);
 
                       return (
-                        <div key={session.sessionId} className="flex flex-col py-2">
-                          {/* Hàng trên: Icon + Tiêu đề + Ngày */}
-                          <div className="flex items-start justify-between mb-2">
-                            <div className="flex items-center space-x-3 flex-grow">
-                              <span className="w-2 h-2 bg-gray-400 rounded-full flex-shrink-0 mt-2"></span> {/* Adjusted margin-top for alignment */}
-                              {session.type === 'livestream' ? (
-                                <Play size={18} className="text-orange-500 flex-shrink-0 mt-2" />
-                              ) : (
-                                <FileText size={18} className="text-orange-500 flex-shrink-0 mt-2" />
-                              )}
-                              <Link
+                        <div key={session.sessionId} className="flex items-center justify-between py-2">
+                          <div className="flex items-center space-x-3">
+                            <span className="w-2 h-2 bg-gray-400 rounded-full flex-shrink-0"></span>
+                            {session.type === 'livestream' ? (
+                              <Play size={18} className="text-orange-500" />
+                            ) : (
+                              <FileText size={18} className="text-orange-500" />
+                            )}
+                            <Link
                                 to={`/lesson/${session.sessionId}`}
-                                className="text-gray-800 hover:underline flex-grow"
+                                className="text-gray-800 hover:underline"
                                 id={sessionIndex === 0 && chapter.id === "chapter-1" ? "tour-first-lesson-item" : undefined} // Add ID to the first session of the first chapter
-                              >
+                            >
                                 {session.title}
+                            </Link>
+                            {session.type === 'livestream' && (
+                              <Badge variant="destructive" className="ml-2 bg-red-500 text-white">
+                                Livestream
+                              </Badge>
+                            )}
+                          </div>
+                          <div className="flex items-center space-x-4">
+                            {isLiveToday ? (
+                              <Link to={`/lesson/${session.sessionId}`}>
+                                <Button className="bg-purple-600 hover:bg-purple-700 text-white rounded-full px-4 py-2 text-sm">
+                                  Vào học
+                                </Button>
                               </Link>
-                            </div>
-                            <span className="text-gray-500 text-sm flex-shrink-0 ml-4 mt-2">
+                            ) : session.type === 'livestream' && session.timeSlots && session.timeSlots.length > 0 ? (
+                              <LivestreamTimeSlotsDialog
+                                sessionTitle={session.title}
+                                sessionDate={session.date}
+                                timeSlots={session.timeSlots}
+                              >
+                                <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-4 py-2 text-sm">
+                                  Đăng Ký học
+                                </Button>
+                              </LivestreamTimeSlotsDialog>
+                            ) : null}
+                            <span className="text-gray-500 text-sm">
                               Ngày: {session.date}
                             </span>
                           </div>
-
-                          {/* Livestream specific details, if applicable */}
-                          {session.type === 'livestream' && session.timeSlots && session.timeSlots.length > 0 && (
-                            <div className="pl-8 space-y-2"> {/* Indent these details */}
-                              {session.timeSlots.map((slot, slotIndex) => (
-                                <div key={`${session.sessionId}-livestream-${slotIndex}`} className="flex items-center justify-between">
-                                  <div className="flex items-center space-x-2">
-                                    <Badge variant="destructive" className="bg-red-500 text-white px-4 py-2">
-                                      Livestream {slotIndex + 1} ({slot.time})
-                                    </Badge>
-                                  </div>
-                                  <div className="flex items-center space-x-4">
-                                    {isLiveToday ? ( // This logic needs to be refined if 'Vào học' depends on specific slot time
-                                      <Link to={`/lesson/${session.sessionId}`}>
-                                        <Button className="bg-purple-600 hover:bg-purple-700 text-white rounded-full px-4 py-2 text-sm">
-                                          Vào học
-                                        </Button>
-                                      </Link>
-                                    ) : (
-                                      <LivestreamTimeSlotsDialog
-                                        sessionTitle={session.title}
-                                        sessionDate={session.date}
-                                        timeSlots={session.timeSlots} // Pass all time slots to the dialog
-                                      >
-                                        <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-4 py-2 text-sm">
-                                          Đăng Ký học
-                                        </Button>
-                                      </LivestreamTimeSlotsDialog>
-                                    )}
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          )}
                         </div>
                       );
                     })}
