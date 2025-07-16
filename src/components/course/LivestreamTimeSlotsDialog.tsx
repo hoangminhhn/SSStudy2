@@ -41,7 +41,7 @@ const LivestreamTimeSlotsDialog: React.FC<LivestreamTimeSlotsDialogProps> = ({
             Đăng ký phòng học
           </DialogTitle>
           <DialogDescription className="text-gray-600">
-            Chọn khung giờ phù hợp cho buổi học: <span className="font-semibold">{sessionTitle}</span> vào ngày <span className="font-semibold">{sessionDate}</span>.
+            Chọn phòng học trống cho buổi học: <span className="font-semibold">{sessionTitle}</span> vào ngày <span className="font-semibold">{sessionDate}</span>.
           </DialogDescription>
         </DialogHeader>
         <div className="py-4 space-y-4">
