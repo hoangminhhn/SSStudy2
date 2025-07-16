@@ -38,7 +38,7 @@ const LivestreamTimeSlotsDialog: React.FC<LivestreamTimeSlotsDialogProps> = ({
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-orange-600">
-            Đăng ký khung giờ học
+            Đăng ký phòng học
           </DialogTitle>
           <DialogDescription className="text-gray-600">
             Chọn khung giờ phù hợp cho buổi học: <span className="font-semibold">{sessionTitle}</span> vào ngày <span className="font-semibold">{sessionDate}</span>.
