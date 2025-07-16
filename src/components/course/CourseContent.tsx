@@ -51,6 +51,7 @@ const chapters: Chapter[] = [
           { time: "09:00 - 10:00", teacher: "Thầy Nguyễn Tiến Đạt", registrationStatus: 'register' },
           { time: "14:00 - 15:00", teacher: "Thầy Nguyễn Tiến Đạt", registrationStatus: 'full' },
           { time: "19:00 - 20:00", teacher: "Thầy Nguyễn Tiến Đạt", registrationStatus: 'registered' },
+          { time: "20:00 - 21:00", teacher: "Thầy Nguyễn Tiến Đạt", registrationStatus: 'register' }, // Livestream 2 example
         ]
       },
       {
@@ -323,13 +324,10 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
                   <div className="space-y-3 pl-4 border-l-2 border-gray-200 ml-6">
                     {chapter.sessions.map((session, sessionIndex) => {
                       const sessionDate = parse(session.date, 'dd/MM/yyyy', new Date());
-                      const isLiveToday = session.type === 'livestream' && isToday(sessionDate);
-                      const displayTime = session.type === 'livestream' && session.timeSlots && session.timeSlots.length > 0
-                        ? session.timeSlots[0].time
-                        : '';
+                      const isLiveToday = isToday(sessionDate);
 
                       return (
-                        <div key={sessionIndex} className="flex flex-col py-2">
+                        <div key={session.sessionId} className="flex flex-col py-2">
                           {/* Hàng trên: Icon + Tiêu đề + Ngày */}
                           <div className="flex items-start justify-between mb-2">
                             <div className="flex items-center space-x-3 flex-grow">
@@ -352,35 +350,39 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
                             </span>
                           </div>
 
-                          {/* Hàng dưới: Livestream Badge + Buttons */}
-                          <div className="flex items-center justify-between pl-8"> {/* pl-8 để căn chỉnh với nội dung hàng trên */}
-                            <div className="flex items-center space-x-2">
-                              {session.type === 'livestream' && (
-                                <Badge variant="destructive" className="bg-red-500 text-white px-4 py-2"> {/* Adjusted padding here */}
-                                  Livestream {displayTime && `(${displayTime})`}
-                                </Badge>
-                              )}
+                          {/* Livestream specific details, if applicable */}
+                          {session.type === 'livestream' && session.timeSlots && session.timeSlots.length > 0 && (
+                            <div className="pl-8 space-y-2"> {/* Indent these details */}
+                              {session.timeSlots.map((slot, slotIndex) => (
+                                <div key={`${session.sessionId}-livestream-${slotIndex}`} className="flex items-center justify-between">
+                                  <div className="flex items-center space-x-2">
+                                    <Badge variant="destructive" className="bg-red-500 text-white px-4 py-2">
+                                      Livestream {slotIndex + 1} ({slot.time})
+                                    </Badge>
+                                  </div>
+                                  <div className="flex items-center space-x-4">
+                                    {isLiveToday ? ( // This logic needs to be refined if 'Vào học' depends on specific slot time
+                                      <Link to={`/lesson/${session.sessionId}`}>
+                                        <Button className="bg-purple-600 hover:bg-purple-700 text-white rounded-full px-4 py-2 text-sm">
+                                          Vào học
+                                        </Button>
+                                      </Link>
+                                    ) : (
+                                      <LivestreamTimeSlotsDialog
+                                        sessionTitle={session.title}
+                                        sessionDate={session.date}
+                                        timeSlots={session.timeSlots} // Pass all time slots to the dialog
+                                      >
+                                        <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-4 py-2 text-sm">
+                                          Đăng Ký học
+                                        </Button>
+                                      </LivestreamTimeSlotsDialog>
+                                    )}
+                                  </div>
+                                </div>
+                              ))}
                             </div>
-                            <div className="flex items-center space-x-4">
-                              {isLiveToday ? (
-                                <Link to={`/lesson/${session.sessionId}`}>
-                                  <Button className="bg-purple-600 hover:bg-purple-700 text-white rounded-full px-4 py-2 text-sm">
-                                    Vào học
-                                  </Button>
-                                </Link>
-                              ) : session.type === 'livestream' && session.timeSlots && session.timeSlots.length > 0 ? (
-                                <LivestreamTimeSlotsDialog
-                                  sessionTitle={session.title}
-                                  sessionDate={session.date}
-                                  timeSlots={session.timeSlots}
-                                >
-                                  <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-4 py-2 text-sm">
-                                    Đăng Ký học
-                                  </Button>
-                                </LivestreamTimeSlotsDialog>
-                              ) : null}
-                            </div>
-                          </div>
+                          )}
                         </div>
                       );
                     })}
