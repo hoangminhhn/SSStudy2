@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Download, Edit, AlertTriangle } from "lucide-react";
 import GuidedTourOverlay from "@/components/tour/GuidedTourOverlay";
 import NotesSidebar from "@/components/lesson/NotesSidebar"; // Import the new NotesSidebar
+import AskQuestionSidebar from "@/components/lesson/AskQuestionSidebar"; // Import the new AskQuestionSidebar
 
 // Dummy data for lessons, derived from CourseContent's chapters for consistency
 const allChaptersData = [
@@ -186,7 +187,8 @@ const LessonDetailPageV2 = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isTourActive, setIsTourActive] = useState(false);
   const [currentTourStepIndex, setCurrentTourStepIndex] = useState(0);
-  const [isNotesSidebarOpen, setIsNotesSidebarOpen] = useState(false); // New state for notes sidebar
+  const [isNotesSidebarOpen, setIsNotesSidebarOpen] = useState(false);
+  const [isAskQuestionSidebarOpen, setIsAskQuestionSidebarOpen] = useState(false); // New state for ask question sidebar
 
   // Define tour steps (unchanged)
   const tourSteps = [
@@ -287,7 +289,7 @@ const LessonDetailPageV2 = () => {
         currentLessonCount={currentLessonIndex + 1}
         totalLessonCount={totalLessons}
         onHelpClick={startTour}
-        onNotesClick={() => setIsNotesSidebarOpen(true)} // Pass handler to open notes sidebar
+        onNotesClick={() => setIsNotesSidebarOpen(true)}
       />
       <div className="flex-grow flex lg:flex-row overflow-hidden">
         <div className={`flex flex-col bg-white overflow-y-auto h-full relative ${isSidebarOpen ? 'lg:w-2/3' : 'lg:w-full'}`}>
@@ -318,7 +320,7 @@ const LessonDetailPageV2 = () => {
             </Button>
           </div>
 
-          <FloatingAskQuestionButton onClick={() => console.log("Ask question clicked")} />
+          <FloatingAskQuestionButton onClick={() => setIsAskQuestionSidebarOpen(true)} />
         </div>
 
         {isSidebarOpen && (
@@ -350,6 +352,11 @@ const LessonDetailPageV2 = () => {
       <NotesSidebar
         isOpen={isNotesSidebarOpen}
         onClose={() => setIsNotesSidebarOpen(false)}
+      />
+
+      <AskQuestionSidebar
+        isOpen={isAskQuestionSidebarOpen}
+        onClose={() => setIsAskQuestionSidebarOpen(false)}
       />
     </div>
   );
