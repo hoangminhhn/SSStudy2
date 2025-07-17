@@ -32,6 +32,9 @@ const LivestreamTimeSlotsDialog: React.FC<LivestreamTimeSlotsDialogProps> = ({
   sessionDate,
   timeSlots,
 }) => {
+  // Filter to only show available slots
+  const availableTimeSlots = timeSlots.filter(slot => slot.registrationStatus === 'register');
+
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
@@ -45,8 +48,8 @@ const LivestreamTimeSlotsDialog: React.FC<LivestreamTimeSlotsDialogProps> = ({
           </DialogDescription>
         </DialogHeader>
         <div className="py-4 space-y-4">
-          {timeSlots.length > 0 ? (
-            timeSlots.map((slot, index) => (
+          {availableTimeSlots.length > 0 ? (
+            availableTimeSlots.map((slot, index) => (
               <div
                 key={index}
                 className="flex items-center justify-between p-3 border rounded-lg shadow-sm bg-gray-50"
