@@ -126,16 +126,17 @@ const CourseContentTabs: React.FC<CourseContentTabsProps> = ({ courseId }) => {
                         </div>
                         <div className="flex items-center space-x-2">
                           {lesson.status === "free" ? (
-                            <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs font-semibold">
+                            <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs font-semibold min-w-[40px] text-center">
                               Free
                             </span>
                           ) : (
-                            // Display only one 'Pro' badge if status is 'pro'
-                            <span className="bg-red-100 text-red-700 px-2 py-0.5 rounded-full text-xs font-semibold">
+                            <span className="bg-red-100 text-red-700 px-2 py-0.5 rounded-full text-xs font-semibold min-w-[40px] text-center">
                               Pro
                             </span>
                           )}
-                          <span className="text-gray-500 text-sm">{lesson.duration}</span>
+                          <span className="text-gray-500 text-sm w-[45px] text-right">
+                            {lesson.duration}
+                          </span>
                           {lesson.locked && <Lock size={16} className="text-gray-400" />}
                         </div>
                       </div>
