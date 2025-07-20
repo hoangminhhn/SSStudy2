@@ -63,23 +63,20 @@ const CourseDetailPageV3 = () => {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col v3-theme">
       <Header />
-      {/* BreadcrumbNav được di chuyển vào bên trong main và grid */}
-      <main className="flex-grow container mx-auto px-4 pb-8">
+      <BreadcrumbNav courseTitle={course.title} bgColor="gray-50" variant="v3" />
+      <main className="flex-grow container mx-auto px-4 pt-0 pb-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            <BreadcrumbNav courseTitle={course.title} bgColor="gray-50" variant="v3" />
-            <div className="mt-8"> {/* Thêm margin-top để đẩy nội dung cột 1 xuống */}
-              <CourseHeroV3
-                title={course.title}
-                teacher={course.teacher}
-                description={course.description}
-                guarantees={course.guarantees}
-              />
-              <CourseContentTabsV3 courseId={course.id} />
-            </div>
+            <CourseHeroV3
+              title={course.title}
+              teacher={course.teacher}
+              description={course.description}
+              guarantees={course.guarantees}
+            />
+            {/* CourseContentTabs moved inside the lg:col-span-2 div */}
+            <CourseContentTabsV3 courseId={course.id} />
           </div>
           <div className="lg:col-span-1">
-            {/* Cột này sẽ tự động căn chỉnh lên trên cùng của grid, ngang hàng với BreadcrumbNav */}
             <CoursePurchaseCardV3
               imageUrl={course.purchaseCard.imageUrl}
               currentPrice={course.purchaseCard.currentPrice}
@@ -90,7 +87,7 @@ const CourseDetailPageV3 = () => {
             />
           </div>
         </div>
-        {/* RelatedCourses vẫn nằm ngoài grid để chiếm toàn bộ chiều rộng */}
+        {/* RelatedCourses remains outside the grid to span full width if desired, or can be moved */}
         <RelatedCoursesV3 currentCourseId={course.id} />
       </main>
       <Footer />
