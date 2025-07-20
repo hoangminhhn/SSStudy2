@@ -234,12 +234,12 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
                                 </span>
                               )}
                             </div>
-                            <div className="flex items-center space-x-3 flex-shrink-0 min-w-[110px] justify-end">
+                            <div className="flex items-center space-x-4 flex-shrink-0 min-w-[140px] justify-end">
                               {lesson.type !== 'livestream' && (
-                                <>
+                                <div className="flex items-center space-x-4">
                                   <span
                                     className={cn(
-                                      "px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap",
+                                      "px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap min-w-[48px] text-center",
                                       lesson.status === "free"
                                         ? "bg-green-100 text-green-700"
                                         : "bg-red-100 text-red-700"
@@ -247,13 +247,17 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
                                   >
                                     {lesson.status === "free" ? "Free" : "Pro"}
                                   </span>
-                                  <span className="text-xs text-gray-500 whitespace-nowrap">
+                                  <span className="text-xs text-gray-500 w-[45px] text-right whitespace-nowrap">
                                     {lesson.duration}
                                   </span>
-                                  {lesson.status === "pro" && lesson.locked && (
-                                    <Lock size={14} className="text-gray-400" />
-                                  )}
-                                </>
+                                  <div className="w-5 flex justify-center items-center">
+                                    {lesson.status === "pro" && lesson.locked ? (
+                                      <Lock size={14} className="text-gray-400" />
+                                    ) : (
+                                      <div className="w-4" /> // Empty space to keep alignment
+                                    )}
+                                  </div>
+                                </div>
                               )}
                               {buttonContent}
                             </div>
