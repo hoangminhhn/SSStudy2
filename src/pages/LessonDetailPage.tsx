@@ -45,13 +45,13 @@ const LessonDetailPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gray-50">
       <Header />
       <BreadcrumbNav
         courseTitle={currentLessonData.courseTitle}
         lessonTitle={currentLessonData.title}
       />
-      <main className="flex-grow container mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <main className="flex-grow container mx-auto px-8 py-8 grid grid-cols-1 lg:grid-cols-2 gap-8"> {/* Changed px-4 to px-8 */}
         <div className="lg:col-span-1">
           <div className="mb-6">
             <Link to={`/lesson-v2/${lessonId}`}>

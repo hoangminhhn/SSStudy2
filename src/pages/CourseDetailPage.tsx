@@ -26,7 +26,7 @@ const CourseDetailPage = () => {
       <BreadcrumbNav
         courseTitle={courseId ? `Khóa học: ${courseId}` : "Chi tiết khóa học"} // Display courseId in breadcrumb
       />
-      <main className="flex-grow container mx-auto px-4 py-8">
+      <main className="flex-grow container mx-auto px-8 py-8"> {/* Changed px-4 to px-8 */}
         <CourseHero />
         <CourseContent />
         <CourseReview />
