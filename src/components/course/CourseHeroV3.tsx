@@ -21,7 +21,7 @@ const CourseHeroV3: React.FC<CourseHeroV3Props> = ({
     <div className="space-y-6"> {/* Container to add space between the two cards */}
       {/* First Card: Course general information */}
       <Card className="p-6 shadow-lg rounded-lg">
-        <h1 className="text-3xl font-bold text-v3-text-default mb-2">{title}</h1>
+        <h1 className="text-xl font-bold text-v3-text-default mb-2">{title}</h1>
         <p className="text-lg text-v3-text-muted mb-4">Thầy {teacher}</p>
         <p className="text-v3-text-default mb-4">{description}</p>
         <div className="flex items-center text-v3-text-muted text-sm space-x-4">
