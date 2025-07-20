@@ -25,13 +25,13 @@ const CourseHeroV2: React.FC<CourseHeroV2Props> = ({
         <p className="text-lg text-v2-text-muted mb-4">Thầy {teacher}</p>
         <p className="text-v2-text-default mb-4">{description}</p>
         <div className="flex items-center text-v2-text-muted text-sm space-x-4">
-          <div className="flex items-center">
-            <CalendarDays className="mr-1 text-blue-600" size={16} />
-            <span className="text-blue-600">Cập nhật vào tháng 4 năm 2025</span>
+          <div className="flex items-center text-blue-600">
+            <CalendarDays className="mr-1" size={16} />
+            <span>Cập nhật vào tháng 4 năm 2025</span>
           </div>
-          <div className="flex items-center">
-            <GraduationCap className="mr-1 text-blue-600" size={16} />
-            <span className="text-blue-600">2358 học viên đã học</span>
+          <div className="flex items-center text-blue-600">
+            <GraduationCap className="mr-1" size={16} />
+            <span>2358 học viên đã học</span>
           </div>
         </div>
       </Card>
