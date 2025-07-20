@@ -98,18 +98,6 @@
     --v2-border: 214.3 31.8% 91.4%; /* Standard border */
     --v2-background: 0 0% 100%; /* White background for cards */
   }
-
-  /* V3 Theme Colors */
-  .v3-theme {
-    --v3-primary: 270 80% 40%; /* A deep purple */
-    --v3-secondary: 180 70% 40%; /* A vibrant teal */
-    --v3-text-default: 240 10% 20%; /* Darker gray text */
-    --v3-text-muted: 240 5% 50%; /* Muted gray text */
-    --v3-border: 240 5% 90%; /* Light gray border */
-    --v3-background: 240 10% 98%; /* Very light gray background */
-    --v3-primary-foreground: 0 0% 100%; /* White text on primary */
-    --v3-secondary-foreground: 0 0% 100%; /* White text on secondary */
-  }
 }
 
 @layer base {

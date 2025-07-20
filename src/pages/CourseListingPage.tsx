@@ -54,17 +54,12 @@ const CourseListingPage = () => {
                   <User size={16} className="mr-2 text-gray-500" />
                   <span>{course.teacher}</span>
                 </div>
-                <Link to={`/courses-v2/${course.id}`}>
+                <Link to={`/courses-v2/${course.id}`}> {/* Link to the new V2 page */}
                   <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white rounded-full py-2">
                     Xem chi tiết V2 <BookOpen size={16} className="ml-2" />
                   </Button>
                 </Link>
-                <Link to={`/courses-v3/${course.id}`} className="mt-2 block">
-                  <Button className="w-full bg-purple-600 hover:bg-purple-700 text-white rounded-full py-2">
-                    Xem chi tiết V3 <BookOpen size={16} className="ml-2" />
-                  </Button>
-                </Link>
-                <Link to={`/courses/${course.id}`} className="mt-2 block">
+                <Link to={`/courses/${course.id}`} className="mt-2 block"> {/* Link to the old page for comparison */}
                   <Button variant="outline" className="w-full text-blue-600 border-blue-600 hover:bg-blue-50 rounded-full py-2">
                     Xem chi tiết (phiên bản cũ)
                   </Button>
