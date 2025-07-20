@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { isToday, parse } from 'date-fns';
 import { Link } from "react-router-dom";
 import { chapters, Chapter, Session, TimeSlot } from "@/data/courseData";
+import { showSuccess, showError } from "@/utils/toast"; // Import toast utilities
 
 interface CourseContentProps {
   isSidebar?: boolean;
@@ -82,19 +83,30 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
 
                         if (hasRegisterSlot) {
                           buttonContent = (
-                            <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-4 py-2 text-sm">
+                            <Button
+                              className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-4 py-2 text-sm"
+                              onClick={() => showSuccess("Đăng ký học livestream thành công, bạn hãy truy cập buổi học vào ngày học chính thức nhé!")}
+                            >
                               Đăng Ký học
                             </Button>
                           );
                         } else if (hasRegisteredSlot) {
                           buttonContent = (
-                            <Button className="bg-gray-400 text-gray-700 rounded-full px-4 py-2 text-sm cursor-not-allowed" disabled>
+                            <Button
+                              className="bg-gray-400 text-gray-700 rounded-full px-4 py-2 text-sm cursor-not-allowed"
+                              disabled
+                              onClick={() => showError("Bài học livestream sẽ được mở vào giờ và ngày học chính thức")}
+                            >
                               Đã đăng ký
                             </Button>
                           );
                         } else {
                           buttonContent = (
-                            <Button className="bg-red-600 text-white rounded-full px-4 py-2 text-sm cursor-not-allowed" disabled>
+                            <Button
+                              className="bg-red-600 text-white rounded-full px-4 py-2 text-sm cursor-not-allowed"
+                              disabled
+                              onClick={() => showError("Vui lòng liên hệ bộ phận chăm sóc khách hàng để được hướng dẫn")}
+                            >
                               Hết chỗ
                             </Button>
                           );
