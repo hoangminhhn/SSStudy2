@@ -18,7 +18,7 @@ const RelatedCourses: React.FC<RelatedCoursesProps> = ({ currentCourseId }) => {
       title: "[2K8 - SSLIVE] S1: Chuyên đề - Toán học 12",
       teacher: "Thầy Nguyễn Tiến Đạt",
       description: "Tổng hợp khóa học chuyên đề gồm 16 chương nhằm lấy lại kiến thức cho các bạn bị mất căn bản và chuẩn bị luyện thi vào đại học.",
-      image: "/images/20250630150800-ugrw2nuezq.png",
+      image: "/images/20250630150800-ugrw2nuezq.png", // Updated image path
       currentPrice: "2.500.000đ",
       oldPrice: "5.000.000đ",
       lessons: 30,
@@ -29,7 +29,7 @@ const RelatedCourses: React.FC<RelatedCoursesProps> = ({ currentCourseId }) => {
       title: "[2K8 - SSLIVE] S1: Chuyên đề - Vật lý 12",
       teacher: "Cô Phạm Thị H",
       description: "Khóa học chuyên sâu về các chuyên đề vật lý lớp 12, giúp học sinh nắm vững kiến thức và kỹ năng giải bài tập.",
-      image: "https://via.placeholder.com/400x200?text=Physics+Course",
+      image: "/images/20250630150800-ugrw2nuezq.png", // Updated image path
       currentPrice: "2.500.000đ",
       oldPrice: "5.000.000đ",
       lessons: 25,
@@ -40,7 +40,7 @@ const RelatedCourses: React.FC<RelatedCoursesProps> = ({ currentCourseId }) => {
       title: "[2K8 - SSLIVE] S1: Chuyên đề - Hóa học 12",
       teacher: "Thầy Lê Văn K",
       description: "Cung cấp kiến thức toàn diện về hóa học hữu cơ và vô cơ lớp 12, chuẩn bị cho kỳ thi THPT Quốc gia.",
-      image: "https://via.placeholder.com/400x200?text=Chemistry+Course",
+      image: "/images/20250630150800-ugrw2nuezq.png", // Updated image path
       currentPrice: "2.500.000đ",
       oldPrice: "5.000.000đ",
       lessons: 28,
@@ -51,7 +51,7 @@ const RelatedCourses: React.FC<RelatedCoursesProps> = ({ currentCourseId }) => {
       title: "[2K8 - SSLIVE] S1: Chuyên đề - Tiếng Anh 12",
       teacher: "Cô Nguyễn Thị M",
       description: "Khóa học giúp học sinh nâng cao kỹ năng tiếng Anh, chuẩn bị cho các kỳ thi quốc tế và THPT.",
-      image: "https://via.placeholder.com/400x200?text=English+Course",
+      image: "/images/20250630150800-ugrw2nuezq.png", // Updated image path
       currentPrice: "2.500.000đ",
       oldPrice: "5.000.000đ",
       lessons: 35,

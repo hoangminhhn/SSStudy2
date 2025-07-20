@@ -18,7 +18,7 @@ interface LessonVideoPlayerProps {
 const LessonVideoPlayer: React.FC<LessonVideoPlayerProps> = ({
   lessonTitle,
   videoUrl,
-  thumbnailUrl = "https://via.placeholder.com/1280x720?text=Video+Placeholder",
+  thumbnailUrl = "/images/20250630150800-ugrw2nuezq.png", // Updated default thumbnail URL
   updatedDate,
   onAddNote,
   rootId,

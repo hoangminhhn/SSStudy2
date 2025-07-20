@@ -21,7 +21,7 @@ const LessonHero: React.FC<LessonHeroProps> = ({
       {/* Video Player Placeholder */}
       <div className="relative w-full aspect-video bg-black rounded-lg overflow-hidden mb-6">
         <img
-          src="https://via.placeholder.com/1280x720?text=Video+Placeholder"
+          src="/images/20250630150800-ugrw2nuezq.png" // Updated image path
           alt="Video Thumbnail"
           className="w-full h-full object-cover"
         />

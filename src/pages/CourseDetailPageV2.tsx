@@ -30,7 +30,7 @@ const CourseDetailPageV2 = () => {
       "Áp dụng vốn từ vựng và ngữ pháp để nói và viết hai câu đơn liên kết và lưu loát.",
     ],
     purchaseCard: {
-      imageUrl: "https://via.placeholder.com/400x250?text=LIVESTREAM+TOAN+11",
+      imageUrl: "/images/20250630150800-ugrw2nuezq.png", // Updated image path
       currentPrice: "2.500.000đ",
       oldPrice: "5.000.000đ",
       countdown: "1d:6h:48m:16s",
