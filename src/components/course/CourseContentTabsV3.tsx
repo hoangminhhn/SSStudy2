@@ -3,7 +3,7 @@
 import React, { useState } from "react"; // Import useState
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
-import { Search, Lock } from "lucide-react";
+import { Search, Lock, Play, FileText } from "lucide-react"; // Import Play and FileText icons
 import {
   Accordion,
   AccordionContent,
@@ -12,8 +12,11 @@ import {
 } from "@/components/ui/accordion";
 import { cn } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
-import { chapters } from "@/data/courseData";
+import { chapters, TimeSlot } from "@/data/courseData"; // Import TimeSlot
 import { Link } from "react-router-dom";
+import { isToday, parse } from 'date-fns'; // Import date-fns utilities
+import { showSuccess, showError } from "@/utils/toast"; // Import toast utilities
+import { Button } from "@/components/ui/button"; // Import Button
 
 interface CourseContentTabsV3Props {
   courseId: string;
@@ -25,6 +28,9 @@ interface Lesson {
   status: "free" | "pro";
   duration: string;
   locked: boolean;
+  type?: 'normal' | 'livestream'; // Add this
+  timeSlots?: TimeSlot[]; // Add this
+  date: string; // Add this for parsing
 }
 
 interface Session {
@@ -55,8 +61,11 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
           id: session.sessionId,
           title: session.title,
           status: status,
-          duration: "45:00",
+          duration: "45:00", // Placeholder, as duration is not in original data
           locked: locked,
+          type: session.type, // Pass type
+          timeSlots: session.timeSlots, // Pass timeSlots
+          date: session.date, // Pass date
         };
       }),
     };
@@ -140,34 +149,107 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
                   </AccordionTrigger>
                   <AccordionContent className="pb-2 pt-0">
                     <div className="pl-6 pr-2 py-2 space-y-3">
-                      {session.lessons.map((lesson) => (
-                        <div key={lesson.id} className="flex items-center justify-between py-2">
-                          <div className="flex items-center">
-                            <Link to={`/lesson-v2/${lesson.id}`} className="text-gray-800 hover:text-blue-600 font-medium text-sm transition-colors duration-200">
-                              {lesson.title}
-                            </Link>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            {lesson.status === "free" ? (
-                              <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs font-semibold min-w-[40px] text-center">
-                                Free
-                              </span>
-                            ) : (
-                              <span className="bg-red-100 text-red-700 px-2 py-0.5 rounded-full text-xs font-semibold min-w-[40px] text-center">
-                                Pro
-                              </span>
-                            )}
-                            <div className="flex items-center">
-                              <span className="text-gray-500 text-sm w-[45px] text-right">
-                                {lesson.duration}
-                              </span>
-                              <div className="w-6 flex justify-center items-center">
-                                {lesson.locked && <Lock size={16} className="text-gray-400" />}
-                              </div>
+                      {session.lessons.map((lesson) => {
+                        const sessionDate = parse(lesson.date, 'dd/MM/yyyy', new Date());
+                        const isLiveToday = lesson.type === 'livestream' && isToday(sessionDate);
+                        const displayTime = lesson.type === 'livestream' && lesson.timeSlots && lesson.timeSlots.length > 0
+                          ? lesson.timeSlots[0].time
+                          : '';
+
+                        let buttonContent = null;
+                        if (lesson.type === 'livestream') {
+                          if (isLiveToday) {
+                            buttonContent = (
+                              <Link to={`/lesson-v2/${lesson.id}`}>
+                                <Button className="bg-purple-600 hover:bg-purple-700 text-white rounded-full px-4 py-2 text-sm">
+                                  Vào học
+                                </Button>
+                              </Link>
+                            );
+                          } else if (lesson.timeSlots) {
+                            const hasRegisterSlot = lesson.timeSlots.some(slot => slot.registrationStatus === 'register');
+                            const hasRegisteredSlot = lesson.timeSlots.some(slot => slot.registrationStatus === 'registered');
+
+                            if (hasRegisterSlot) {
+                              buttonContent = (
+                                <Button
+                                  className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-4 py-2 text-sm"
+                                  onClick={() => showSuccess("Đăng ký học livestream thành công, bạn hãy truy cập buổi học vào ngày học chính thức nhé!")}
+                                >
+                                  Đăng Ký học
+                                </Button>
+                              );
+                            } else if (hasRegisteredSlot) {
+                              buttonContent = (
+                                <Button
+                                  className="bg-gray-400 text-gray-700 rounded-full px-4 py-2 text-sm"
+                                  onClick={() => showError("Bài học livestream sẽ được mở vào giờ và ngày học chính thức")}
+                                >
+                                  Đã đăng ký
+                                </Button>
+                              );
+                            } else {
+                              buttonContent = (
+                                <Button
+                                  className="bg-red-600 text-white rounded-full px-4 py-2 text-sm"
+                                  onClick={() => showError("Vui lòng liên hệ bộ phận chăm sóc khách hàng để được hướng dẫn")}
+                                >
+                                  Hết chỗ
+                                </Button>
+                              );
+                            }
+                          }
+                        }
+
+                        return (
+                          <div key={lesson.id} className="flex items-center justify-between py-2">
+                            {/* Left: Icon and Lesson Title (always linked) */}
+                            <div className="flex items-center space-x-2">
+                              {lesson.type === 'livestream' ? (
+                                <Play size={18} className="text-orange-500 flex-shrink-0" />
+                              ) : (
+                                <FileText size={18} className="text-orange-500 flex-shrink-0" />
+                              )}
+                              <Link to={`/lesson-v2/${lesson.id}`} className="text-gray-800 hover:text-blue-600 font-medium text-sm transition-colors duration-200">
+                                {lesson.title}
+                              </Link>
+                            </div>
+
+                            {/* Right: Conditional content (Livestream button OR Status/Duration/Lock) */}
+                            <div className="flex flex-col items-end space-y-1">
+                              <span className="text-gray-500 text-xs">Ngày: {lesson.date}</span>
+                              {buttonContent ? (
+                                <>
+                                  {buttonContent}
+                                  {lesson.type === 'livestream' && displayTime && (
+                                    <span className="text-gray-500 text-xs">({displayTime})</span>
+                                  )}
+                                </>
+                              ) : (
+                                <div className="flex items-center space-x-2">
+                                  {lesson.status === "free" ? (
+                                    <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs font-semibold min-w-[40px] text-center">
+                                      Free
+                                    </span>
+                                  ) : (
+                                    <span className="bg-red-100 text-red-700 px-2 py-0.5 rounded-full text-xs font-semibold min-w-[40px] text-center">
+                                      Pro
+                                    </span>
+                                  )}
+                                  <div className="flex items-center">
+                                    <span className="text-gray-500 text-sm w-[45px] text-right">
+                                      {lesson.duration}
+                                    </span>
+                                    <div className="w-6 flex justify-center items-center">
+                                      {lesson.locked && <Lock size={16} className="text-gray-400" />}
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
                             </div>
                           </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </AccordionContent>
                 </AccordionItem>
