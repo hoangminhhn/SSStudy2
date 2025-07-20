@@ -13,28 +13,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { isToday, parse } from 'date-fns';
 import { Link } from "react-router-dom";
-import { chapters } from "@/data/courseData";
-
-interface TimeSlot {
-  time: string;
-  teacher: string;
-  registrationStatus: 'register' | 'registered' | 'full';
-}
-
-interface Session {
-  sessionId: string;
-  title: string;
-  date: string;
-  type?: 'normal' | 'livestream';
-  timeSlots?: TimeSlot[];
-}
-
-interface Chapter {
-  id: string;
-  progress: string;
-  title: string;
-  sessions: Session[];
-}
+import { chapters, Chapter, Session, TimeSlot } from "@/data/courseData"; // Import chapters and interfaces
 
 interface CourseContentProps {
   isSidebar?: boolean;
