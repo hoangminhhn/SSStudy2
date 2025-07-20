@@ -122,7 +122,7 @@ const CourseContentTabs: React.FC<CourseContentTabsProps> = ({ courseId }) => {
                     {session.lessons.map((lesson) => (
                       <div key={lesson.id} className="flex items-center justify-between py-2">
                         <div className="flex items-center">
-                          <span className="text-blue-600 font-medium text-sm">{lesson.title}</span>
+                          <span className="text-gray-800 hover:text-blue-600 font-medium text-sm transition-colors duration-200">{lesson.title}</span>
                         </div>
                         <div className="flex items-center space-x-2">
                           {lesson.status === "free" ? (
