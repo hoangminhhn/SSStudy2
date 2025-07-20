@@ -59,9 +59,22 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
       completedLessons: completed,
       totalLessons: total,
       lessons: chapter.sessions.map((session: ChapterSession, sessionIndex) => {
+        // Bài free theo ảnh: Buổi 1 và Buổi 5
+        const freeLessonsTitles = [
+          "Buổi 1: Tổng ôn lượng giác (phần 1)",
+          "Buổi 5: Tổng ôn PT, BPT mũ loga",
+        ];
+
+        const isFreeLesson = freeLessonsTitles.includes(session.title);
         const isFirstLessonOfFirstChapter = chapterIndex === 0 && sessionIndex === 0;
-        const status = isFirstLessonOfFirstChapter ? "free" : "pro";
-        const locked = !isFirstLessonOfFirstChapter;
+
+        let status: "free" | "pro" = "pro";
+        let locked = true;
+
+        if (isFreeLesson || isFirstLessonOfFirstChapter) {
+          status = "free";
+          locked = false;
+        }
 
         return {
           id: session.sessionId,
@@ -207,51 +220,49 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
                         }
 
                         return (
-                          <div key={lesson.id} className="flex flex-col py-2">
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center flex-grow pr-4 min-w-0 space-x-2">
-                                <Link
-                                  to={`/lesson-v2/${lesson.id}`}
-                                  className="text-gray-800 hover:text-blue-600 font-medium text-sm transition-colors duration-200 truncate"
-                                >
-                                  {lesson.title}
-                                </Link>
-                                {lesson.type === 'livestream' && (
-                                  <span className={LIVESTREAM_BADGE_CLASSES}>
-                                    Livestream
-                                  </span>
-                                )}
-                              </div>
-                              <div className="flex items-center space-x-4 flex-shrink-0">
-                                {lesson.type !== 'livestream' && (
-                                  <>
-                                    {lesson.status === "free" ? (
-                                      <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs font-semibold min-w-[40px] text-center whitespace-nowrap">
-                                        Free
-                                      </span>
-                                    ) : (
-                                      <span className="bg-red-100 text-red-700 px-2 py-0.5 rounded-full text-xs font-semibold min-w-[40px] text-center whitespace-nowrap">
+                          <div key={lesson.id} className="flex items-center justify-between py-1">
+                            <div className="flex items-center flex-grow max-w-[60%]">
+                              <Link
+                                to={lesson.type === 'livestream' ? `/lesson/${lesson.id}` : `/lesson-v2/${lesson.id}`}
+                                className="text-gray-800 hover:text-blue-600 font-medium text-sm transition-colors duration-200 truncate"
+                              >
+                                {lesson.title}
+                              </Link>
+                              {lesson.type === 'livestream' && (
+                                <span className={LIVESTREAM_BADGE_CLASSES + " ml-2"}>
+                                  Livestream
+                                </span>
+                              )}
+                            </div>
+                            <div className="flex items-center space-x-4 flex-shrink-0 min-w-[140px] justify-end">
+                              {lesson.type !== 'livestream' && (
+                                <>
+                                  {lesson.status === "free" ? (
+                                    <span
+                                      className={cn(
+                                        "px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap",
+                                        freeLessonsTitles.includes(lesson.title)
+                                          ? "bg-green-600 text-white"
+                                          : "bg-green-100 text-green-700"
+                                      )}
+                                    >
+                                      Free
+                                    </span>
+                                  ) : (
+                                    <>
+                                      <span className="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap">
                                         Pro
                                       </span>
-                                    )}
-                                    <div className="flex items-center">
-                                      <span className="text-gray-500 text-sm w-[45px] text-right whitespace-nowrap">
-                                        {lesson.duration}
-                                      </span>
-                                      <div className="w-6 flex justify-center items-center">
-                                        {lesson.locked && <Lock size={16} className="text-gray-400" />}
-                                      </div>
-                                    </div>
-                                  </>
-                                )}
-                                {buttonContent}
-                              </div>
+                                      {lesson.locked && <Lock size={16} className="text-gray-400" />}
+                                    </>
+                                  )}
+                                  <span className="text-xs text-gray-500 w-[45px] text-right whitespace-nowrap">
+                                    {lesson.duration}
+                                  </span>
+                                </>
+                              )}
+                              {buttonContent}
                             </div>
-                            {lesson.type === 'livestream' && displayTime && (
-                              <span className="text-xs text-gray-500 mt-1 ml-0 truncate">
-                                {lesson.date} - {displayTime}
-                              </span>
-                            )}
                           </div>
                         );
                       })}
