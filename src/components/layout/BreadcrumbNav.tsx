@@ -2,7 +2,6 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
-import { ChevronRight } from "lucide-react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -14,61 +13,55 @@ import { cn } from "@/lib/utils";
 
 interface BreadcrumbNavProps {
   courseTitle?: string;
-  lessonTitle?: string;
-  bgColor?: string;
+  bgColor?: string; // e.g., "black", "white"
+  textColor?: string; // e.g., "white", "black"
 }
 
-const BreadcrumbNav: React.FC<BreadcrumbNavProps> = ({ courseTitle, lessonTitle, bgColor }) => {
+const BreadcrumbNav: React.FC<BreadcrumbNavProps> = ({ courseTitle, bgColor, textColor = "text-black" }) => {
+  const navClasses = cn(
+    "py-3 px-4",
+    bgColor === "black" ? "bg-black" : "bg-white", // Apply background color
+  );
+
+  const linkClasses = cn(
+    "hover:opacity-80 transition-opacity",
+    textColor // Apply dynamic text color
+  );
+
   return (
-    <div className={cn("py-3 text-black", bgColor ? `bg-${bgColor}` : "bg-orange-500")}>
-      <div className="container mx-auto px-4"> {/* Added container mx-auto px-4 for alignment */}
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link to="/" className="text-black hover:text-gray-700">
-                  Trang Chủ
-                </Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator>
-              <ChevronRight className="h-4 w-4 text-black" />
-            </BreadcrumbSeparator>
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link to="/courses" className="text-black hover:text-gray-700">
-                  Khóa học
-                </Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            {courseTitle && (
-              <>
-                <BreadcrumbSeparator>
-                  <ChevronRight className="h-4 w-4 text-black" />
-                </BreadcrumbSeparator>
-                <BreadcrumbItem>
-                  <span className="text-black font-semibold">
+    <nav className={navClasses}>
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link to="/" className={linkClasses}>
+                Trang chủ
+              </Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link to="/courses-v2" className={linkClasses}>
+                Khóa học
+              </Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          {courseTitle && (
+            <>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link to="#" className={linkClasses}>
                     {courseTitle}
-                  </span>
-                </BreadcrumbItem>
-              </>
-            )}
-            {lessonTitle && (
-              <>
-                <BreadcrumbSeparator>
-                  <ChevronRight className="h-4 w-4 text-black" />
-                </BreadcrumbSeparator>
-                <BreadcrumbItem>
-                  <span className="text-black font-semibold">
-                    {lessonTitle}
-                  </span>
-                </BreadcrumbItem>
-              </>
-            )}
-          </BreadcrumbList>
-        </Breadcrumb>
-      </div>
-    </div>
+                  </Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+            </>
+          )}
+        </BreadcrumbList>
+      </Breadcrumb>
+    </nav>
   );
 };
 

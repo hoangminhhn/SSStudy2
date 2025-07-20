@@ -63,7 +63,7 @@ const CourseDetailPageV2 = () => {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col v2-theme">
       <Header />
-      <BreadcrumbNav courseTitle={course.title} bgColor="black" />
+      <BreadcrumbNav courseTitle={course.title} bgColor="black" textColor="text-white" /> {/* Added textColor="text-white" */}
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
@@ -74,7 +74,6 @@ const CourseDetailPageV2 = () => {
               updatedDate={course.updatedDate}
               studentCount={course.studentCount}
               guarantees={course.guarantees}
-              // Removed includes={course.purchaseCard.includedItems}
             />
             <CourseContentTabs courseId={course.id} />
           </div>
