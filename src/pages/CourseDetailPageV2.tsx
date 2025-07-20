@@ -25,12 +25,11 @@ const CourseDetailPageV2 = () => {
       "Đảm bảo đầu ra.",
       "Hình thành tư duy học đúng. Bổ Tư duy đọc dịch, viết dịch, nói dịch.",
       "Hiểu nhanh, chính xác nội dung một bài hoàn chỉnh thuộc nhiều chủ đề khó, lạ, thiếu từ vựng.",
-      "Có kiến thức về cấu trúc và cách tiếp cận bài thi IELTS hiệu quả.",
       "Nói và viết một đoạn/ một bài nhanh, lưu loát, tự nhiên và liên kết, kể cả khi gặp chủ đề lạ.",
       "Áp dụng vốn từ vựng và ngữ pháp để nói và viết hai câu đơn liên kết và lưu loát.",
     ],
     purchaseCard: {
-      imageUrl: "/images/20250630150800-ugrw2nuezq.png", // Updated image URL
+      imageUrl: "https://via.placeholder.com/400x250?text=LIVESTREAM+TOAN+11",
       currentPrice: "2.500.000đ",
       oldPrice: "5.000.000đ",
       countdown: "1d:6h:48m:16s",
@@ -61,9 +60,9 @@ const CourseDetailPageV2 = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col v2-theme">
+    <div className="min-h-screen bg-gray-50 flex flex-col v2-theme"> {/* Apply v2-theme here */}
       <Header />
-      <BreadcrumbNav courseTitle={course.title} bgColor="black" textColor="text-white" /> {/* Added textColor="text-white" */}
+      <BreadcrumbNav courseTitle={course.title} bgColor="v2-secondary" /> {/* Pass bgColor prop */}
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
@@ -74,8 +73,8 @@ const CourseDetailPageV2 = () => {
               updatedDate={course.updatedDate}
               studentCount={course.studentCount}
               guarantees={course.guarantees}
+              includes={course.purchaseCard.includedItems} // Reusing for now, ideally separate
             />
-            <CourseContentTabs courseId={course.id} />
           </div>
           <div className="lg:col-span-1">
             <CoursePurchaseCard
@@ -88,6 +87,7 @@ const CourseDetailPageV2 = () => {
             />
           </div>
         </div>
+        <CourseContentTabs courseId={course.id} />
         <RelatedCourses currentCourseId={course.id} />
       </main>
       <Footer />
