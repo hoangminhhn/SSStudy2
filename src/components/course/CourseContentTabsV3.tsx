@@ -221,7 +221,7 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
 
                         return (
                           <div key={lesson.id} className="flex items-center justify-between py-1">
-                            <div className="flex items-center flex-grow max-w-[60%]">
+                            <div className="flex flex-col max-w-[60%]">
                               <Link
                                 to={lesson.type === 'livestream' ? `/lesson/${lesson.id}` : `/lesson-v2/${lesson.id}`}
                                 className="text-gray-800 hover:text-blue-600 font-medium text-sm transition-colors duration-200 truncate"
@@ -229,8 +229,8 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
                                 {lesson.title}
                               </Link>
                               {lesson.type === 'livestream' && (
-                                <span className={LIVESTREAM_BADGE_CLASSES + " ml-2"}>
-                                  Livestream
+                                <span className="text-xs text-gray-500 mt-0.5">
+                                  Ngày: {lesson.date} {displayTime && `- ${displayTime}`}
                                 </span>
                               )}
                             </div>
