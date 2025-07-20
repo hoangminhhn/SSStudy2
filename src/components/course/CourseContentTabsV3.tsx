@@ -41,9 +41,9 @@ interface Session {
   lessons: Lesson[];
 }
 
-const LIVESTREAM_BUTTON_BASE_CLASSES = "h-8 min-w-[96px] rounded-full px-4 text-sm font-semibold whitespace-nowrap flex items-center justify-center transition-colors duration-200";
+const LIVESTREAM_BUTTON_BASE_CLASSES = "h-7 min-w-[88px] rounded-full px-3 text-xs font-semibold whitespace-nowrap flex items-center justify-center transition-colors duration-200";
 
-const LIVESTREAM_BADGE_CLASSES = "h-8 px-3 rounded-full bg-red-600 text-white text-xs font-semibold flex items-center justify-center select-none";
+const LIVESTREAM_BADGE_CLASSES = "h-6 px-2 rounded-full bg-red-600 text-white text-[10px] font-semibold flex items-center justify-center select-none";
 
 const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) => {
   const [searchTerm, setSearchTerm] = useState("");
