@@ -216,6 +216,17 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
                                 >
                                   {lesson.title}
                                 </Link>
+                                {lesson.type !== 'livestream' && (
+                                  lesson.status === "free" ? (
+                                    <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs font-semibold min-w-[40px] text-center whitespace-nowrap">
+                                      Free
+                                    </span>
+                                  ) : (
+                                    <span className="bg-red-100 text-red-700 px-2 py-0.5 rounded-full text-xs font-semibold min-w-[40px] text-center whitespace-nowrap">
+                                      Pro
+                                    </span>
+                                  )
+                                )}
                                 {lesson.type === 'livestream' && (
                                   <span className={LIVESTREAM_BADGE_CLASSES}>
                                     Livestream
@@ -224,25 +235,14 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
                               </div>
                               <div className="flex items-center space-x-4 flex-shrink-0">
                                 {lesson.type !== 'livestream' && (
-                                  <>
-                                    {lesson.status === "free" ? (
-                                      <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs font-semibold min-w-[40px] text-center whitespace-nowrap">
-                                        Free
-                                      </span>
-                                    ) : (
-                                      <span className="bg-red-100 text-red-700 px-2 py-0.5 rounded-full text-xs font-semibold min-w-[40px] text-center whitespace-nowrap">
-                                        Pro
-                                      </span>
-                                    )}
-                                    <div className="flex items-center">
-                                      <span className="text-gray-500 text-sm w-[45px] text-right whitespace-nowrap">
-                                        {lesson.duration}
-                                      </span>
-                                      <div className="w-6 flex justify-center items-center">
-                                        {lesson.locked && <Lock size={16} className="text-gray-400" />}
-                                      </div>
+                                  <div className="flex items-center">
+                                    <span className="text-gray-500 text-sm w-[45px] text-right whitespace-nowrap">
+                                      {lesson.duration}
+                                    </span>
+                                    <div className="w-6 flex justify-center items-center">
+                                      {lesson.locked && <Lock size={16} className="text-gray-400" />}
                                     </div>
-                                  </>
+                                  </div>
                                 )}
                                 {buttonContent}
                               </div>
