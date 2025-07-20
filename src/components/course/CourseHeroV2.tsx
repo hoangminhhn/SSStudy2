@@ -12,7 +12,7 @@ interface CourseHeroV2Props {
   updatedDate: string;
   studentCount: number;
   guarantees: string[];
-  includes: string[];
+  // Removed 'includes' prop as it's no longer needed here
 }
 
 const CourseHeroV2: React.FC<CourseHeroV2Props> = ({
@@ -22,7 +22,7 @@ const CourseHeroV2: React.FC<CourseHeroV2Props> = ({
   updatedDate,
   studentCount,
   guarantees,
-  includes,
+  // Removed 'includes' from destructuring
 }) => {
   return (
     <Card className="p-6 shadow-lg rounded-lg">
@@ -44,23 +44,13 @@ const CourseHeroV2: React.FC<CourseHeroV2Props> = ({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
         {guarantees.map((item, index) => (
           <div key={index} className="flex items-start text-v2-text-default">
-            <CheckCircle size={20} className="text-green-500 mr-2 flex-shrink-0 mt-1" /> {/* Keep green for success */}
+            <CheckCircle size={20} className="text-green-500 mr-2 flex-shrink-0 mt-1" />
             <p className="text-sm">{item}</p>
           </div>
         ))}
       </div>
 
-      <div className="border-t border-v2-border pt-6">
-        <h2 className="text-xl font-bold text-v2-text-default mb-4">Khóa học này bao gồm</h2>
-        <ul className="space-y-2 text-v2-text-default">
-          {includes.map((item, index) => (
-            <li key={index} className="flex items-start">
-              <span className="w-2 h-2 bg-v2-text-muted rounded-full flex-shrink-0 mt-2 mr-3"></span>
-              <p className="text-sm">{item}</p>
-            </li>
-          ))}
-        </ul>
-      </div>
+      {/* Removed the "Khóa học này bao gồm" section */}
     </Card>
   );
 };

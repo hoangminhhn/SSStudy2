@@ -74,7 +74,7 @@ const CourseDetailPageV2 = () => {
               updatedDate={course.updatedDate}
               studentCount={course.studentCount}
               guarantees={course.guarantees}
-              includes={course.purchaseCard.includedItems} // Reusing for now, ideally separate
+              // Removed includes={course.purchaseCard.includedItems}
             />
             <CourseContentTabs courseId={course.id} />
           </div>
