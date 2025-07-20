@@ -13,7 +13,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { isToday, parse } from 'date-fns';
 import { Link } from "react-router-dom";
-import { chapters, Chapter, Session, TimeSlot } from "@/data/courseData"; // Import chapters and interfaces
+import { chapters, Chapter, Session, TimeSlot } from "@/data/courseData";
 
 interface CourseContentProps {
   isSidebar?: boolean;
@@ -102,41 +102,37 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
                       }
 
                       return (
-                        <div key={session.sessionId} className="flex flex-col py-2">
-                          {/* Hàng trên: Icon + Tiêu đề + Ngày */}
-                          <div className="flex items-start justify-between mb-2">
-                            <div className="flex items-center space-x-3 flex-grow">
-                              <span className="w-2 h-2 bg-gray-400 rounded-full flex-shrink-0 mt-2"></span>
+                        <div key={session.sessionId} className="flex justify-between items-start py-2">
+                          {/* Left Section: Icon, Title, Livestream Badge */}
+                          <div className="flex flex-col flex-grow pr-4">
+                            <div className="flex items-center space-x-3 mb-1">
+                              <span className="w-2 h-2 bg-gray-400 rounded-full flex-shrink-0"></span>
                               {session.type === 'livestream' ? (
-                                <Play size={18} className="text-orange-500 flex-shrink-0 mt-2" />
+                                <Play size={18} className="text-orange-500 flex-shrink-0" />
                               ) : (
-                                <FileText size={18} className="text-orange-500 flex-shrink-0 mt-2" />
+                                <FileText size={18} className="text-orange-500 flex-shrink-0" />
                               )}
                               <Link
                                 to={`/lesson/${session.sessionId}`}
-                                className="text-gray-800 hover:underline flex-grow"
+                                className="text-gray-800 hover:underline font-medium"
                                 id={sessionIndex === 0 && chapter.id === "chapter-1" ? "tour-first-lesson-item" : undefined}
                               >
                                 {session.title}
                               </Link>
                             </div>
-                            <span className="text-gray-500 text-sm flex-shrink-0 ml-4 mt-2">
-                              Ngày: {session.date}
-                            </span>
+                            {session.type === 'livestream' && session.timeSlots && session.timeSlots.length > 0 && (
+                              <Badge variant="destructive" className="bg-red-500 text-white px-4 py-2 ml-8 mt-1 w-fit">
+                                Livestream {displayTime && `(${displayTime})`}
+                              </Badge>
+                            )}
                           </div>
 
-                          {/* Hàng dưới: Livestream Badge + Buttons */}
-                          <div className="flex items-center justify-between pl-8">
-                            <div className="flex items-center space-x-2">
-                              {session.type === 'livestream' && (
-                                <Badge variant="destructive" className="bg-red-500 text-white px-4 py-2">
-                                  Livestream {displayTime && `(${displayTime})`}
-                                </Badge>
-                              )}
-                            </div>
-                            <div className="flex items-center space-x-4">
-                              {buttonContent}
-                            </div>
+                          {/* Right Section: Date and Button */}
+                          <div className="flex flex-col items-end space-y-2 flex-shrink-0">
+                            <span className="text-gray-500 text-sm">
+                              Ngày: {session.date}
+                            </span>
+                            {buttonContent}
                           </div>
                         </div>
                       );
