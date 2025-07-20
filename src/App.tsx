@@ -8,6 +8,7 @@ import CourseListingPage from "./pages/CourseListingPage"; // New Course Listing
 import CourseDetailPage from "./pages/CourseDetailPage"; // Course Detail Page
 import LessonDetailPage from "./pages/LessonDetailPage";
 import LessonDetailPageV2 from "./pages/LessonDetailPageV2";
+import CourseDetailPageV2 from "./pages/CourseDetailPageV2"; // Import the new V2 page
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,6 +23,7 @@ const App = () => (
           <Route path="/" element={<Index />} /> {/* Home Page */}
           <Route path="/courses" element={<CourseListingPage />} /> {/* Course Listing Page */}
           <Route path="/courses/:courseId" element={<CourseDetailPage />} /> {/* Course Detail Page */}
+          <Route path="/courses-v2/:courseId" element={<CourseDetailPageV2 />} /> {/* New Course Detail Page V2 */}
           <Route path="/lesson/:lessonId" element={<LessonDetailPage />} />
           <Route path="/lesson-v2/:lessonId" element={<LessonDetailPageV2 />} />
           <Route path="*" element={<NotFound />} />
