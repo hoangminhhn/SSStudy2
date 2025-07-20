@@ -60,10 +60,10 @@ const CourseDetailPageV2 = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col v2-theme">
+    <div className="min-h-screen bg-gray-50 flex flex-col v2-theme"> {/* Apply v2-theme here */}
       <Header />
-      <BreadcrumbNav courseTitle={course.title} bgColor="black" />
-      <main className="flex-grow container mx-auto px-8 py-8"> {/* Changed px-4 to px-8 */}
+      <BreadcrumbNav courseTitle={course.title} bgColor="v2-secondary" /> {/* Pass bgColor prop */}
+      <main className="flex-grow container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
             <CourseHeroV2

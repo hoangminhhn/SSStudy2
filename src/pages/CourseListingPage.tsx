@@ -39,7 +39,7 @@ const CourseListingPage = () => {
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
       <BreadcrumbNav />
-      <main className="flex-grow container mx-auto px-8 py-8"> {/* Changed px-4 to px-8 */}
+      <main className="flex-grow container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">Các Khóa Học Nổi Bật</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {courses.map((course) => (

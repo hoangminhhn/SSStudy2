@@ -131,7 +131,7 @@ const LessonDetailPageV2 = () => {
         onHelpClick={startTour}
         onNotesClick={() => setIsNotesSidebarOpen(true)}
       />
-      <div className="flex-grow container mx-auto px-8 py-8 flex lg:flex-row overflow-hidden"> {/* Added container mx-auto px-8 py-8 */}
+      <div className="flex-grow flex lg:flex-row overflow-hidden">
         <div className={`flex flex-col bg-white overflow-y-auto h-full relative ${isSidebarOpen ? 'lg:w-2/3' : 'lg:w-full'}`}>
           <div className="px-6 pt-6 pb-0">
             <LessonVideoPlayer
