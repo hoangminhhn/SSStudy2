@@ -62,7 +62,7 @@ const CourseDetailPageV2 = () => {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col v2-theme"> {/* Apply v2-theme here */}
       <Header />
-      <BreadcrumbNav courseTitle={course.title} bgColor="v2-secondary" /> {/* Pass bgColor prop */}
+      <BreadcrumbNav courseTitle={course.title} bgColor="background" /> {/* Changed bgColor to "background" */}
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
