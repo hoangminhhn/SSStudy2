@@ -109,11 +109,11 @@ const CourseContentTabs: React.FC<CourseContentTabsProps> = ({ courseId }) => {
             {dummyCourseContent.map((session) => (
               <AccordionItem key={session.id} value={session.id} className="border-b border-gray-200 last:border-b-0">
                 <AccordionTrigger className="flex items-center justify-between py-4 text-base font-semibold text-gray-800 hover:no-underline">
-                  <div className="flex items-center">
+                  <div className="flex items-center flex-grow"> {/* Added flex-grow */}
                     {/* Chevron icon will be handled by AccordionTrigger itself */}
                     <span className="ml-2">{session.title}</span>
                   </div>
-                  <span className="text-sm text-gray-500">
+                  <span className="text-sm text-gray-500 flex-shrink-0"> {/* Added flex-shrink-0 */}
                     Hoàn thành {session.completedLessons}% {session.completedLessons}/{session.totalLessons} Bài giảng
                   </span>
                 </AccordionTrigger>
