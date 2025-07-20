@@ -59,9 +59,13 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
       completedLessons: completed,
       totalLessons: total,
       lessons: chapter.sessions.map((session: ChapterSession, sessionIndex) => {
+        // Override status and locked for the specific lesson title
+        const isFreeLesson =
+          session.title === "Buổi 6: Tổng ôn bài toán tăng trưởng, lãi suất";
+
         const isFirstLessonOfFirstChapter = chapterIndex === 0 && sessionIndex === 0;
-        const status = isFirstLessonOfFirstChapter ? "free" : "pro";
-        const locked = !isFirstLessonOfFirstChapter;
+        const status = isFreeLesson ? "free" : (isFirstLessonOfFirstChapter ? "free" : "pro");
+        const locked = isFreeLesson ? false : !isFirstLessonOfFirstChapter;
 
         return {
           id: session.sessionId,
@@ -221,19 +225,18 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
                                     Livestream
                                   </span>
                                 )}
+                                {lesson.type !== 'livestream' && lesson.status === "free" && (
+                                  <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs font-semibold min-w-[40px] text-center whitespace-nowrap">
+                                    Free
+                                  </span>
+                                )}
                               </div>
                               <div className="flex items-center space-x-4 flex-shrink-0">
-                                {lesson.type !== 'livestream' && (
+                                {lesson.type !== 'livestream' && lesson.status === "pro" && (
                                   <>
-                                    {lesson.status === "free" ? (
-                                      <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs font-semibold min-w-[40px] text-center whitespace-nowrap">
-                                        Free
-                                      </span>
-                                    ) : (
-                                      <span className="bg-red-100 text-red-700 px-2 py-0.5 rounded-full text-xs font-semibold min-w-[40px] text-center whitespace-nowrap">
-                                        Pro
-                                      </span>
-                                    )}
+                                    <span className="bg-red-100 text-red-700 px-2 py-0.5 rounded-full text-xs font-semibold min-w-[40px] text-center whitespace-nowrap">
+                                      Pro
+                                    </span>
                                     <div className="flex items-center">
                                       <span className="text-gray-500 text-sm w-[45px] text-right whitespace-nowrap">
                                         {lesson.duration}
@@ -250,6 +253,11 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
                             {lesson.type === 'livestream' && displayTime && (
                               <span className="text-xs text-gray-500 mt-1 ml-0 truncate">
                                 {lesson.date} - {displayTime}
+                              </span>
+                            )}
+                            {lesson.type !== 'livestream' && (
+                              <span className="text-xs text-gray-500 mt-1 ml-0 truncate">
+                                {lesson.duration}
                               </span>
                             )}
                           </div>
