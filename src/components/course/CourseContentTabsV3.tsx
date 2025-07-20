@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
 import { chapters, Session as ChapterSession, TimeSlot } from "@/data/courseData";
 import { Link } from "react-router-dom";
+import { isToday, parse } from "date-fns";
 import { showSuccess, showError } from "@/utils/toast";
 import { Button } from "@/components/ui/button";
 
@@ -40,6 +41,12 @@ interface Session {
   lessons: Lesson[];
 }
 
+const LIVESTREAM_COMMON_CLASSES = "h-7 px-3 rounded-full text-xs font-semibold flex items-center justify-center whitespace-nowrap select-none";
+
+const LIVESTREAM_BADGE_CLASSES = LIVESTREAM_COMMON_CLASSES + " bg-red-600 text-white";
+
+const LIVESTREAM_BUTTON_BASE_CLASSES = LIVESTREAM_COMMON_CLASSES + " transition-colors duration-200";
+
 const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) => {
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -52,24 +59,9 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
       completedLessons: completed,
       totalLessons: total,
       lessons: chapter.sessions.map((session: ChapterSession, sessionIndex) => {
-        // Gán status và locked cho các bài đặc biệt
-        const isFreeLesson6 = session.title === "Buổi 6: Tổng ôn bài toán tăng trưởng, lãi suất";
-        const isFreeLesson5 = session.title === "Buổi 5: Tổng ôn PT, BPT mũ loga";
-
         const isFirstLessonOfFirstChapter = chapterIndex === 0 && sessionIndex === 0;
-
-        let status: "free" | "pro" = "pro";
-        let locked = true;
-
-        if (isFreeLesson6 || isFirstLessonOfFirstChapter) {
-          status = "free";
-          locked = false;
-        }
-
-        if (isFreeLesson5) {
-          status = "free";
-          locked = false;
-        }
+        const status = isFirstLessonOfFirstChapter ? "free" : "pro";
+        const locked = !isFirstLessonOfFirstChapter;
 
         return {
           id: session.sessionId,
@@ -160,37 +152,109 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
                   </AccordionTrigger>
                   <AccordionContent className="pb-2 pt-0">
                     <div className="pl-6 pr-2 py-2 space-y-3">
-                      {session.lessons.map((lesson) => (
-                        <div key={lesson.id} className="flex items-center justify-between py-1">
-                          <Link
-                            to={`/lesson-v2/${lesson.id}`}
-                            className="text-gray-800 hover:text-blue-600 font-medium text-sm transition-colors duration-200 truncate max-w-[70%]"
-                          >
-                            {lesson.title}
-                          </Link>
-                          <div className="flex items-center space-x-2">
-                            {lesson.status === "free" ? (
-                              <span
-                                className={cn(
-                                  "px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap",
-                                  lesson.title === "Buổi 5: Tổng ôn PT, BPT mũ loga"
-                                    ? "bg-green-600 text-white"
-                                    : "bg-green-100 text-green-700"
+                      {session.lessons.map((lesson) => {
+                        const sessionDate = parse(lesson.date, 'dd/MM/yyyy', new Date());
+                        const isLiveToday = lesson.type === 'livestream' && isToday(sessionDate);
+                        const displayTime = lesson.type === 'livestream' && lesson.timeSlots && lesson.timeSlots.length > 0
+                          ? lesson.timeSlots[0].time
+                          : '';
+
+                        let buttonContent = null;
+                        if (lesson.type === 'livestream') {
+                          if (isLiveToday) {
+                            buttonContent = (
+                              <Link to={`/lesson/${lesson.id}`}>
+                                <Button
+                                  className={`${LIVESTREAM_BUTTON_BASE_CLASSES} bg-v3-primary hover:bg-v3-primary/90 text-v3-primary-foreground`}
+                                >
+                                  Vào học
+                                </Button>
+                              </Link>
+                            );
+                          } else if (lesson.timeSlots) {
+                            const hasRegisterSlot = lesson.timeSlots.some(slot => slot.registrationStatus === 'register');
+                            const hasRegisteredSlot = lesson.timeSlots.some(slot => slot.registrationStatus === 'registered');
+
+                            if (hasRegisterSlot) {
+                              buttonContent = (
+                                <Button
+                                  className={`${LIVESTREAM_BUTTON_BASE_CLASSES} bg-v3-secondary hover:bg-v3-secondary/90 text-v3-background`}
+                                  onClick={() => showSuccess("Đăng ký học livestream thành công, bạn hãy truy cập buổi học vào ngày học chính thức nhé!")}
+                                >
+                                  Đăng Ký học
+                                </Button>
+                              );
+                            } else if (hasRegisteredSlot) {
+                              buttonContent = (
+                                <Button
+                                  className={`${LIVESTREAM_BUTTON_BASE_CLASSES} bg-gray-400 text-gray-700 cursor-default`}
+                                  onClick={() => showError("Bài học livestream sẽ được mở vào giờ và ngày học chính thức")}
+                                >
+                                  Đã đăng ký
+                                </Button>
+                              );
+                            } else {
+                              buttonContent = (
+                                <Button
+                                  className={`${LIVESTREAM_BUTTON_BASE_CLASSES} bg-red-600 text-white`}
+                                  onClick={() => showError("Vui lòng liên hệ bộ phận chăm sóc khách hàng để được hướng dẫn")}
+                                >
+                                  Hết chỗ
+                                </Button>
+                              );
+                            }
+                          }
+                        }
+
+                        return (
+                          <div key={lesson.id} className="flex flex-col py-2">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center flex-grow pr-4 min-w-0 space-x-2">
+                                <Link
+                                  to={`/lesson-v2/${lesson.id}`}
+                                  className="text-gray-800 hover:text-blue-600 font-medium text-sm transition-colors duration-200 truncate"
+                                >
+                                  {lesson.title}
+                                </Link>
+                                {lesson.type === 'livestream' && (
+                                  <span className={LIVESTREAM_BADGE_CLASSES}>
+                                    Livestream
+                                  </span>
                                 )}
-                              >
-                                Free
+                              </div>
+                              <div className="flex items-center space-x-4 flex-shrink-0">
+                                {lesson.type !== 'livestream' && (
+                                  <>
+                                    {lesson.status === "free" ? (
+                                      <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs font-semibold min-w-[40px] text-center whitespace-nowrap">
+                                        Free
+                                      </span>
+                                    ) : (
+                                      <span className="bg-red-100 text-red-700 px-2 py-0.5 rounded-full text-xs font-semibold min-w-[40px] text-center whitespace-nowrap">
+                                        Pro
+                                      </span>
+                                    )}
+                                    <div className="flex items-center">
+                                      <span className="text-gray-500 text-sm w-[45px] text-right whitespace-nowrap">
+                                        {lesson.duration}
+                                      </span>
+                                      <div className="w-6 flex justify-center items-center">
+                                        {lesson.locked && <Lock size={16} className="text-gray-400" />}
+                                      </div>
+                                    </div>
+                                  </>
+                                )}
+                                {buttonContent}
+                              </div>
+                            </div>
+                            {lesson.type === 'livestream' && displayTime && (
+                              <span className="text-xs text-gray-500 mt-1 ml-0 truncate">
+                                {lesson.date} - {displayTime}
                               </span>
-                            ) : (
-                              <>
-                                <span className="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap">
-                                  Pro
-                                </span>
-                                {lesson.locked && <Lock size={16} className="text-gray-400" />}
-                              </>
                             )}
                           </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </AccordionContent>
                 </AccordionItem>
