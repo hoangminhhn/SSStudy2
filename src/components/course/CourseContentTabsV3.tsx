@@ -41,6 +41,8 @@ interface Session {
   lessons: Lesson[];
 }
 
+const LIVESTREAM_BUTTON_BASE_CLASSES = "rounded-full px-5 py-2 text-sm font-semibold whitespace-nowrap transition-colors duration-200";
+
 const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) => {
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -158,7 +160,9 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
                           if (isLiveToday) {
                             buttonContent = (
                               <Link to={`/lesson/${lesson.id}`}>
-                                <Button className="bg-v3-primary hover:bg-v3-primary/90 text-v3-primary-foreground rounded-full px-4 py-2 text-sm whitespace-nowrap">
+                                <Button
+                                  className={`${LIVESTREAM_BUTTON_BASE_CLASSES} bg-v3-primary hover:bg-v3-primary/90 text-v3-primary-foreground`}
+                                >
                                   Vào học
                                 </Button>
                               </Link>
@@ -170,7 +174,7 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
                             if (hasRegisterSlot) {
                               buttonContent = (
                                 <Button
-                                  className="bg-v3-secondary hover:bg-v3-secondary/90 text-v3-background rounded-full px-4 py-2 text-sm whitespace-nowrap"
+                                  className={`${LIVESTREAM_BUTTON_BASE_CLASSES} bg-v3-secondary hover:bg-v3-secondary/90 text-v3-background`}
                                   onClick={() => showSuccess("Đăng ký học livestream thành công, bạn hãy truy cập buổi học vào ngày học chính thức nhé!")}
                                 >
                                   Đăng Ký học
@@ -179,7 +183,7 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
                             } else if (hasRegisteredSlot) {
                               buttonContent = (
                                 <Button
-                                  className="bg-gray-400 text-gray-700 rounded-full px-4 py-2 text-sm whitespace-nowrap"
+                                  className={`${LIVESTREAM_BUTTON_BASE_CLASSES} bg-gray-400 text-gray-700 cursor-default`}
                                   onClick={() => showError("Bài học livestream sẽ được mở vào giờ và ngày học chính thức")}
                                 >
                                   Đã đăng ký
@@ -188,7 +192,7 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
                             } else {
                               buttonContent = (
                                 <Button
-                                  className="bg-red-600 text-white rounded-full px-4 py-2 text-sm whitespace-nowrap"
+                                  className={`${LIVESTREAM_BUTTON_BASE_CLASSES} bg-red-600 text-white`}
                                   onClick={() => showError("Vui lòng liên hệ bộ phận chăm sóc khách hàng để được hướng dẫn")}
                                 >
                                   Hết chỗ
@@ -200,9 +204,12 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
 
                         return (
                           <div key={lesson.id} className="flex items-center justify-between py-2">
-                            <div className="flex flex-col flex-grow pr-4">
+                            <div className="flex flex-col flex-grow pr-4 min-w-0">
                               <div className="flex items-center space-x-2">
-                                <Link to={`/lesson-v2/${lesson.id}`} className="text-gray-800 hover:text-blue-600 font-medium text-sm transition-colors duration-200 truncate">
+                                <Link
+                                  to={`/lesson-v2/${lesson.id}`}
+                                  className="text-gray-800 hover:text-blue-600 font-medium text-sm transition-colors duration-200 truncate"
+                                >
                                   {lesson.title}
                                 </Link>
                                 {lesson.type === 'livestream' && (
