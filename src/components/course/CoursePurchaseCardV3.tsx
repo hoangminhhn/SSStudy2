@@ -25,15 +25,17 @@ const CoursePurchaseCardV3: React.FC<CoursePurchaseCardV3Props> = ({
   return (
     <Card className="p-6 shadow-lg rounded-lg">
       <img src={imageUrl} alt="Livestream Thumbnail" className="w-full h-auto rounded-lg object-cover mb-4" />
-      <div className="flex items-baseline justify-center mb-2">
+      <div className="flex items-baseline justify-start mb-2"> {/* Changed justify-center to justify-start */}
         <span className="text-4xl font-bold text-v3-primary mr-2">{currentPrice}</span>
         <span className="text-xl text-v3-text-muted line-through">{oldPrice}</span>
       </div>
-      <p className="flex items-center justify-center text-v3-primary font-semibold mb-4">
+      <p className="flex items-center justify-start text-v3-primary font-semibold mb-4"> {/* Changed justify-center to justify-start */}
         <Clock size={18} className="mr-2" />
         Kết thúc sau {countdown}
       </p>
-      <p className="text-center text-v3-text-muted text-sm mb-4">{promoText}</p>
+      <p className="text-left text-v3-text-muted text-sm mb-4"> {/* Changed text-center to text-left */}
+        {promoText}
+      </p>
 
       <div className="flex space-x-3 mb-6">
         <Button variant="outline" className="flex-1 text-v3-secondary border-v3-secondary hover:bg-v3-secondary/10 rounded-full py-3">
