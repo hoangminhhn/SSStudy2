@@ -29,9 +29,9 @@ const CourseHeroV2: React.FC<CourseHeroV2Props> = ({
             <CalendarDays className="mr-1" size={16} />
             <span>Cập nhật vào tháng 4 năm 2025</span>
           </div>
-          <div className="flex items-center text-blue-600">
-            <GraduationCap className="mr-1" size={16} />
-            <span>2358 học viên đã học</span>
+          <div className="flex items-center"> {/* Removed text-blue-600 from here */}
+            <GraduationCap className="mr-1" size={16} /> {/* Icon will inherit text-v2-text-muted from parent div */}
+            <span>2358 học viên đã học</span> {/* Text will inherit text-v2-text-muted from parent div */}
           </div>
         </div>
       </Card>
