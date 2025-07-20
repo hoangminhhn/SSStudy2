@@ -41,7 +41,9 @@ interface Session {
   lessons: Lesson[];
 }
 
-const LIVESTREAM_BUTTON_BASE_CLASSES = "rounded-full px-5 py-2 text-sm font-semibold whitespace-nowrap transition-colors duration-200";
+const LIVESTREAM_BUTTON_BASE_CLASSES = "h-8 min-w-[96px] rounded-full px-4 text-sm font-semibold whitespace-nowrap flex items-center justify-center transition-colors duration-200";
+
+const LIVESTREAM_BADGE_CLASSES = "h-8 px-3 rounded-full bg-red-600 text-white text-xs font-semibold flex items-center justify-center select-none";
 
 const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -213,7 +215,7 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
                                   {lesson.title}
                                 </Link>
                                 {lesson.type === 'livestream' && (
-                                  <span className="bg-red-600 text-white text-xs font-semibold px-2 py-0.5 rounded-full whitespace-nowrap select-none">
+                                  <span className={LIVESTREAM_BADGE_CLASSES}>
                                     Livestream
                                   </span>
                                 )}
