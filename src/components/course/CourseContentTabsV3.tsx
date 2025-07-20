@@ -234,31 +234,25 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
                                 </span>
                               )}
                             </div>
-                            <div className="flex items-center space-x-4 flex-shrink-0 min-w-[140px] justify-end">
+                            <div className="flex items-center space-x-3 flex-shrink-0 min-w-[110px] justify-end">
                               {lesson.type !== 'livestream' && (
                                 <>
-                                  {lesson.status === "free" ? (
-                                    <span
-                                      className={cn(
-                                        "px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap",
-                                        freeLessonsTitles.includes(lesson.title)
-                                          ? "bg-green-600 text-white"
-                                          : "bg-green-100 text-green-700"
-                                      )}
-                                    >
-                                      Free
-                                    </span>
-                                  ) : (
-                                    <>
-                                      <span className="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap">
-                                        Pro
-                                      </span>
-                                      {lesson.locked && <Lock size={16} className="text-gray-400" />}
-                                    </>
-                                  )}
-                                  <span className="text-xs text-gray-500 w-[45px] text-right whitespace-nowrap">
+                                  <span
+                                    className={cn(
+                                      "px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap",
+                                      lesson.status === "free"
+                                        ? "bg-green-100 text-green-700"
+                                        : "bg-red-100 text-red-700"
+                                    )}
+                                  >
+                                    {lesson.status === "free" ? "Free" : "Pro"}
+                                  </span>
+                                  <span className="text-xs text-gray-500 whitespace-nowrap">
                                     {lesson.duration}
                                   </span>
+                                  {lesson.status === "pro" && lesson.locked && (
+                                    <Lock size={14} className="text-gray-400" />
+                                  )}
                                 </>
                               )}
                               {buttonContent}
