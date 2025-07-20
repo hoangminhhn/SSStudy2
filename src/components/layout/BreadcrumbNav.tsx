@@ -16,11 +16,11 @@ interface BreadcrumbNavProps {
   courseTitle?: string;
   lessonTitle?: string;
   bgColor?: string;
-  variant?: "default" | "v2"; // New prop for variant styling
+  variant?: "default" | "v2" | "v3"; // New prop for variant styling
 }
 
 const BreadcrumbNav: React.FC<BreadcrumbNavProps> = ({ courseTitle, lessonTitle, bgColor, variant = "default" }) => {
-  const textColorClass = variant === "v2" ? "text-black" : "text-white";
+  const textColorClass = variant === "v2" || variant === "v3" ? "text-black" : "text-white";
 
   return (
     <div className={cn("py-3", bgColor ? `bg-${bgColor}` : "bg-orange-500", textColorClass)}>
