@@ -33,7 +33,7 @@ const BreadcrumbNav: React.FC<BreadcrumbNavProps> = ({ courseTitle, lessonTitle 
           </BreadcrumbSeparator>
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <Link to="/courses" className="text-white hover:text-gray-200">
+              <Link to="/courses" className="text-white hover:text-gray-200"> {/* Updated link */}
                 Khóa học
               </Link>
             </BreadcrumbLink>
