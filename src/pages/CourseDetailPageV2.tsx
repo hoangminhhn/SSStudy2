@@ -61,8 +61,8 @@ const CourseDetailPageV2 = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col v2-theme"> {/* Apply v2-theme here */}
-      <Header />
-      <BreadcrumbNav courseTitle={course.title} bgColor="v2-breadcrumb-bg" /> {/* Changed bgColor to "v2-breadcrumb-bg" */}
+      <Header bgColor="v2-dark-bg" />
+      <BreadcrumbNav courseTitle={course.title} bgColor="v2-breadcrumb-bg" />
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
@@ -80,10 +80,10 @@ const CourseDetailPageV2 = () => {
             <CoursePurchaseCard
               imageUrl={course.purchaseCard.imageUrl}
               currentPrice={course.purchaseCard.currentPrice}
-              oldPrice={course.oldPrice}
-              countdown={course.countdown}
-              promoText={course.promoText}
-              includedItems={course.includedItems}
+              oldPrice={course.purchaseCard.oldPrice}
+              countdown={course.purchaseCard.countdown}
+              promoText={course.purchaseCard.promoText}
+              includedItems={course.purchaseCard.includedItems}
             />
           </div>
         </div>
