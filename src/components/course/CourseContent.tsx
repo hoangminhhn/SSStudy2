@@ -3,7 +3,7 @@
 import React from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BookOpen, FileText, Play, User, Lock } from "lucide-react"; // Import Lock icon
+import { BookOpen, FileText, Play, User } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -68,10 +68,6 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
                         ? session.timeSlots[0].time
                         : '';
 
-                      // Determine if the lesson is 'Free' or 'Pro' based on sessionId for demonstration
-                      const isFree = session.sessionId.includes("buoi-1") || session.sessionId.includes("buoi-2"); // Example logic
-                      const isPro = !isFree; // All others are 'Pro'
-
                       let buttonContent = null;
                       if (isLiveToday) {
                         buttonContent = (
@@ -97,7 +93,7 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
                         } else if (hasRegisteredSlot) {
                           buttonContent = (
                             <Button
-                              className="bg-gray-400 text-gray-700 rounded-full px-4 py-2 text-sm"
+                              className="bg-gray-400 text-gray-700 rounded-full px-4 py-2 text-sm" // Removed cursor-not-allowed and disabled
                               onClick={() => showError("Bài học livestream sẽ được mở vào giờ và ngày học chính thức")}
                             >
                               Đã đăng ký
@@ -106,7 +102,7 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
                         } else {
                           buttonContent = (
                             <Button
-                              className="bg-red-600 text-white rounded-full px-4 py-2 text-sm"
+                              className="bg-red-600 text-white rounded-full px-4 py-2 text-sm" // Removed cursor-not-allowed and disabled
                               onClick={() => showError("Vui lòng liên hệ bộ phận chăm sóc khách hàng để được hướng dẫn")}
                             >
                               Hết chỗ
@@ -141,18 +137,12 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
                             )}
                           </div>
 
-                          {/* Right Section: Badges (Free/Pro) and Time */}
-                          <div className="flex items-center space-x-2 flex-shrink-0">
-                            {isFree ? (
-                              <Badge className="bg-green-500 text-white px-3 py-1 text-xs font-semibold">Free</Badge>
-                            ) : (
-                              <>
-                                <Badge className="bg-red-500 text-white px-3 py-1 text-xs font-semibold">Pro</Badge>
-                                <Badge className="bg-red-500 text-white px-3 py-1 text-xs font-semibold">Pro</Badge>
-                              </>
-                            )}
-                            <span className="text-gray-700 text-sm">{session.views ? `${session.views}:00` : '15:00'}</span> {/* Using views as dummy time */}
-                            {isPro && <Lock size={16} className="text-gray-500" />} {/* Lock icon for Pro lessons */}
+                          {/* Right Section: Date and Button */}
+                          <div className="flex flex-col items-end space-y-2 flex-shrink-0">
+                            <span className="text-gray-500 text-sm">
+                              Ngày: {session.date}
+                            </span>
+                            {buttonContent}
                           </div>
                         </div>
                       );
