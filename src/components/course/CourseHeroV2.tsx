@@ -12,7 +12,7 @@ interface CourseHeroV2Props {
   updatedDate: string;
   studentCount: number;
   guarantees: string[];
-  includes: string[];
+  includes: string[]; // This prop will no longer be rendered in this component
 }
 
 const CourseHeroV2: React.FC<CourseHeroV2Props> = ({
@@ -22,7 +22,7 @@ const CourseHeroV2: React.FC<CourseHeroV2Props> = ({
   updatedDate,
   studentCount,
   guarantees,
-  includes,
+  includes, // Still destructuring, but not used for rendering the section
 }) => {
   return (
     <Card className="p-6 shadow-lg rounded-lg">
@@ -50,6 +50,8 @@ const CourseHeroV2: React.FC<CourseHeroV2Props> = ({
         ))}
       </div>
 
+      {/* Removed the "Khóa học này bao gồm" section */}
+      {/*
       <div className="border-t border-v2-border pt-6">
         <h2 className="text-xl font-bold text-v2-text-default mb-4">Khóa học này bao gồm</h2>
         <ul className="space-y-2 text-v2-text-default">
@@ -61,6 +63,7 @@ const CourseHeroV2: React.FC<CourseHeroV2Props> = ({
           ))}
         </ul>
       </div>
+      */}
     </Card>
   );
 };
