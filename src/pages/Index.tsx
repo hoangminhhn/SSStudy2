@@ -1,9 +1,9 @@
 "use client";
 
-import CourseDetailPage from "./CourseDetailPage";
+import CourseDetailPageV2 from "./CourseDetailPageV2"; // Import the new CourseDetailPageV2
 
 const Index = () => {
-  return <CourseDetailPage />;
+  return <CourseDetailPageV2 />;
 };
 
 export default Index;

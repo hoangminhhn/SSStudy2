@@ -19,7 +19,7 @@ const Header = () => {
           <Link to="#" className="text-gray-700 hover:text-blue-600 font-medium">
             Giới thiệu
           </Link>
-          <Link to="#" className="text-gray-700 hover:text-blue-600 font-medium">
+          <Link to="/course-v2/master-hsa-giai-doan-1" className="text-gray-700 hover:text-blue-600 font-medium">
             Khóa học
           </Link>
           <Link to="#" className="text-gray-700 hover:text-blue-600 font-medium">
