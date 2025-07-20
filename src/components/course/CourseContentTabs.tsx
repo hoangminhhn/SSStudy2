@@ -134,12 +134,15 @@ const CourseContentTabs: React.FC<CourseContentTabsProps> = ({ courseId }) => {
                               Pro
                             </span>
                           )}
-                          {/* New container for duration and lock icon */}
-                          <div className="flex items-center justify-end min-w-[65px]">
-                            <span className="text-gray-500 text-sm">
+                          {/* Container for duration and lock icon */}
+                          <div className="flex items-center">
+                            <span className="text-gray-500 text-sm w-[45px] text-right">
                               {lesson.duration}
                             </span>
-                            {lesson.locked && <Lock size={16} className="text-gray-400 ml-1" />}
+                            {/* Fixed width container for the lock icon, always present */}
+                            <div className="w-6 flex justify-center items-center">
+                              {lesson.locked && <Lock size={16} className="text-gray-400" />}
+                            </div>
                           </div>
                         </div>
                       </div>
