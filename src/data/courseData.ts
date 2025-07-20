@@ -32,17 +32,37 @@ export const chapters: Chapter[] = [
         title: "Buổi 1: Tổng ôn lượng giác (phần 1)",
         teacher: "Thầy Nguyễn Tiến Đạt",
         views: 19,
-        date: "10/07/2024",
+        date: new Date().toLocaleDateString('en-GB'), // Set to today's date for "Vào học"
+        type: 'livestream',
+        timeSlots: [{ time: '19:00 - 21:00', teacher: 'Thầy Nguyễn Tiến Đạt', registrationStatus: 'registered' }], // Can be 'registered' or 'register' for today
       },
       {
         sessionId: "buoi-2-tong-on-luong-giac-phan-2",
         title: "Buổi 2: Tổng ôn lượng giác (phần 2)",
         teacher: "Thầy Nguyễn Tiến Đạt",
         views: 15,
-        date: "12/07/2024",
+        date: "25/07/2024", // Future date
+        type: 'livestream',
+        timeSlots: [{ time: '19:00 - 21:00', teacher: 'Thầy Nguyễn Tiến Đạt', registrationStatus: 'register' }], // "Đăng Ký học"
       },
-      { sessionId: "buoi-3-tong-on-csc-csn", title: "Buổi 3: Tổng ôn CSC – CSN", teacher: "Thầy Nguyễn Tiến Đạt", views: 10, date: "14/07/2024" },
-      { sessionId: "buoi-4-tong-on-ham-so-mu-loga", title: "Buổi 4: Tổng ôn hàm số mũ loga", teacher: "Thầy Nguyễn Tiến Đạt", views: 12, date: "16/07/2024" },
+      {
+        sessionId: "buoi-3-tong-on-csc-csn",
+        title: "Buổi 3: Tổng ôn CSC – CSN",
+        teacher: "Thầy Nguyễn Tiến Đạt",
+        views: 10,
+        date: "26/07/2024", // Future date
+        type: 'livestream',
+        timeSlots: [{ time: '19:00 - 21:00', teacher: 'Thầy Nguyễn Tiến Đạt', registrationStatus: 'registered' }], // "Đã đăng ký"
+      },
+      {
+        sessionId: "buoi-4-tong-on-ham-so-mu-loga",
+        title: "Buổi 4: Tổng ôn hàm số mũ loga",
+        teacher: "Thầy Nguyễn Tiến Đạt",
+        views: 12,
+        date: "27/07/2024", // Future date
+        type: 'livestream',
+        timeSlots: [{ time: '19:00 - 21:00', teacher: 'Thầy Nguyễn Tiến Đạt', registrationStatus: 'full' }], // "Hết chỗ"
+      },
       { sessionId: "buoi-5-tong-on-pt-bpt-mu-loga", title: "Buổi 5: Tổng ôn PT, BPT mũ loga", teacher: "Thầy Nguyễn Tiến Đạt", views: 8, date: "18/07/2024" },
       { sessionId: "buoi-6-tong-on-bai-toan-tang-truong-lai-suat", title: "Buổi 6: Tổng ôn bài toán tăng trưởng, lãi suất", teacher: "Thầy Nguyễn Tiến Đạt", views: 7, date: "20/07/2024" },
       { sessionId: "buoi-7-tong-on-gioi-han", title: "Buổi 7: Tổng ôn giới hạn", teacher: "Thầy Nguyễn Tiến Đạt", views: 11, date: "22/07/2024" },
