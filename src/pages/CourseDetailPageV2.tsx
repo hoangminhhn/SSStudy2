@@ -25,7 +25,6 @@ const CourseDetailPageV2 = () => {
       "Đảm bảo đầu ra.",
       "Hình thành tư duy học đúng. Bổ Tư duy đọc dịch, viết dịch, nói dịch.",
       "Hiểu nhanh, chính xác nội dung một bài hoàn chỉnh thuộc nhiều chủ đề khó, lạ, thiếu từ vựng.",
-      "Có kiến thức về cấu trúc và cách tiếp cận bài thi IELTS hiệu quả.",
       "Nói và viết một đoạn/ một bài nhanh, lưu loát, tự nhiên và liên kết, kể cả khi gặp chủ đề lạ.",
       "Áp dụng vốn từ vựng và ngữ pháp để nói và viết hai câu đơn liên kết và lưu loát.",
     ],
@@ -61,9 +60,9 @@ const CourseDetailPageV2 = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-gray-50 flex flex-col v2-theme"> {/* Apply v2-theme here */}
       <Header />
-      <BreadcrumbNav courseTitle={course.title} />
+      <BreadcrumbNav courseTitle={course.title} bgColor="v2-secondary" /> {/* Pass bgColor prop */}
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">

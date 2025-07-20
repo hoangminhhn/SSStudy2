@@ -63,32 +63,32 @@ const RelatedCourses: React.FC<RelatedCoursesProps> = ({ currentCourseId }) => {
 
   return (
     <div className="mt-12">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Các khóa học liên quan</h2>
+      <h2 className="text-2xl font-bold text-v2-text-default mb-6 text-center">Các khóa học liên quan</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {courses.map((course) => (
           <Card key={course.id} className="shadow-lg rounded-lg overflow-hidden">
             <img src={course.image} alt={course.title} className="w-full h-40 object-cover" />
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg font-semibold text-gray-800 line-clamp-2">{course.title}</CardTitle>
+              <CardTitle className="text-lg font-semibold text-v2-text-default line-clamp-2">{course.title}</CardTitle>
             </CardHeader>
             <CardContent className="pt-0">
-              <p className="text-gray-600 text-sm mb-2">Thầy {course.teacher}</p>
-              <div className="flex items-center text-gray-700 text-xs mb-3 space-x-3">
+              <p className="text-v2-text-muted text-sm mb-2">Thầy {course.teacher}</p>
+              <div className="flex items-center text-v2-text-default text-xs mb-3 space-x-3">
                 <div className="flex items-center">
-                  <BookOpen size={14} className="mr-1 text-gray-500" />
+                  <BookOpen size={14} className="mr-1 text-v2-text-muted" />
                   <span>{course.lessons} bài giảng</span>
                 </div>
                 <div className="flex items-center">
-                  <User size={14} className="mr-1 text-gray-500" />
+                  <User size={14} className="mr-1 text-v2-text-muted" />
                   <span>{course.exercises} bài tập</span>
                 </div>
               </div>
               <div className="flex items-baseline mb-4">
-                <span className="text-xl font-bold text-orange-600 mr-2">{course.currentPrice}</span>
-                <span className="text-sm text-gray-500 line-through">{course.oldPrice}</span>
+                <span className="text-xl font-bold text-v2-primary mr-2">{course.currentPrice}</span>
+                <span className="text-sm text-v2-text-muted line-through">{course.oldPrice}</span>
               </div>
               <Link to={`/courses-v2/${course.id}`}> {/* Link to the new V2 page */}
-                <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white rounded-full py-2">
+                <Button className="w-full bg-v2-primary hover:bg-v2-primary/90 text-v2-primary-foreground rounded-full py-2">
                   Xem chi tiết <BookOpen size={16} className="ml-2" />
                 </Button>
               </Link>

@@ -10,15 +10,17 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { cn } from "@/lib/utils"; // Import cn utility
 
 interface BreadcrumbNavProps {
   courseTitle?: string;
   lessonTitle?: string;
+  bgColor?: string; // New prop for background color
 }
 
-const BreadcrumbNav: React.FC<BreadcrumbNavProps> = ({ courseTitle, lessonTitle }) => {
+const BreadcrumbNav: React.FC<BreadcrumbNavProps> = ({ courseTitle, lessonTitle, bgColor }) => {
   return (
-    <div className="bg-orange-500 py-3 px-6 text-white">
+    <div className={cn("py-3 px-6 text-white", bgColor ? `bg-${bgColor}` : "bg-orange-500")}> {/* Apply dynamic background */}
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -33,7 +35,7 @@ const BreadcrumbNav: React.FC<BreadcrumbNavProps> = ({ courseTitle, lessonTitle 
           </BreadcrumbSeparator>
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <Link to="/courses" className="text-white hover:text-gray-200"> {/* Updated link */}
+              <Link to="/courses" className="text-white hover:text-gray-200">
                 Khóa học
               </Link>
             </BreadcrumbLink>
