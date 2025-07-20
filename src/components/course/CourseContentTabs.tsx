@@ -13,6 +13,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
 import { chapters } from "@/data/courseData"; // Import actual course data
+import { Link } from "react-router-dom"; // Import Link
 
 interface CourseContentTabsProps {
   courseId: string;
@@ -112,7 +113,10 @@ const CourseContentTabs: React.FC<CourseContentTabsProps> = ({ courseId }) => {
                     {session.lessons.map((lesson) => (
                       <div key={lesson.id} className="flex items-center justify-between py-2">
                         <div className="flex items-center">
-                          <span className="text-gray-800 hover:text-blue-600 font-medium text-sm transition-colors duration-200">{lesson.title}</span>
+                          {/* Wrap lesson title with Link */}
+                          <Link to={`/lesson-v2/${lesson.id}`} className="text-gray-800 hover:text-blue-600 font-medium text-sm transition-colors duration-200">
+                            {lesson.title}
+                          </Link>
                         </div>
                         <div className="flex items-center space-x-2">
                           {lesson.status === "free" ? (
