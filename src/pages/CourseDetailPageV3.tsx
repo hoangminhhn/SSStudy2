@@ -64,9 +64,9 @@ const CourseDetailPageV3 = () => {
     <div className="min-h-screen bg-gray-50 flex flex-col v3-theme">
       <Header />
       <BreadcrumbNav courseTitle={course.title} bgColor="gray-50" variant="v3" />
-      <main className="flex-grow container mx-auto px-4 pt-0 pb-8 relative">
+      <main className="flex-grow container mx-auto px-4 pt-0 pb-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 mt-8">
+          <div className="lg:col-span-2">
             <CourseHeroV3
               title={course.title}
               teacher={course.teacher}
@@ -76,7 +76,7 @@ const CourseDetailPageV3 = () => {
             {/* CourseContentTabs moved inside the lg:col-span-2 div */}
             <CourseContentTabsV3 courseId={course.id} />
           </div>
-          <div className="lg:col-span-1 mt-0">
+          <div className="lg:col-span-1">
             <CoursePurchaseCardV3
               imageUrl={course.purchaseCard.imageUrl}
               currentPrice={course.purchaseCard.currentPrice}
