@@ -108,7 +108,7 @@ const CourseContentTabs: React.FC<CourseContentTabsProps> = ({ courseId }) => {
           <Accordion type="single" collapsible className="w-full">
             {dummyCourseContent.map((session) => (
               <AccordionItem key={session.id} value={session.id} className="border-b border-gray-200 last:border-b-0">
-                <AccordionTrigger className="flex items-center justify-between py-4 text-base font-semibold text-gray-800 hover:no-underline">
+                <AccordionTrigger className="flex items-center justify-between py-4 text-base font-semibold text-gray-800 hover:no-underline hover:bg-gray-100 transition-colors duration-200">
                   <div className="flex items-center flex-grow"> {/* Added flex-grow */}
                     {/* Chevron icon will be handled by AccordionTrigger itself */}
                     <span className="ml-2">{session.title}</span>
