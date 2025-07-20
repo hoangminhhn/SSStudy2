@@ -234,9 +234,9 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
                                 </span>
                               )}
                             </div>
-                            <div className="flex items-center space-x-4 flex-shrink-0 min-w-[140px] justify-end">
+                            <div className="flex items-center space-x-2 flex-shrink-0 min-w-[140px] justify-end">
                               {lesson.type !== 'livestream' && (
-                                <div className="flex items-center space-x-4">
+                                <div className="flex items-center space-x-2">
                                   <span
                                     className={cn(
                                       "px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap min-w-[48px] text-center",
