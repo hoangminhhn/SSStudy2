@@ -205,9 +205,9 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
                         }
 
                         return (
-                          <div key={lesson.id} className="flex items-center justify-between py-2">
-                            <div className="flex flex-col flex-grow pr-4 min-w-0">
-                              <div className="flex items-center space-x-2">
+                          <div key={lesson.id} className="flex flex-col py-2">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center flex-grow pr-4 min-w-0 space-x-2">
                                 <Link
                                   to={`/lesson-v2/${lesson.id}`}
                                   className="text-gray-800 hover:text-blue-600 font-medium text-sm transition-colors duration-200 truncate"
@@ -220,36 +220,36 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
                                   </span>
                                 )}
                               </div>
-                              {lesson.type === 'livestream' && displayTime && (
-                                <span className="text-xs text-gray-500 mt-1 ml-0 truncate">
-                                  {lesson.date} - {displayTime}
-                                </span>
-                              )}
-                            </div>
-                            <div className="flex items-center space-x-4 flex-shrink-0">
-                              {lesson.type !== 'livestream' && (
-                                <>
-                                  {lesson.status === "free" ? (
-                                    <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs font-semibold min-w-[40px] text-center whitespace-nowrap">
-                                      Free
-                                    </span>
-                                  ) : (
-                                    <span className="bg-red-100 text-red-700 px-2 py-0.5 rounded-full text-xs font-semibold min-w-[40px] text-center whitespace-nowrap">
-                                      Pro
-                                    </span>
-                                  )}
-                                  <div className="flex items-center">
-                                    <span className="text-gray-500 text-sm w-[45px] text-right whitespace-nowrap">
-                                      {lesson.duration}
-                                    </span>
-                                    <div className="w-6 flex justify-center items-center">
-                                      {lesson.locked && <Lock size={16} className="text-gray-400" />}
+                              <div className="flex items-center space-x-4 flex-shrink-0">
+                                {lesson.type !== 'livestream' && (
+                                  <>
+                                    {lesson.status === "free" ? (
+                                      <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs font-semibold min-w-[40px] text-center whitespace-nowrap">
+                                        Free
+                                      </span>
+                                    ) : (
+                                      <span className="bg-red-100 text-red-700 px-2 py-0.5 rounded-full text-xs font-semibold min-w-[40px] text-center whitespace-nowrap">
+                                        Pro
+                                      </span>
+                                    )}
+                                    <div className="flex items-center">
+                                      <span className="text-gray-500 text-sm w-[45px] text-right whitespace-nowrap">
+                                        {lesson.duration}
+                                      </span>
+                                      <div className="w-6 flex justify-center items-center">
+                                        {lesson.locked && <Lock size={16} className="text-gray-400" />}
+                                      </div>
                                     </div>
-                                  </div>
-                                </>
-                              )}
-                              {buttonContent}
+                                  </>
+                                )}
+                                {buttonContent}
+                              </div>
                             </div>
+                            {lesson.type === 'livestream' && displayTime && (
+                              <span className="text-xs text-gray-500 mt-1 ml-0 truncate">
+                                {lesson.date} - {displayTime}
+                              </span>
+                            )}
                           </div>
                         );
                       })}
