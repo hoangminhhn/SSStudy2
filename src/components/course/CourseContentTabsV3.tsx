@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react"; // Import useState
+import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Search, Lock } from "lucide-react";
@@ -12,8 +12,11 @@ import {
 } from "@/components/ui/accordion";
 import { cn } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
-import { chapters } from "@/data/courseData";
+import { chapters, Session as ChapterSession, TimeSlot } from "@/data/courseData";
 import { Link } from "react-router-dom";
+import { isToday, parse } from "date-fns";
+import { showSuccess, showError } from "@/utils/toast";
+import { Button } from "@/components/ui/button";
 
 interface CourseContentTabsV3Props {
   courseId: string;
@@ -25,6 +28,9 @@ interface Lesson {
   status: "free" | "pro";
   duration: string;
   locked: boolean;
+  type?: 'normal' | 'livestream';
+  date: string;
+  timeSlots?: TimeSlot[];
 }
 
 interface Session {
@@ -36,7 +42,7 @@ interface Session {
 }
 
 const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) => {
-  const [searchTerm, setSearchTerm] = useState(""); // State for search term
+  const [searchTerm, setSearchTerm] = useState("");
 
   const courseContent: Session[] = chapters.map((chapter, chapterIndex) => {
     const [completed, total] = chapter.progress.split('/').map(Number);
@@ -46,7 +52,7 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
       title: chapter.title,
       completedLessons: completed,
       totalLessons: total,
-      lessons: chapter.sessions.map((session, sessionIndex) => {
+      lessons: chapter.sessions.map((session: ChapterSession, sessionIndex) => {
         const isFirstLessonOfFirstChapter = chapterIndex === 0 && sessionIndex === 0;
         const status = isFirstLessonOfFirstChapter ? "free" : "pro";
         const locked = !isFirstLessonOfFirstChapter;
@@ -57,12 +63,14 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
           status: status,
           duration: "45:00",
           locked: locked,
+          type: session.type,
+          date: session.date,
+          timeSlots: session.timeSlots,
         };
       }),
     };
   });
 
-  // Filtered content based on search term
   const filteredContent = courseContent.filter(session => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
     const sessionTitleMatches = session.title.toLowerCase().includes(lowerCaseSearchTerm);
@@ -73,13 +81,11 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
 
     return sessionTitleMatches || hasMatchingLessons;
   }).map(session => {
-    // If session matches, filter its lessons to only show matching ones
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
     const filteredLessons = session.lessons.filter(lesson =>
       lesson.title.toLowerCase().includes(lowerCaseSearchTerm)
     );
 
-    // If the session title itself matches, show all its lessons, otherwise show only filtered lessons
     const lessonsToDisplay = session.title.toLowerCase().includes(lowerCaseSearchTerm)
       ? session.lessons
       : filteredLessons;
@@ -88,7 +94,7 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
       ...session,
       lessons: lessonsToDisplay,
     };
-  }).filter(session => session.lessons.length > 0 || session.title.toLowerCase().includes(searchTerm.toLowerCase())); // Ensure session is included if its title matches, even if no lessons match
+  }).filter(session => session.lessons.length > 0 || session.title.toLowerCase().includes(searchTerm.toLowerCase()));
 
   return (
     <Card className="p-6 shadow-lg rounded-lg mt-8">
@@ -121,8 +127,8 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
               type="text"
               placeholder="Tìm kiếm đề thi - bài học ở đây"
               className="w-full pl-10 pr-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              value={searchTerm} // Bind value to state
-              onChange={(e) => setSearchTerm(e.target.value)} // Update state on change
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
 
@@ -140,34 +146,104 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
                   </AccordionTrigger>
                   <AccordionContent className="pb-2 pt-0">
                     <div className="pl-6 pr-2 py-2 space-y-3">
-                      {session.lessons.map((lesson) => (
-                        <div key={lesson.id} className="flex items-center justify-between py-2">
-                          <div className="flex items-center">
-                            <Link to={`/lesson-v2/${lesson.id}`} className="text-gray-800 hover:text-blue-600 font-medium text-sm transition-colors duration-200">
-                              {lesson.title}
-                            </Link>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            {lesson.status === "free" ? (
-                              <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs font-semibold min-w-[40px] text-center">
-                                Free
-                              </span>
-                            ) : (
-                              <span className="bg-red-100 text-red-700 px-2 py-0.5 rounded-full text-xs font-semibold min-w-[40px] text-center">
-                                Pro
-                              </span>
-                            )}
-                            <div className="flex items-center">
-                              <span className="text-gray-500 text-sm w-[45px] text-right">
-                                {lesson.duration}
-                              </span>
-                              <div className="w-6 flex justify-center items-center">
-                                {lesson.locked && <Lock size={16} className="text-gray-400" />}
+                      {session.lessons.map((lesson) => {
+                        const sessionDate = parse(lesson.date, 'dd/MM/yyyy', new Date());
+                        const isLiveToday = lesson.type === 'livestream' && isToday(sessionDate);
+                        const displayTime = lesson.type === 'livestream' && lesson.timeSlots && lesson.timeSlots.length > 0
+                          ? lesson.timeSlots[0].time
+                          : '';
+
+                        let buttonContent = null;
+                        if (lesson.type === 'livestream') {
+                          if (isLiveToday) {
+                            buttonContent = (
+                              <Link to={`/lesson/${lesson.id}`}>
+                                <Button className="bg-v3-primary hover:bg-v3-primary/90 text-v3-primary-foreground rounded-full px-4 py-2 text-sm whitespace-nowrap">
+                                  Vào học
+                                </Button>
+                              </Link>
+                            );
+                          } else if (lesson.timeSlots) {
+                            const hasRegisterSlot = lesson.timeSlots.some(slot => slot.registrationStatus === 'register');
+                            const hasRegisteredSlot = lesson.timeSlots.some(slot => slot.registrationStatus === 'registered');
+
+                            if (hasRegisterSlot) {
+                              buttonContent = (
+                                <Button
+                                  className="bg-v3-secondary hover:bg-v3-secondary/90 text-v3-background rounded-full px-4 py-2 text-sm whitespace-nowrap"
+                                  onClick={() => showSuccess("Đăng ký học livestream thành công, bạn hãy truy cập buổi học vào ngày học chính thức nhé!")}
+                                >
+                                  Đăng Ký học
+                                </Button>
+                              );
+                            } else if (hasRegisteredSlot) {
+                              buttonContent = (
+                                <Button
+                                  className="bg-gray-400 text-gray-700 rounded-full px-4 py-2 text-sm whitespace-nowrap"
+                                  onClick={() => showError("Bài học livestream sẽ được mở vào giờ và ngày học chính thức")}
+                                >
+                                  Đã đăng ký
+                                </Button>
+                              );
+                            } else {
+                              buttonContent = (
+                                <Button
+                                  className="bg-red-600 text-white rounded-full px-4 py-2 text-sm whitespace-nowrap"
+                                  onClick={() => showError("Vui lòng liên hệ bộ phận chăm sóc khách hàng để được hướng dẫn")}
+                                >
+                                  Hết chỗ
+                                </Button>
+                              );
+                            }
+                          }
+                        }
+
+                        return (
+                          <div key={lesson.id} className="flex items-center justify-between py-2">
+                            <div className="flex flex-col flex-grow pr-4">
+                              <div className="flex items-center space-x-2">
+                                <Link to={`/lesson-v2/${lesson.id}`} className="text-gray-800 hover:text-blue-600 font-medium text-sm transition-colors duration-200 truncate">
+                                  {lesson.title}
+                                </Link>
+                                {lesson.type === 'livestream' && (
+                                  <span className="bg-red-600 text-white text-xs font-semibold px-2 py-0.5 rounded-full whitespace-nowrap select-none">
+                                    Livestream
+                                  </span>
+                                )}
                               </div>
+                              {lesson.type === 'livestream' && displayTime && (
+                                <span className="text-xs text-gray-500 mt-1 ml-0 truncate">
+                                  {lesson.date} - {displayTime}
+                                </span>
+                              )}
+                            </div>
+                            <div className="flex items-center space-x-4 flex-shrink-0">
+                              {lesson.type !== 'livestream' && (
+                                <>
+                                  {lesson.status === "free" ? (
+                                    <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs font-semibold min-w-[40px] text-center whitespace-nowrap">
+                                      Free
+                                    </span>
+                                  ) : (
+                                    <span className="bg-red-100 text-red-700 px-2 py-0.5 rounded-full text-xs font-semibold min-w-[40px] text-center whitespace-nowrap">
+                                      Pro
+                                    </span>
+                                  )}
+                                  <div className="flex items-center">
+                                    <span className="text-gray-500 text-sm w-[45px] text-right whitespace-nowrap">
+                                      {lesson.duration}
+                                    </span>
+                                    <div className="w-6 flex justify-center items-center">
+                                      {lesson.locked && <Lock size={16} className="text-gray-400" />}
+                                    </div>
+                                  </div>
+                                </>
+                              )}
+                              {buttonContent}
                             </div>
                           </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </AccordionContent>
                 </AccordionItem>
