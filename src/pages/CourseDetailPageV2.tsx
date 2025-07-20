@@ -63,7 +63,7 @@ const CourseDetailPageV2 = () => {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col v2-theme">
       <Header />
-      <BreadcrumbNav courseTitle={course.title} bgColor="gray-50" variant="v2" /> {/* Set bgColor to gray-50 */}
+      <BreadcrumbNav courseTitle={course.title} bgColor="gray-50" variant="v2" />
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
@@ -76,6 +76,8 @@ const CourseDetailPageV2 = () => {
               guarantees={course.guarantees}
               includes={course.purchaseCard.includedItems} // Reusing for now, ideally separate
             />
+            {/* CourseContentTabs moved inside the lg:col-span-2 div */}
+            <CourseContentTabs courseId={course.id} />
           </div>
           <div className="lg:col-span-1">
             <CoursePurchaseCard
@@ -88,7 +90,7 @@ const CourseDetailPageV2 = () => {
             />
           </div>
         </div>
-        <CourseContentTabs courseId={course.id} />
+        {/* RelatedCourses remains outside the grid to span full width if desired, or can be moved */}
         <RelatedCourses currentCourseId={course.id} />
       </main>
       <Footer />
