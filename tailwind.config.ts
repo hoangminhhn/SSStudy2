@@ -75,6 +75,19 @@ export default {
         'v2-text-muted': 'hsl(var(--v2-text-muted))',
         'v2-border': 'hsl(var(--v2-border))',
         'v2-background': 'hsl(var(--v2-background))',
+        // New V3 colors
+        'v3-primary': {
+          DEFAULT: 'hsl(var(--v3-primary))',
+          foreground: 'hsl(var(--v3-primary-foreground))',
+        },
+        'v3-secondary': {
+          DEFAULT: 'hsl(var(--v3-secondary))',
+          foreground: 'hsl(var(--v3-secondary-foreground))',
+        },
+        'v3-text-default': 'hsl(var(--v3-text-default))',
+        'v3-text-muted': 'hsl(var(--v3-text-muted))',
+        'v3-border': 'hsl(var(--v3-border))',
+        'v3-background': 'hsl(var(--v3-background))',
       },
       borderRadius: {
         lg: "var(--radius)",
