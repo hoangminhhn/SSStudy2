@@ -17,6 +17,7 @@ import { Link } from "react-router-dom";
 import { isToday, parse } from "date-fns";
 import { showSuccess, showError } from "@/utils/toast";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge"; // Import Badge component
 
 interface CourseContentTabsV3Props {
   courseId: string;
@@ -221,13 +222,20 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
 
                         return (
                           <div key={lesson.id} className="flex items-center justify-between py-1">
-                            <div className="flex flex-col max-w-[60%]">
-                              <Link
-                                to={lesson.type === 'livestream' ? `/lesson/${lesson.id}` : `/lesson-v2/${lesson.id}`}
-                                className="text-gray-800 hover:text-blue-600 font-medium text-sm transition-colors duration-200 truncate"
-                              >
-                                {lesson.title}
-                              </Link>
+                            <div className="flex flex-col flex-grow pr-4"> {/* Changed to flex-col and flex-grow */}
+                              <div className="flex items-center space-x-2"> {/* New div for title and badge */}
+                                <Link
+                                  to={lesson.type === 'livestream' ? `/lesson/${lesson.id}` : `/lesson-v2/${lesson.id}`}
+                                  className="text-gray-800 hover:text-blue-600 font-medium text-sm transition-colors duration-200 truncate"
+                                >
+                                  {lesson.title}
+                                </Link>
+                                {lesson.type === 'livestream' && (
+                                  <Badge variant="destructive" className="bg-red-500 text-white px-2 py-0.5 text-xs font-semibold flex-shrink-0">
+                                    Livestream
+                                  </Badge>
+                                )}
+                              </div>
                               {lesson.type === 'livestream' && (
                                 <span className="text-xs text-gray-500 mt-0.5">
                                   Ngày: {lesson.date} {displayTime && `- ${displayTime}`}
