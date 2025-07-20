@@ -23,7 +23,7 @@ interface Lesson {
   status: "free" | "pro";
   duration: string;
   locked: boolean;
-  proBadges?: string[]; // For multiple pro badges
+  // proBadges?: string[]; // Removed as per request to show only one 'Pro' badge
 }
 
 interface Session {
@@ -44,8 +44,8 @@ const dummyCourseContent: Session[] = [
     lessons: [
       { id: "lesson-1-1", title: "Bài 1: Sự biến thiên của Hàm số và đồ thị hàm số chứng minh", status: "free", duration: "15:00", locked: false },
       { id: "lesson-1-2", title: "Bài 2: Phương trình bất quy tắc", status: "free", duration: "15:00", locked: false },
-      { id: "lesson-1-3", title: "Bài 3: Các hằng đẳng thức đáng nhớ", status: "pro", duration: "15:00", locked: true, proBadges: ["Pro", "Pro"] },
-      { id: "lesson-1-4", title: "Bài 4: Phương trình và bất phương trình", status: "pro", duration: "15:00", locked: true, proBadges: ["Pro", "Pro", "Pro"] },
+      { id: "lesson-1-3", title: "Bài 3: Các hằng đẳng thức đáng nhớ", status: "pro", duration: "15:00", locked: true /* proBadges: ["Pro", "Pro"] */ },
+      { id: "lesson-1-4", title: "Bài 4: Phương trình và bất phương trình", status: "pro", duration: "15:00", locked: true /* proBadges: ["Pro", "Pro", "Pro"] */ },
     ],
   },
   {
@@ -55,7 +55,7 @@ const dummyCourseContent: Session[] = [
     totalLessons: 4,
     lessons: [
       { id: "lesson-2-1", title: "Bài 1: Giới thiệu về Ma trận", status: "free", duration: "10:00", locked: false },
-      { id: "lesson-2-2", title: "Bài 2: Phép cộng và trừ ma trận", status: "pro", duration: "20:00", locked: true, proBadges: ["Pro"] },
+      { id: "lesson-2-2", title: "Bài 2: Phép cộng và trừ ma trận", status: "pro", duration: "20:00", locked: true /* proBadges: ["Pro"] */ },
     ],
   },
   {
@@ -65,7 +65,7 @@ const dummyCourseContent: Session[] = [
     totalLessons: 4,
     lessons: [
       { id: "lesson-3-1", title: "Bài 1: Định nghĩa ma trận bậc thang dòng", status: "free", duration: "12:00", locked: false },
-      { id: "lesson-3-2", title: "Bài 2: Các phép biến đổi sơ cấp trên dòng", status: "pro", duration: "18:00", locked: true, proBadges: ["Pro", "Pro"] },
+      { id: "lesson-3-2", title: "Bài 2: Các phép biến đổi sơ cấp trên dòng", status: "pro", duration: "18:00", locked: true /* proBadges: ["Pro", "Pro"] */ },
     ],
   },
 ];
@@ -130,14 +130,10 @@ const CourseContentTabs: React.FC<CourseContentTabsProps> = ({ courseId }) => {
                               Free
                             </span>
                           ) : (
-                            lesson.proBadges?.map((badge, index) => (
-                              <span key={index} className={cn(
-                                "px-2 py-0.5 rounded-full text-xs font-semibold",
-                                badge === "Pro" ? "bg-red-100 text-red-700" : "bg-blue-100 text-blue-700" // Example for different Pro badges
-                              )}>
-                                {badge}
-                              </span>
-                            ))
+                            // Display only one 'Pro' badge if status is 'pro'
+                            <span className="bg-red-100 text-red-700 px-2 py-0.5 rounded-full text-xs font-semibold">
+                              Pro
+                            </span>
                           )}
                           <span className="text-gray-500 text-sm">{lesson.duration}</span>
                           {lesson.locked && <Lock size={16} className="text-gray-400" />}
