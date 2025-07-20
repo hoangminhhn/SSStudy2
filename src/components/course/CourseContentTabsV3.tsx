@@ -50,6 +50,12 @@ const LIVESTREAM_BUTTON_BASE_CLASSES = LIVESTREAM_COMMON_CLASSES + " transition-
 const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) => {
   const [searchTerm, setSearchTerm] = useState("");
 
+  // Khai báo freeLessonsTitles ở đây để dùng trong render
+  const freeLessonsTitles = [
+    "Buổi 1: Tổng ôn lượng giác (phần 1)",
+    "Buổi 5: Tổng ôn PT, BPT mũ loga",
+  ];
+
   const courseContent: Session[] = chapters.map((chapter, chapterIndex) => {
     const [completed, total] = chapter.progress.split('/').map(Number);
 
@@ -59,12 +65,6 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
       completedLessons: completed,
       totalLessons: total,
       lessons: chapter.sessions.map((session: ChapterSession, sessionIndex) => {
-        // Bài free theo ảnh: Buổi 1 và Buổi 5
-        const freeLessonsTitles = [
-          "Buổi 1: Tổng ôn lượng giác (phần 1)",
-          "Buổi 5: Tổng ôn PT, BPT mũ loga",
-        ];
-
         const isFreeLesson = freeLessonsTitles.includes(session.title);
         const isFirstLessonOfFirstChapter = chapterIndex === 0 && sessionIndex === 0;
 
