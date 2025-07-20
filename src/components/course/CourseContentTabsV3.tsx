@@ -252,7 +252,7 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
                                   </span>
                                   <div className="w-5 flex justify-center items-center">
                                     {lesson.status === "pro" && lesson.locked ? (
-                                      <Lock size={14} className="text-gray-400" />
+                                      <Lock size={14} color="#000000" />
                                     ) : (
                                       <div className="w-4" /> // Empty space to keep alignment
                                     )}
