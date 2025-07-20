@@ -23,7 +23,7 @@ interface Lesson {
   status: "free" | "pro";
   duration: string;
   locked: boolean;
-  // proBadges?: string[]; // Removed as per request to show only one 'Pro' badge
+  proBadges?: ("red-pro" | "blue-pro")[]; // Array of badge types for 'pro' status
 }
 
 interface Session {
@@ -44,8 +44,8 @@ const dummyCourseContent: Session[] = [
     lessons: [
       { id: "lesson-1-1", title: "Bài 1: Sự biến thiên của Hàm số và đồ thị hàm số chứng minh", status: "free", duration: "15:00", locked: false },
       { id: "lesson-1-2", title: "Bài 2: Phương trình bất quy tắc", status: "free", duration: "15:00", locked: false },
-      { id: "lesson-1-3", title: "Bài 3: Các hằng đẳng thức đáng nhớ", status: "pro", duration: "15:00", locked: true /* proBadges: ["Pro", "Pro"] */ },
-      { id: "lesson-1-4", title: "Bài 4: Phương trình và bất phương trình", status: "pro", duration: "15:00", locked: true /* proBadges: ["Pro", "Pro", "Pro"] */ },
+      { id: "lesson-1-3", title: "Bài 3: Các hằng đẳng thức đáng nhớ", status: "pro", duration: "15:00", locked: true, proBadges: ["red-pro", "red-pro"] },
+      { id: "lesson-1-4", title: "Bài 4: Phương trình và bất phương trình", status: "pro", duration: "15:00", locked: true, proBadges: ["red-pro", "red-pro", "blue-pro"] },
     ],
   },
   {
@@ -55,7 +55,7 @@ const dummyCourseContent: Session[] = [
     totalLessons: 4,
     lessons: [
       { id: "lesson-2-1", title: "Bài 1: Giới thiệu về Ma trận", status: "free", duration: "10:00", locked: false },
-      { id: "lesson-2-2", title: "Bài 2: Phép cộng và trừ ma trận", status: "pro", duration: "20:00", locked: true /* proBadges: ["Pro"] */ },
+      { id: "lesson-2-2", title: "Bài 2: Phép cộng và trừ ma trận", status: "pro", duration: "20:00", locked: true, proBadges: ["red-pro"] },
     ],
   },
   {
@@ -65,7 +65,7 @@ const dummyCourseContent: Session[] = [
     totalLessons: 4,
     lessons: [
       { id: "lesson-3-1", title: "Bài 1: Định nghĩa ma trận bậc thang dòng", status: "free", duration: "12:00", locked: false },
-      { id: "lesson-3-2", title: "Bài 2: Các phép biến đổi sơ cấp trên dòng", status: "pro", duration: "18:00", locked: true /* proBadges: ["Pro", "Pro"] */ },
+      { id: "lesson-3-2", title: "Bài 2: Các phép biến đổi sơ cấp trên dòng", status: "pro", duration: "18:00", locked: true, proBadges: ["red-pro", "red-pro"] },
     ],
   },
 ];
@@ -109,11 +109,10 @@ const CourseContentTabs: React.FC<CourseContentTabsProps> = ({ courseId }) => {
             {dummyCourseContent.map((session) => (
               <AccordionItem key={session.id} value={session.id} className="border-b border-gray-200 last:border-b-0">
                 <AccordionTrigger className="flex items-center justify-between py-4 text-base font-semibold text-gray-800 hover:no-underline">
-                  <div className="flex items-center flex-grow"> {/* Added flex-grow */}
-                    {/* Chevron icon will be handled by AccordionTrigger itself */}
+                  <div className="flex items-center flex-grow">
                     <span className="ml-2">{session.title}</span>
                   </div>
-                  <span className="text-sm text-gray-500 flex-shrink-0"> {/* Added flex-shrink-0 */}
+                  <span className="text-sm text-gray-500 flex-shrink-0">
                     Hoàn thành {session.completedLessons}% {session.completedLessons}/{session.totalLessons} Bài giảng
                   </span>
                 </AccordionTrigger>
@@ -121,22 +120,38 @@ const CourseContentTabs: React.FC<CourseContentTabsProps> = ({ courseId }) => {
                   <div className="pl-6 pr-2 py-2 space-y-3">
                     {session.lessons.map((lesson) => (
                       <div key={lesson.id} className="flex items-center justify-between py-2">
-                        <div className="flex items-center">
+                        {/* Left side: Lesson Title */}
+                        <div className="flex-grow pr-4">
                           <span className="text-blue-600 font-medium text-sm">{lesson.title}</span>
                         </div>
-                        <div className="flex items-center space-x-2">
+
+                        {/* Right side: Badges, Time, Lock Icon */}
+                        <div className="flex items-center space-x-2 flex-shrink-0">
+                          {/* Badges */}
                           {lesson.status === "free" ? (
                             <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs font-semibold min-w-[40px] text-center">
                               Free
                             </span>
                           ) : (
-                            <span className="bg-red-100 text-red-700 px-2 py-0.5 rounded-full text-xs font-semibold min-w-[40px] text-center">
-                              Pro
-                            </span>
+                            <>
+                              {lesson.proBadges?.map((badgeType, idx) => (
+                                <span
+                                  key={idx}
+                                  className={cn(
+                                    "px-2 py-0.5 rounded-full text-xs font-semibold min-w-[40px] text-center",
+                                    badgeType === "red-pro" && "bg-red-100 text-red-700",
+                                    badgeType === "blue-pro" && "bg-blue-100 text-blue-700"
+                                  )}
+                                >
+                                  Pro
+                                </span>
+                              ))}
+                            </>
                           )}
-                          {/* Container for duration and lock icon */}
-                          <div className="flex items-center">
-                            <span className="text-gray-500 text-sm w-[50px] text-right"> {/* Fixed width for duration, right-aligned */}
+
+                          {/* Time and Lock Icon - Fixed width container for alignment */}
+                          <div className="flex items-center justify-end" style={{ minWidth: '65px' }}>
+                            <span className="text-gray-500 text-sm text-right w-[45px]">
                               {lesson.duration}
                             </span>
                             {lesson.locked && <Lock size={16} className="text-gray-400 ml-1" />}
