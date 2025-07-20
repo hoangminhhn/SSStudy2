@@ -20,22 +20,22 @@ interface BreadcrumbNavProps {
 
 const BreadcrumbNav: React.FC<BreadcrumbNavProps> = ({ courseTitle, lessonTitle, bgColor }) => {
   return (
-    <div className={cn("py-3 px-6 text-white", bgColor ? `bg-${bgColor}` : "bg-orange-500")}> {/* Apply dynamic background */}
+    <div className={cn("py-3 px-6 text-black", bgColor ? `bg-${bgColor}` : "bg-orange-500")}> {/* Changed text-white to text-black */}
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <Link to="/" className="text-white hover:text-gray-200">
+              <Link to="/" className="text-black hover:text-gray-700"> {/* Changed text-white to text-black */}
                 Trang Chủ
               </Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator>
-            <ChevronRight className="h-4 w-4 text-white" />
+            <ChevronRight className="h-4 w-4 text-black" /> {/* Changed text-white to text-black */}
           </BreadcrumbSeparator>
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <Link to="/courses" className="text-white hover:text-gray-200">
+              <Link to="/courses" className="text-black hover:text-gray-700"> {/* Changed text-white to text-black */}
                 Khóa học
               </Link>
             </BreadcrumbLink>
@@ -43,10 +43,10 @@ const BreadcrumbNav: React.FC<BreadcrumbNavProps> = ({ courseTitle, lessonTitle,
           {courseTitle && (
             <>
               <BreadcrumbSeparator>
-                <ChevronRight className="h-4 w-4 text-white" />
+                <ChevronRight className="h-4 w-4 text-black" /> {/* Changed text-white to text-black */}
               </BreadcrumbSeparator>
               <BreadcrumbItem>
-                <span className="text-white font-semibold">
+                <span className="text-black font-semibold"> {/* Changed text-white to text-black */}
                   {courseTitle}
                 </span>
               </BreadcrumbItem>
@@ -55,10 +55,10 @@ const BreadcrumbNav: React.FC<BreadcrumbNavProps> = ({ courseTitle, lessonTitle,
           {lessonTitle && (
             <>
               <BreadcrumbSeparator>
-                <ChevronRight className="h-4 w-4 text-white" />
+                <ChevronRight className="h-4 w-4 text-black" /> {/* Changed text-white to text-black */}
               </BreadcrumbSeparator>
               <BreadcrumbItem>
-                <span className="text-white font-semibold">
+                <span className="text-black font-semibold"> {/* Changed text-white to text-black */}
                   {lessonTitle}
                 </span>
               </BreadcrumbItem>
