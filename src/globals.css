@@ -97,7 +97,8 @@
     --v2-text-muted: 215.4 16.3% 46.9%; /* Lighter text */
     --v2-border: 214.3 31.8% 91.4%; /* Standard border */
     --v2-background: 0 0% 100%; /* White background for cards */
-    --v2-dark-bg: 222.2 47.4% 11.2%; /* Dark background for breadcrumb */
+    --v2-dark-bg: 222.2 47.4% 11.2%; /* Dark background for general V2 elements */
+    --v2-breadcrumb-bg: 0 0% 0%; /* Pure black for breadcrumb */
   }
 }
 

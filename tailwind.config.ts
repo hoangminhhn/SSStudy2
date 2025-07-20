@@ -75,7 +75,8 @@ export default {
         'v2-text-muted': 'hsl(var(--v2-text-muted))',
         'v2-border': 'hsl(var(--v2-border))',
         'v2-background': 'hsl(var(--v2-background))',
-        'v2-dark-bg': 'hsl(var(--v2-dark-bg))', // Added new dark background color
+        'v2-dark-bg': 'hsl(var(--v2-dark-bg))',
+        'v2-breadcrumb-bg': 'hsl(var(--v2-breadcrumb-bg))', // Added new breadcrumb background color
       },
       borderRadius: {
         lg: "var(--radius)",
