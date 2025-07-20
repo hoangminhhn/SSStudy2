@@ -77,19 +77,19 @@ const CourseContentTabs: React.FC<CourseContentTabsProps> = ({ courseId }) => {
         <TabsList className="flex justify-start border-b border-gray-200 mb-6 bg-white p-0 h-auto"> {/* Adjusted TabsList styling */}
           <TabsTrigger
             value="content"
-            className="relative px-4 py-3 text-base font-medium text-v2-text-muted data-[state=active]:text-v2-primary data-[state=active]:font-semibold data-[state=active]:border-b-2 data-[state=active]:border-v2-primary data-[state=active]:shadow-none rounded-none hover:text-v2-primary transition-colors duration-200"
+            className="relative px-4 py-3 text-base font-medium text-gray-700 data-[state=active]:text-gray-900 data-[state=active]:font-semibold data-[state=active]:border-b-2 data-[state=active]:border-blue-600 data-[state=active]:shadow-none rounded-none hover:text-gray-900 transition-colors duration-200"
           >
             Nội dung khóa học
           </TabsTrigger>
           <TabsTrigger
             value="teacher"
-            className="relative px-4 py-3 text-base font-medium text-v2-text-muted data-[state=active]:text-v2-primary data-[state=active]:font-semibold data-[state=active]:border-b-2 data-[state=active]:border-v2-primary data-[state=active]:shadow-none rounded-none hover:text-v2-primary transition-colors duration-200"
+            className="relative px-4 py-3 text-base font-medium text-gray-700 data-[state=active]:text-gray-900 data-[state=active]:font-semibold data-[state=active]:border-b-2 data-[state=active]:border-blue-600 data-[state=active]:shadow-none rounded-none hover:text-gray-900 transition-colors duration-200"
           >
             Giáo viên
           </TabsTrigger>
           <TabsTrigger
             value="reviews"
-            className="relative px-4 py-3 text-base font-medium text-v2-text-muted data-[state=active]:text-v2-primary data-[state=active]:font-semibold data-[state=active]:border-b-2 data-[state=active]:border-v2-primary data-[state=active]:shadow-none rounded-none hover:text-v2-primary transition-colors duration-200"
+            className="relative px-4 py-3 text-base font-medium text-gray-700 data-[state=active]:text-gray-900 data-[state=active]:font-semibold data-[state=active]:border-b-2 data-[state=active]:border-blue-600 data-[state=active]:shadow-none rounded-none hover:text-gray-900 transition-colors duration-200"
           >
             Đánh giá
           </TabsTrigger>
