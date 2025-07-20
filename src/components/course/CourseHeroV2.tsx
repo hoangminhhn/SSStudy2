@@ -1,9 +1,7 @@
 "use client";
 
 import React from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { CalendarDays, Users, CheckCircle } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { CheckCircle, Calendar, Users } from "lucide-react";
 
 interface CourseHeroV2Props {
   title: string;
@@ -12,7 +10,7 @@ interface CourseHeroV2Props {
   updatedDate: string;
   studentCount: number;
   guarantees: string[];
-  includes: string[];
+  includes: string[]; // Keep includes prop, but it won't be rendered here
 }
 
 const CourseHeroV2: React.FC<CourseHeroV2Props> = ({
@@ -22,46 +20,40 @@ const CourseHeroV2: React.FC<CourseHeroV2Props> = ({
   updatedDate,
   studentCount,
   guarantees,
-  includes,
+  // includes, // No longer used for rendering in this component
 }) => {
   return (
-    <Card className="p-6 shadow-lg rounded-lg">
-      <h1 className="text-3xl font-bold text-v2-text-default mb-2">{title}</h1>
-      <p className="text-lg text-v2-text-muted mb-4">Thầy {teacher}</p>
-      <p className="text-v2-text-default mb-4">{description}</p>
+    <div className="bg-white p-6 rounded-lg shadow-lg">
+      <h1 className="text-3xl font-bold text-v2-text-default mb-4">{title}</h1>
+      <p className="text-v2-text-muted text-lg mb-4">Giáo viên: <span className="font-semibold text-v2-text-default">{teacher}</span></p>
 
-      <div className="flex items-center space-x-6 text-v2-text-muted text-sm mb-6">
+      <div className="flex items-center text-v2-text-muted text-sm mb-6 space-x-4">
         <div className="flex items-center">
-          <CalendarDays size={16} className="mr-2" />
+          <Calendar size={16} className="mr-1" />
           <span>Cập nhật: {updatedDate}</span>
         </div>
         <div className="flex items-center">
-          <Users size={16} className="mr-2" />
-          <span>{studentCount} học viên đã học</span>
+          <Users size={16} className="mr-1" />
+          <span>{studentCount} học viên</span>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-        {guarantees.map((item, index) => (
-          <div key={index} className="flex items-start text-v2-text-default">
-            <CheckCircle size={20} className="text-green-500 mr-2 flex-shrink-0 mt-1" /> {/* Keep green for success */}
-            <p className="text-sm">{item}</p>
-          </div>
-        ))}
-      </div>
+      <p className="text-v2-text-default leading-relaxed mb-6">{description}</p>
 
       <div className="border-t border-v2-border pt-6">
-        <h2 className="text-xl font-bold text-v2-text-default mb-4">Khóa học này bao gồm</h2>
+        <h2 className="text-xl font-bold text-v2-text-default mb-4">Cam kết của khóa học</h2>
         <ul className="space-y-2 text-v2-text-default">
-          {includes.map((item, index) => (
+          {guarantees.map((guarantee, index) => (
             <li key={index} className="flex items-start">
-              <span className="w-2 h-2 bg-v2-text-muted rounded-full flex-shrink-0 mt-2 mr-3"></span>
-              <p className="text-sm">{item}</p>
+              <CheckCircle size={20} className="text-v2-primary mr-2 flex-shrink-0 mt-1" />
+              <span>{guarantee}</span>
             </li>
           ))}
         </ul>
       </div>
-    </Card>
+
+      {/* The "Khóa học này bao gồm" section has been removed */}
+    </div>
   );
 };
 
