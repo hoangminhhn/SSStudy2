@@ -21,6 +21,8 @@ const CourseDetailPageV3 = () => {
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin quis viverra magna. Nulla mauris diam, ultricies sagittis feugiat sed, imperdiet at erat. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin quis viverra magna. Nulla",
     updatedDate: "tháng 4 năm 2025",
     studentCount: 2358,
+    rating: 4.5, // New dummy data for rating
+    ratingCount: 1799, // New dummy data for rating count
     guarantees: [
       "Đảm bảo đầu ra.",
       "Hình thành tư duy học đúng. Bổ Tư duy đọc dịch, viết dịch, nói dịch.",
@@ -64,19 +66,21 @@ const CourseDetailPageV3 = () => {
     <div className="min-h-screen bg-gray-50 flex flex-col v3-theme">
       <Header />
       <BreadcrumbNav courseTitle={course.title} bgColor="gray-50" variant="v3" />
-      <main className="flex-grow container mx-auto px-4 pt-0 pb-8">
+      <main className="flex-grow container mx-auto px-4 pt-0 pb-8 relative">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 mt-8">
             <CourseHeroV3
               title={course.title}
               teacher={course.teacher}
               description={course.description}
               guarantees={course.guarantees}
+              rating={course.rating} // Pass new rating prop
+              ratingCount={course.ratingCount} // Pass new ratingCount prop
             />
             {/* CourseContentTabs moved inside the lg:col-span-2 div */}
             <CourseContentTabsV3 courseId={course.id} />
           </div>
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 mt-0">
             <CoursePurchaseCardV3
               imageUrl={course.purchaseCard.imageUrl}
               currentPrice={course.purchaseCard.currentPrice}
