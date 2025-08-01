@@ -12,6 +12,7 @@ import { Download, Edit, AlertTriangle } from "lucide-react";
 import GuidedTourOverlay from "@/components/tour/GuidedTourOverlay";
 import NotesSidebar from "@/components/lesson/NotesSidebar";
 import AskQuestionSidebar from "@/components/lesson/AskQuestionSidebar";
+import InlineAddNotePanel from "@/components/lesson/InlineAddNotePanel"; // Import new panel
 import { chapters } from "@/data/courseData"; // Import chapters from the new data file
 
 // Flatten all sessions into a single array for easy lookup and navigation
@@ -29,6 +30,7 @@ const LessonDetailPageV2 = () => {
   const [currentTourStepIndex, setCurrentTourStepIndex] = useState(0);
   const [isNotesSidebarOpen, setIsNotesSidebarOpen] = useState(false);
   const [isAskQuestionSidebarOpen, setIsAskQuestionSidebarOpen] = useState(false);
+  const [isAddNotePanelOpen, setIsAddNotePanelOpen] = useState(false); // New state for panel
 
   // Define tour steps (unchanged)
   const tourSteps = [
@@ -121,6 +123,16 @@ const LessonDetailPageV2 = () => {
     setIsSidebarOpen(prev => !prev);
   };
 
+  const handleAddNoteSave = (content: string) => {
+    console.log("Note added from LessonDetailPageV2:", content);
+    setIsAddNotePanelOpen(false);
+  };
+
+  const handleAddNoteCancel = () => {
+    console.log("Note creation cancelled.");
+    setIsAddNotePanelOpen(false);
+  };
+
   return (
     <div className="h-screen flex flex-col bg-gray-100">
       <LessonHeader
@@ -138,7 +150,7 @@ const LessonDetailPageV2 = () => {
               rootId="tour-video-player"
               lessonTitle={currentLesson.title}
               updatedDate="tháng 11 năm 2022"
-              onAddNote={(content) => console.log("Note added from LessonDetailPageV2:", content)}
+              onAddNote={() => setIsAddNotePanelOpen(true)} // Open panel on add note click
               addNoteButtonId="tour-add-note-button"
             />
           </div>
@@ -198,6 +210,16 @@ const LessonDetailPageV2 = () => {
         isOpen={isAskQuestionSidebarOpen}
         onClose={() => setIsAskQuestionSidebarOpen(false)}
       />
+
+      {/* Inline Add Note Panel */}
+      {isAddNotePanelOpen && (
+        <InlineAddNotePanel
+          timestamp={"00:00"} // You can replace with actual video time if available
+          onSave={handleAddNoteSave}
+          onCancel={handleAddNoteCancel}
+          onClose={() => setIsAddNotePanelOpen(false)}
+        />
+      )}
     </div>
   );
 };
