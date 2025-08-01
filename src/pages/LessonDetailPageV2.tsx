@@ -10,15 +10,16 @@ import FloatingAskQuestionButton from "@/components/lesson/FloatingAskQuestionBu
 import { Button } from "@/components/ui/button";
 import { Download, Edit, AlertTriangle } from "lucide-react";
 import GuidedTourOverlay from "@/components/tour/GuidedTourOverlay";
-import NotesSidebarInline from "@/components/lesson/NotesSidebarInline"; // Use inline version
+import NotesSidebar from "@/components/lesson/NotesSidebar";
 import AskQuestionSidebar from "@/components/lesson/AskQuestionSidebar";
-import InlineAddNotePanel from "@/components/lesson/InlineAddNotePanel";
-import { chapters } from "@/data/courseData";
+import InlineAddNotePanel from "@/components/lesson/InlineAddNotePanel"; // Import new panel
+import { chapters } from "@/data/courseData"; // Import chapters from the new data file
 
+// Flatten all sessions into a single array for easy lookup and navigation
 const allLessons = chapters.flatMap(chapter =>
   chapter.sessions.map(session => ({
     ...session,
-    courseTitle: chapter.title,
+    courseTitle: chapter.title, // Add courseTitle to each session for breadcrumb
   }))
 );
 
@@ -29,8 +30,9 @@ const LessonDetailPageV2 = () => {
   const [currentTourStepIndex, setCurrentTourStepIndex] = useState(0);
   const [isNotesSidebarOpen, setIsNotesSidebarOpen] = useState(false);
   const [isAskQuestionSidebarOpen, setIsAskQuestionSidebarOpen] = useState(false);
-  const [isAddNotePanelOpen, setIsAddNotePanelOpen] = useState(false);
+  const [isAddNotePanelOpen, setIsAddNotePanelOpen] = useState(false); // New state for panel
 
+  // Define tour steps (unchanged)
   const tourSteps = [
     {
       selector: '#tour-video-player',
@@ -60,7 +62,7 @@ const LessonDetailPageV2 = () => {
       selector: '#tour-first-lesson-item',
       title: 'Nội dung khóa học',
       description: 'Đây là danh sách các chương và bài học trong khóa. Bạn có thể chọn bài học tiếp theo tại đây.',
-      position: 'left',
+      position: 'left', // Position relative to the sidebar item
     },
     {
       selector: '#tour-toggle-sidebar-button',
@@ -85,7 +87,7 @@ const LessonDetailPageV2 = () => {
     if (currentTourStepIndex < tourSteps.length - 1) {
       setCurrentTourStepIndex(prev => prev + 1);
     } else {
-      setIsTourActive(false);
+      setIsTourActive(false); // End tour
     }
   };
 
@@ -97,7 +99,7 @@ const LessonDetailPageV2 = () => {
 
   const handleCloseTour = () => {
     setIsTourActive(false);
-    setCurrentTourStepIndex(0);
+    setCurrentTourStepIndex(0); // Reset for next time
   };
 
   const currentLessonIndex = allLessons.findIndex(lesson => lesson.sessionId === lessonId);
@@ -119,7 +121,6 @@ const LessonDetailPageV2 = () => {
 
   const toggleSidebar = () => {
     setIsSidebarOpen(prev => !prev);
-    if (isNotesSidebarOpen) setIsNotesSidebarOpen(false);
   };
 
   const handleAddNoteSave = (content: string) => {
@@ -149,7 +150,7 @@ const LessonDetailPageV2 = () => {
               rootId="tour-video-player"
               lessonTitle={currentLesson.title}
               updatedDate="tháng 11 năm 2022"
-              onAddNote={() => setIsAddNotePanelOpen(true)}
+              onAddNote={() => setIsAddNotePanelOpen(true)} // Open panel on add note click
               addNoteButtonId="tour-add-note-button"
             />
           </div>
@@ -174,9 +175,11 @@ const LessonDetailPageV2 = () => {
           <FloatingAskQuestionButton onClick={() => setIsAskQuestionSidebarOpen(true)} />
         </div>
 
-        {/* Notes Sidebar inline */}
-        {isNotesSidebarOpen && (
-          <NotesSidebarInline onClose={() => setIsNotesSidebarOpen(false)} />
+        {isSidebarOpen && (
+          <div className="lg:w-1/3 bg-white border-l border-gray-200 p-6 overflow-y-auto h-full">
+            <h2 className="text-xl font-bold text-gray-800 mb-4">Nội dung khóa học</h2>
+            <CourseContent isSidebar={true} />
+          </div>
         )}
       </div>
       <LessonNavigation
@@ -198,14 +201,20 @@ const LessonDetailPageV2 = () => {
         />
       )}
 
+      <NotesSidebar
+        isOpen={isNotesSidebarOpen}
+        onClose={() => setIsNotesSidebarOpen(false)}
+      />
+
       <AskQuestionSidebar
         isOpen={isAskQuestionSidebarOpen}
         onClose={() => setIsAskQuestionSidebarOpen(false)}
       />
 
+      {/* Inline Add Note Panel */}
       {isAddNotePanelOpen && (
         <InlineAddNotePanel
-          timestamp={"00:00"}
+          timestamp={"00:00"} // You can replace with actual video time if available
           onSave={handleAddNoteSave}
           onCancel={handleAddNoteCancel}
           onClose={() => setIsAddNotePanelOpen(false)}
