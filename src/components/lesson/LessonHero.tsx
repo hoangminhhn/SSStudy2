@@ -34,25 +34,15 @@ const LessonHero: React.FC<LessonHeroProps> = ({
         {lessonTitle}
       </h1>
 
-      <div className="flex items-center text-gray-700 mb-2 space-x-2">
-        <User size={18} className="text-gray-600" />
+      <div className="flex items-center text-gray-700 mb-4">
+        <User size={18} className="text-gray-600 mr-2" />
         <span className="font-semibold">{teacherName}</span>
+        <span className="ml-4 text-sm text-gray-500">
+          Bạn còn <span className="font-bold text-orange-600">{viewsRemaining}</span> lượt xem
+        </span>
       </div>
 
-      <div className="flex items-center text-orange-600 font-semibold mb-4 space-x-1">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-5 w-5 flex-shrink-0"
-          fill="currentColor"
-          viewBox="0 0 24 24"
-          stroke="none"
-        >
-          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z" />
-        </svg>
-        <span>Bạn còn <span className="text-orange-700">{viewsRemaining}</span> lượt xem</span>
-      </div>
-
-      <div className="flex flex-wrap items-center gap-4 mt-0">
+      <div className="flex flex-wrap items-center gap-4 mt-4">
         <Button variant="outline" className="text-blue-600 border-blue-600 hover:bg-blue-50 rounded-full px-4 py-2">
           <Download size={16} className="mr-2" />
           Tải đề (không đáp án)
