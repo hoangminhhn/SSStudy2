@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import LessonHeader from "@/components/layout/LessonHeader";
 import LessonVideoPlayer from "@/components/lesson/LessonVideoPlayer";
+import LessonHero from "@/components/lesson/LessonHero"; // Import LessonHero
 import LessonNavigation from "@/components/lesson/LessonNavigation";
 import CourseContent from "@/components/course/CourseContent";
 import FloatingAskQuestionButton from "@/components/lesson/FloatingAskQuestionButton";
@@ -145,7 +146,16 @@ const LessonDetailPageV2 = () => {
       />
       <div className="flex-grow flex lg:flex-row overflow-hidden">
         <div className={`flex flex-col bg-white overflow-y-auto h-full relative ${isSidebarOpen ? 'lg:w-2/3' : 'lg:w-full'}`}>
-          <div className="px-6 pt-6 pb-0">
+          {/* Add LessonHero here */}
+          <div className="px-6 pt-6 pb-4 border-b border-gray-200">
+            <LessonHero
+              lessonTitle={currentLesson.title}
+              teacherName={currentLesson.teacher}
+              viewsRemaining={currentLesson.views ?? 0}
+            />
+          </div>
+
+          <div className="px-6 pt-0 pb-0">
             <LessonVideoPlayer
               rootId="tour-video-player"
               lessonTitle={currentLesson.title}
