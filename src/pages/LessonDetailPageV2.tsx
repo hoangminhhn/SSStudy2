@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import LessonHeader from "@/components/layout/LessonHeader";
 import LessonVideoPlayer from "@/components/lesson/LessonVideoPlayer";
+import LessonHero from "@/components/lesson/LessonHero";
 import LessonNavigation from "@/components/lesson/LessonNavigation";
 import CourseContent from "@/components/course/CourseContent";
 import FloatingAskQuestionButton from "@/components/lesson/FloatingAskQuestionButton";
@@ -12,14 +13,13 @@ import { Download, Edit, AlertTriangle } from "lucide-react";
 import GuidedTourOverlay from "@/components/tour/GuidedTourOverlay";
 import NotesSidebar from "@/components/lesson/NotesSidebar";
 import AskQuestionSidebar from "@/components/lesson/AskQuestionSidebar";
-import InlineAddNotePanel from "@/components/lesson/InlineAddNotePanel"; // Import new panel
-import { chapters } from "@/data/courseData"; // Import chapters from the new data file
+import InlineAddNotePanel from "@/components/lesson/InlineAddNotePanel";
+import { chapters } from "@/data/courseData";
 
-// Flatten all sessions into a single array for easy lookup and navigation
 const allLessons = chapters.flatMap(chapter =>
   chapter.sessions.map(session => ({
     ...session,
-    courseTitle: chapter.title, // Add courseTitle to each session for breadcrumb
+    courseTitle: chapter.title,
   }))
 );
 
@@ -30,9 +30,8 @@ const LessonDetailPageV2 = () => {
   const [currentTourStepIndex, setCurrentTourStepIndex] = useState(0);
   const [isNotesSidebarOpen, setIsNotesSidebarOpen] = useState(false);
   const [isAskQuestionSidebarOpen, setIsAskQuestionSidebarOpen] = useState(false);
-  const [isAddNotePanelOpen, setIsAddNotePanelOpen] = useState(false); // New state for panel
+  const [isAddNotePanelOpen, setIsAddNotePanelOpen] = useState(false);
 
-  // Define tour steps (unchanged)
   const tourSteps = [
     {
       selector: '#tour-video-player',
@@ -62,7 +61,7 @@ const LessonDetailPageV2 = () => {
       selector: '#tour-first-lesson-item',
       title: 'Nội dung khóa học',
       description: 'Đây là danh sách các chương và bài học trong khóa. Bạn có thể chọn bài học tiếp theo tại đây.',
-      position: 'left', // Position relative to the sidebar item
+      position: 'left',
     },
     {
       selector: '#tour-toggle-sidebar-button',
@@ -87,7 +86,7 @@ const LessonDetailPageV2 = () => {
     if (currentTourStepIndex < tourSteps.length - 1) {
       setCurrentTourStepIndex(prev => prev + 1);
     } else {
-      setIsTourActive(false); // End tour
+      setIsTourActive(false);
     }
   };
 
@@ -99,7 +98,7 @@ const LessonDetailPageV2 = () => {
 
   const handleCloseTour = () => {
     setIsTourActive(false);
-    setCurrentTourStepIndex(0); // Reset for next time
+    setCurrentTourStepIndex(0);
   };
 
   const currentLessonIndex = allLessons.findIndex(lesson => lesson.sessionId === lessonId);
@@ -145,34 +144,42 @@ const LessonDetailPageV2 = () => {
       />
       <div className="flex-grow flex lg:flex-row overflow-hidden">
         <div className={`flex flex-col bg-white overflow-y-auto h-full relative ${isSidebarOpen ? 'lg:w-2/3' : 'lg:w-full'}`}>
-          <div className="px-6 pt-6 pb-0">
-            <LessonVideoPlayer
-              rootId="tour-video-player"
-              lessonTitle={currentLesson.title}
-              updatedDate="tháng 11 năm 2022"
-              onAddNote={() => setIsAddNotePanelOpen(true)} // Open panel on add note click
-              addNoteButtonId="tour-add-note-button"
+          <div className="relative w-full aspect-video bg-black rounded-lg overflow-hidden">
+            <img
+              src="/images/20250630150800-ugrw2nuezq.png"
+              alt="Video Thumbnail"
+              className="w-full h-full object-cover"
             />
+            <button
+              aria-label="Play video"
+              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-orange-500 hover:bg-orange-600 rounded-full w-14 h-14 flex items-center justify-center shadow-lg"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="white"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="none"
+                className="w-8 h-8"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 3v18l15-9L5 3z" />
+              </svg>
+            </button>
           </div>
-
-          <div className="flex flex-wrap items-center gap-4 mt-0 px-6 pb-6 pr-24">
-            <Button id="tour-download-no-ans" variant="ghost" className="text-orange-500 hover:text-orange-600 hover:bg-orange-50 rounded-full px-4 py-2">
-              <Download size={16} className="mr-2" />
-              Tải đề (không đáp án)
-            </Button>
-            <Button variant="ghost" className="text-orange-500 hover:text-orange-600 hover:bg-orange-50 rounded-full px-4 py-2">
-              <Download size={16} className="mr-2" />
-              Tải đề (có đáp án)
-            </Button>
-            <Button id="tour-do-exercise" className="bg-gray-300 text-gray-700 rounded-full px-6 py-3 cursor-not-allowed" disabled>
-              Làm bài tập <Edit size={16} className="ml-2" />
-            </Button>
-            <Button variant="outline" className="text-gray-700 border-gray-300 hover:bg-gray-100 rounded-full px-6 py-3">
-              Báo lỗi <AlertTriangle size={16} className="ml-2" />
-            </Button>
+          <div className="mt-4 px-4">
+            <h1 className="text-3xl font-extrabold text-blue-600 leading-tight">
+              HTML, CSS
+            </h1>
+            <p className="text-lg text-blue-600 font-semibold bg-blue-400 inline-block rounded px-2 -mt-1">
+              từ zero đến
+            </p>
+            <p className="text-2xl text-blue-600 font-semibold mt-1">
+              &lt;hero&gt;
+            </p>
+            <p className="text-orange-500 font-mono mt-2">
+              Fullstack.edu.vn
+            </p>
           </div>
-
-          <FloatingAskQuestionButton onClick={() => setIsAskQuestionSidebarOpen(true)} />
         </div>
 
         {isSidebarOpen && (
@@ -211,10 +218,9 @@ const LessonDetailPageV2 = () => {
         onClose={() => setIsAskQuestionSidebarOpen(false)}
       />
 
-      {/* Inline Add Note Panel */}
       {isAddNotePanelOpen && (
         <InlineAddNotePanel
-          timestamp={"00:00"} // You can replace with actual video time if available
+          timestamp={"00:00"}
           onSave={handleAddNoteSave}
           onCancel={handleAddNoteCancel}
           onClose={() => setIsAddNotePanelOpen(false)}
