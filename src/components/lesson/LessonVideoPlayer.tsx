@@ -1,60 +1,67 @@
 "use client";
 
 import React from "react";
-import { Play } from "lucide-react";
+import { Play, Plus } from "lucide-react";
+import { Button } from "@/components/ui/button"; // Import Button
 
 interface LessonVideoPlayerProps {
-  rootId?: string;
   lessonTitle: string;
-  updatedDate: string;
-  onAddNote: () => void;
-  addNoteButtonId?: string;
+  videoUrl?: string; // Optional video URL
+  thumbnailUrl?: string; // Optional thumbnail URL
+  updatedDate: string; // Added updatedDate prop
+  onAddNote?: () => void; // Changed to simple callback without popup
+  rootId?: string; // New prop for the root div's ID
+  addNoteButtonId?: string; // New prop for the add note button's ID
 }
 
 const LessonVideoPlayer: React.FC<LessonVideoPlayerProps> = ({
-  rootId,
   lessonTitle,
+  videoUrl,
+  thumbnailUrl = "/images/20250630150800-ugrw2nuezq.png", // Updated default thumbnail URL
   updatedDate,
   onAddNote,
+  rootId,
   addNoteButtonId,
 }) => {
   return (
-    <div
-      id={rootId}
-      className="relative w-full aspect-video bg-black rounded-lg overflow-hidden flex justify-center items-center"
-    >
-      {/* Black side bars */}
-      <div className="absolute inset-y-0 left-0 w-20 bg-black z-10" />
-      <div className="absolute inset-y-0 right-0 w-20 bg-black z-10" />
-
-      {/* Center content: left blue image, right white info panel */}
-      <div className="relative flex max-w-full max-h-full rounded-lg overflow-hidden">
-        {/* Left side: image */}
-        <div className="bg-blue-600 flex items-center justify-center px-8 py-6">
-          <img
-            src="/images/20250630150800-ugrw2nuezq.png"
-            alt={lessonTitle}
-            className="max-h-[calc(100vh-200px)] object-contain rounded-lg"
-          />
+    <div className="flex flex-col h-full">
+      <div
+        id={rootId}
+        className="relative w-full aspect-video bg-black rounded-lg overflow-hidden flex items-center justify-center"
+      >
+        {videoUrl ? (
+          <video controls src={videoUrl} className="w-full h-full object-cover">
+            Your browser does not support the video tag.
+          </video>
+        ) : (
+          <>
+            <img
+              src={thumbnailUrl}
+              alt="Video Thumbnail"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Play size={64} className="text-white opacity-75" />
+            </div>
+          </>
+        )}
+      </div>
+      <div className="flex justify-between items-center mt-0 pr-32">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800 mb-0">{lessonTitle}</h1>
+          <p className="text-sm text-gray-500 mb-0">Cập nhật {updatedDate}</p>
         </div>
-
-        {/* Right side: white background with text and play button */}
-        <div className="bg-white flex flex-col justify-center px-10 py-8 w-[360px] relative">
-          <h2 className="text-3xl font-bold text-blue-600 mb-3">HTML, CSS</h2>
-          <div className="text-lg font-semibold mb-2">
-            <span className="bg-blue-500 text-white px-3 rounded">từ zero đến</span>
-          </div>
-          <div className="text-2xl font-mono text-blue-600 mb-6">&lt;hero&gt;</div>
-          <div className="text-orange-500 font-semibold text-sm tracking-wide mb-6">Fullstack.edu.vn</div>
-
-          {/* Play button */}
-          <button
-            aria-label="Play video"
-            className="absolute left-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-orange-500 flex items-center justify-center shadow-lg hover:bg-orange-600 transition-colors"
+        {onAddNote && (
+          <Button
+            id={addNoteButtonId}
+            variant="outline"
+            className="text-gray-700 border-gray-300 hover:bg-gray-100 rounded-full px-4 py-2"
+            onClick={onAddNote} // Directly call onAddNote without popup
           >
-            <Play size={24} className="text-white" />
-          </button>
-        </div>
+            <Plus size={16} className="mr-2" />
+            Thêm ghi chú
+          </Button>
+        )}
       </div>
     </div>
   );
