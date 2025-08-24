@@ -103,8 +103,9 @@ const CoursePurchaseCard: React.FC<CoursePurchaseCardProps> = ({
             </div>
           </div>
 
-          {/* Gift/promotion section (below Time) */}
+          {/* Gift/promotion section (updated layout per image) */}
           <div className="mt-4 border rounded-md p-3 bg-yellow-50">
+            {/* Row 1: Icon + title + red pulsing badge + claim button */}
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <div
@@ -114,16 +115,17 @@ const CoursePurchaseCard: React.FC<CoursePurchaseCardProps> = ({
                 >
                   <Gift size={20} />
                 </div>
-                <div>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-sm font-semibold text-v2-text-default">Quà tặng mua khóa</span>
-                    <span className="text-xs text-v2-text-muted">— ưu đãi</span>
-                  </div>
-                  <div className="text-xs text-v2-text-muted">Voucher 200.000đ khi mua khóa</div>
+                <div className="flex items-baseline space-x-3">
+                  <span className="text-sm font-semibold text-v2-text-default">Quà tặng trị giá</span>
+                  <span className="bg-red-600 text-white text-sm font-semibold px-3 py-1 rounded-full ${''}"
+                    className="bg-red-600 text-white text-sm font-semibold px-3 py-1 rounded-full animate-pulse"
+                  >
+                    800k
+                  </span>
                 </div>
               </div>
 
-              <div className="flex items-center space-x-2">
+              <div>
                 <button
                   onClick={handleClaim}
                   className={`rounded-full px-4 py-2 text-sm font-medium ${claimed ? "bg-gray-200 text-gray-700" : "bg-yellow-500 hover:bg-yellow-600 text-white"
@@ -132,6 +134,14 @@ const CoursePurchaseCard: React.FC<CoursePurchaseCardProps> = ({
                 >
                   {claimed ? "Đã nhận" : "Nhận quà"}
                 </button>
+              </div>
+            </div>
+
+            {/* Row 2: Box with course title & blinking dot */}
+            <div className="mt-3 bg-white border border-gray-200 rounded-md p-3 flex items-center space-x-3">
+              <div className="w-3 h-3 rounded-full bg-red-500 flex-shrink-0 animate-pulse" />
+              <div className="text-sm text-v2-text-default truncate">
+                Khóa: Master HSA - giai đoạn 1 năm học 2025 (được tặng)
               </div>
             </div>
           </div>

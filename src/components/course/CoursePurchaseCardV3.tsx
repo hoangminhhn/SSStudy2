@@ -42,15 +42,15 @@ const CoursePurchaseCardV3: React.FC<CoursePurchaseCardV3Props> = ({
   return (
     <Card className="p-6 shadow-lg rounded-lg">
       <img src={imageUrl} alt="Livestream Thumbnail" className="w-full h-auto rounded-lg object-cover mb-4" />
-      <div className="flex items-baseline justify-start mb-2"> {/* Changed justify-center to justify-start */}
+      <div className="flex items-baseline justify-start mb-2">
         <span className={`text-4xl font-bold text-v3-primary mr-2 ${giftActive ? "animate-pulse" : ""}`}>{currentPrice}</span>
         <span className="text-xl text-v3-text-muted line-through">{oldPrice}</span>
       </div>
-      <p className="flex items-center justify-start text-v3-primary font-semibold mb-4"> {/* Changed justify-center to justify-start */}
+      <p className="flex items-center justify-start text-v3-primary font-semibold mb-4">
         <Clock size={18} className="mr-2" />
         Kết thúc sau {countdown}
       </p>
-      <p className="text-left text-v3-text-muted text-sm mb-4"> {/* Changed text-center to text-left */}
+      <p className="text-left text-v3-text-muted text-sm mb-4">
         {promoText}
       </p>
 
@@ -101,8 +101,9 @@ const CoursePurchaseCardV3: React.FC<CoursePurchaseCardV3Props> = ({
             </div>
           </div>
 
-          {/* Gift/promotion section (below Time) */}
+          {/* Gift/promotion section (updated layout per image) */}
           <div className="mt-4 border rounded-md p-3 bg-yellow-50">
+            {/* Row 1 */}
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <div
@@ -112,16 +113,15 @@ const CoursePurchaseCardV3: React.FC<CoursePurchaseCardV3Props> = ({
                 >
                   <Gift size={20} />
                 </div>
-                <div>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-sm font-semibold text-v3-text-default">Quà tặng mua khóa</span>
-                    <span className="text-xs text-v3-text-muted">— ưu đãi</span>
-                  </div>
-                  <div className="text-xs text-v3-text-muted">Voucher 200.000đ khi mua khóa</div>
+                <div className="flex items-baseline space-x-3">
+                  <span className="text-sm font-semibold text-v3-text-default">Quà tặng trị giá</span>
+                  <span className="bg-red-600 text-white text-sm font-semibold px-3 py-1 rounded-full animate-pulse">
+                    800k
+                  </span>
                 </div>
               </div>
 
-              <div className="flex items-center space-x-2">
+              <div>
                 <button
                   onClick={handleClaim}
                   className={`rounded-full px-4 py-2 text-sm font-medium ${claimed ? "bg-gray-200 text-gray-700" : "bg-yellow-500 hover:bg-yellow-600 text-white"
@@ -130,6 +130,14 @@ const CoursePurchaseCardV3: React.FC<CoursePurchaseCardV3Props> = ({
                 >
                   {claimed ? "Đã nhận" : "Nhận quà"}
                 </button>
+              </div>
+            </div>
+
+            {/* Row 2 */}
+            <div className="mt-3 bg-white border border-gray-200 rounded-md p-3 flex items-center space-x-3">
+              <div className="w-3 h-3 rounded-full bg-red-500 flex-shrink-0 animate-pulse" />
+              <div className="text-sm text-v3-text-default truncate">
+                Khóa: Master HSA - giai đoạn 1 năm học 2025 (được tặng)
               </div>
             </div>
           </div>
