@@ -3,7 +3,13 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, Clock } from "lucide-react";
+import { ShoppingCart, Clock, HelpCircle } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface CoursePurchaseCardV3Props {
   imageUrl: string;
@@ -49,7 +55,7 @@ const CoursePurchaseCardV3: React.FC<CoursePurchaseCardV3Props> = ({
 
       <div className="border-t border-v3-border pt-6">
         <h3 className="text-lg font-bold text-v3-text-default mb-3">Khóa học này bao gồm</h3>
-        <ul className="space-y-2 text-v3-text-default">
+        <ul className="space-y-2 text-v3-text-default mb-4">
           {includedItems.map((item, index) => (
             <li key={index} className="flex items-start">
               <span className="w-2 h-2 bg-v3-text-muted rounded-full flex-shrink-0 mt-2 mr-3"></span>
@@ -57,6 +63,42 @@ const CoursePurchaseCardV3: React.FC<CoursePurchaseCardV3Props> = ({
             </li>
           ))}
         </ul>
+
+        {/* Thời gian section */}
+        <div className="mt-4">
+          <h3 className="text-lg font-bold text-v3-text-default mb-3">Thời gian</h3>
+          <div className="space-y-2 text-v3-text-default text-sm">
+            <div className="flex items-center space-x-2">
+              <Clock size={16} className="text-gray-500" />
+              <span>
+                Ngày khai giảng: <span className="font-medium">07/07/2025</span>
+              </span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Clock size={16} className="text-gray-500" />
+              <span>
+                Ngày bế giảng: <span className="font-medium">10/07/2025</span>
+              </span>
+
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      type="button"
+                      aria-label="Giải thích ngày bế giảng"
+                      className="ml-2 inline-flex items-center justify-center w-5 h-5 rounded-full bg-blue-50 text-blue-600"
+                    >
+                      <HelpCircle size={14} />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Ngày bế giảng là ngày kết thúc chính thức của khóa học.</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+          </div>
+        </div>
       </div>
     </Card>
   );
