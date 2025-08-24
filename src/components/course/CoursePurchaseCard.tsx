@@ -3,7 +3,7 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, Clock, HelpCircle, Gift } from "lucide-react";
+import { ShoppingCart, Clock, HelpCircle } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -62,7 +62,7 @@ const CoursePurchaseCard: React.FC<CoursePurchaseCardProps> = ({
           ))}
         </ul>
 
-        {/* Time section */}
+        {/* New Time section */}
         <div className="mt-4">
           <h4 className="text-sm font-semibold text-v2-text-default mb-2">Thời gian</h4>
           <div className="text-sm text-v2-text-muted space-y-1">
@@ -85,30 +85,6 @@ const CoursePurchaseCard: React.FC<CoursePurchaseCardProps> = ({
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
-            </div>
-          </div>
-
-          {/* Gift / Promo section */}
-          <div className="mt-4 p-3 rounded-lg border border-yellow-100 bg-gradient-to-br from-white to-yellow-50">
-            <div className="flex items-start space-x-3">
-              <div className="flex-shrink-0">
-                <div className="w-10 h-10 rounded-lg bg-orange-500 flex items-center justify-center text-white gift-bounce">
-                  <Gift size={18} />
-                </div>
-              </div>
-              <div className="flex-1">
-                <div className="flex items-center justify-between">
-                  <h5 className="font-semibold text-v2-text-default">Quà tặng trị giá</h5>
-                  <span className="ml-2 inline-block bg-pink-100 text-pink-700 text-sm px-3 py-1 rounded-full price-pulse">
-                    800K
-                  </span>
-                </div>
-
-                <div className="mt-3 bg-yellow-50 border border-yellow-100 rounded p-3 text-sm text-v2-text-default">
-                  <p>Sách đạt điểm tối đa hình OXYZ</p>
-                  <p>Sách đạt điểm tối đa hình OXYZ</p>
-                </div>
-              </div>
             </div>
           </div>
         </div>
