@@ -18,6 +18,7 @@ export interface Chapter {
   id: string;
   progress: string;
   title: string;
+  subject: string; // NEW: subject for grouping/filtering (e.g., "Toán", "Hóa", "Anh")
   sessions: Session[];
 }
 
@@ -26,6 +27,7 @@ export const chapters: Chapter[] = [
     id: "chapter-1",
     progress: "0/8",
     title: "Tổng ôn kiến thức lớp 11 phần Đại số",
+    subject: "Toán",
     sessions: [
       {
         sessionId: "buoi-1-tong-on-luong-giac-phan-1",
@@ -73,6 +75,7 @@ export const chapters: Chapter[] = [
     id: "chapter-2",
     progress: "0/9",
     title: "Tổng ôn kiến thức lớp 11 phần Hình học",
+    subject: "Toán",
     sessions: [
       {
         sessionId: "buoi-1-gioi-thieu-hinh-hoc",
@@ -88,6 +91,7 @@ export const chapters: Chapter[] = [
     id: "chapter-3",
     progress: "0/43",
     title: "[Classin] Chương 1: Hàm số",
+    subject: "Toán",
     sessions: [
       {
         sessionId: "buoi-1-khai-niem-ham-so",
@@ -103,6 +107,7 @@ export const chapters: Chapter[] = [
     id: "chapter-4",
     progress: "0/1",
     title: "[Classin] Chương 2: Mẫu số liệu ghép nhóm",
+    subject: "Toán",
     sessions: [
       { sessionId: "buoi-1-gioi-thieu-mau-so-lieu", title: "Buổi 1: Giới thiệu", teacher: "Thầy Nguyễn Tiến Đạt", views: 5, date: "05/08/2024" },
     ],
@@ -111,6 +116,7 @@ export const chapters: Chapter[] = [
     id: "chapter-5",
     progress: "0/20",
     title: "[Classin] Chương 3: Nguyên hàm tích phân",
+    subject: "Toán",
     sessions: [
       { sessionId: "buoi-1-nguyen-ham-co-ban", title: "Buổi 1: Nguyên hàm cơ bản", teacher: "Thầy Nguyễn Tiến Đạt", views: 16, date: "07/08/2024" },
     ],
@@ -119,6 +125,7 @@ export const chapters: Chapter[] = [
     id: "chapter-6",
     progress: "0/12",
     title: "[Classin] Chương 4: Xác suất có điều kiện",
+    subject: "Toán",
     sessions: [
       { sessionId: "buoi-1-gioi-thieu-xac-suat", title: "Buổi 1: Giới thiệu", teacher: "Thầy Nguyễn Tiến Đạt", views: 9, date: "09/08/2024" },
     ],
@@ -127,6 +134,7 @@ export const chapters: Chapter[] = [
     id: "chapter-7",
     progress: "0/32",
     title: "[Classin] Chương 5: Oxyz",
+    subject: "Toán",
     sessions: [
       { sessionId: "buoi-1-he-toa-do-oxyz", title: "Buổi 1: Hệ tọa độ Oxyz", teacher: "Thầy Nguyễn Tiến Đạt", views: 25, date: "11/08/2024" },
     ],
@@ -135,6 +143,7 @@ export const chapters: Chapter[] = [
     id: "chapter-8",
     progress: "0/4",
     title: "[Classin] Ôn tập giữa kì 1",
+    subject: "Toán",
     sessions: [
       { sessionId: "buoi-1-tong-on-giua-ki-1", title: "Buổi 1: Tổng ôn", teacher: "Thầy Nguyễn Tiến Đạt", views: 6, date: "13/08/2024" },
     ],
@@ -143,6 +152,7 @@ export const chapters: Chapter[] = [
     id: "chapter-9",
     progress: "0/6",
     title: "[Classin] Ôn tập học kì 1",
+    subject: "Toán",
     sessions: [
       { sessionId: "buoi-1-tong-on-hoc-ki-1", title: "Buổi 1: Tổng ôn", teacher: "Thầy Nguyễn Tiến Đạt", views: 7, date: "15/08/2024" },
     ],
@@ -151,6 +161,7 @@ export const chapters: Chapter[] = [
     id: "chapter-10",
     progress: "0/4",
     title: "[Classin] Ôn tập giữa kì 2",
+    subject: "Toán",
     sessions: [
       { sessionId: "buoi-1-tong-on-giua-ki-2", title: "Buổi 1: Tổng ôn", teacher: "Thầy Nguyễn Tiến Đạt", views: 5, date: "17/08/2024" },
     ],
@@ -159,6 +170,7 @@ export const chapters: Chapter[] = [
     id: "chapter-11",
     progress: "0/6",
     title: "[Classin] Ôn tập học kì 2",
+    subject: "Toán",
     sessions: [
       { sessionId: "buoi-1-tong-on-hoc-ki-2", title: "Buổi 1: Tổng ôn", teacher: "Thầy Nguyễn Tiến Đạt", views: 8, date: "19/08/2024" },
     ],
@@ -167,6 +179,7 @@ export const chapters: Chapter[] = [
     id: "chapter-12",
     progress: "0/45",
     title: "[SSVOD] Chương 1: Hàm số",
+    subject: "Toán",
     sessions: [
       { sessionId: "buoi-1-gioi-thieu-ssvod-ham-so", title: "Buổi 1: Giới thiệu", teacher: "Thầy Nguyễn Tiến Đạt", views: 30, date: "21/08/2024" },
     ],
@@ -175,6 +188,7 @@ export const chapters: Chapter[] = [
     id: "chapter-13",
     progress: "0/2",
     title: "[SSVOD] Chương 2: Mẫu số liệu ghép nhóm",
+    subject: "Toán",
     sessions: [
       { sessionId: "buoi-1-gioi-thieu-ssvod-mau-so-lieu", title: "Buổi 1: Giới thiệu", teacher: "Thầy Nguyễn Tiến Đạt", views: 4, date: "23/08/2024" },
     ],
@@ -183,6 +197,7 @@ export const chapters: Chapter[] = [
     id: "chapter-14",
     progress: "0/24",
     title: "[SSVOD] Chương 3: Nguyên hàm tích phân",
+    subject: "Toán",
     sessions: [
       { sessionId: "buoi-1-gioi-thieu-ssvod-nguyen-ham", title: "Buổi 1: Giới thiệu", teacher: "Thầy Nguyễn Tiến Đạt", views: 20, date: "25/08/2024" },
     ],
@@ -191,6 +206,7 @@ export const chapters: Chapter[] = [
     id: "chapter-15",
     progress: "0/12",
     title: "[SSVOD] Chương 4: Xác suất có điều kiện",
+    subject: "Toán",
     sessions: [
       { sessionId: "buoi-1-gioi-thieu-ssvod-xac-suat", title: "Buổi 1: Giới thiệu", teacher: "Thầy Nguyễn Tiến Đạt", views: 10, date: "27/08/2024" },
     ],
@@ -199,6 +215,7 @@ export const chapters: Chapter[] = [
     id: "chapter-16",
     progress: "0/26",
     title: "[SSVOD] Chương 5: Oxyz",
+    subject: "Toán",
     sessions: [
       { sessionId: "buoi-1-gioi-thieu-ssvod-oxyz", title: "Buổi 1: Giới thiệu", teacher: "Thầy Nguyễn Tiến Đạt", views: 22, date: "29/08/2024" },
     ],

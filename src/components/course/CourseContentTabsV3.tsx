@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Search, Lock } from "lucide-react";
@@ -37,6 +37,7 @@ interface Lesson {
 interface Session {
   id: string;
   title: string;
+  subject: string;
   completedLessons: number;
   totalLessons: number;
   lessons: Lesson[];
@@ -50,6 +51,13 @@ const LIVESTREAM_BUTTON_BASE_CLASSES = LIVESTREAM_COMMON_CLASSES + " transition-
 
 const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedSubject, setSelectedSubject] = useState<string>("Tất cả");
+
+  // Dynamically compute available subjects from chapters (keep order with 'Tất cả' first)
+  const availableSubjects = useMemo(() => {
+    const subs = Array.from(new Set(chapters.map((c) => c.subject || "Khác")));
+    return ["Tất cả", ...subs];
+  }, []);
 
   // Khai báo freeLessonsTitles ở đây để dùng trong render
   const freeLessonsTitles = [
@@ -57,12 +65,14 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
     "Buổi 5: Tổng ôn PT, BPT mũ loga",
   ];
 
+  // Map chapters to courseContent structure and include subject
   const courseContent: Session[] = chapters.map((chapter, chapterIndex) => {
     const [completed, total] = chapter.progress.split('/').map(Number);
 
     return {
       id: chapter.id,
       title: chapter.title,
+      subject: chapter.subject || "Khác",
       completedLessons: completed,
       totalLessons: total,
       lessons: chapter.sessions.map((session: ChapterSession, sessionIndex) => {
@@ -91,35 +101,36 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
     };
   });
 
-  const filteredContent = courseContent.filter(session => {
-    const lowerCaseSearchTerm = searchTerm.toLowerCase();
-    const sessionTitleMatches = session.title.toLowerCase().includes(lowerCaseSearchTerm);
+  // Filter by selected subject first (chapter-level), then apply search on lessons and chapter title
+  const filteredContent = useMemo(() => {
+    const lowerSearch = searchTerm.trim().toLowerCase();
 
-    const hasMatchingLessons = session.lessons.some(lesson =>
-      lesson.title.toLowerCase().includes(lowerCaseSearchTerm)
+    // Chapter-level filtering by subject
+    const subjectFiltered = courseContent.filter((c) =>
+      selectedSubject === "Tất cả" ? true : c.subject === selectedSubject
     );
 
-    return sessionTitleMatches || hasMatchingLessons;
-  }).map(session => {
-    const lowerCaseSearchTerm = searchTerm.toLowerCase();
-    const filteredLessons = session.lessons.filter(lesson =>
-      lesson.title.toLowerCase().includes(lowerCaseSearchTerm)
-    );
+    // Search filtering inside each remaining chapter
+    return subjectFiltered
+      .map((session) => {
+        if (!lowerSearch) return session;
 
-    const lessonsToDisplay = session.title.toLowerCase().includes(lowerCaseSearchTerm)
-      ? session.lessons
-      : filteredLessons;
+        const chapterMatches = session.title.toLowerCase().includes(lowerSearch);
 
-    return {
-      ...session,
-      lessons: lessonsToDisplay,
-    };
-  }).filter(session => session.lessons.length > 0 || session.title.toLowerCase().includes(searchTerm.toLowerCase()));
+        const filteredLessons = session.lessons.filter((lesson) =>
+          lesson.title.toLowerCase().includes(lowerSearch)
+        );
+
+        // If chapter matches, keep all lessons; otherwise keep only filtered lessons
+        return chapterMatches ? session : { ...session, lessons: filteredLessons };
+      })
+      .filter((session) => session.lessons.length > 0 || session.title.toLowerCase().includes(lowerSearch));
+  }, [courseContent, searchTerm, selectedSubject]);
 
   return (
     <Card className="p-6 shadow-lg rounded-lg mt-8">
       <Tabs defaultValue="content" className="w-full">
-        <TabsList className="flex justify-start border-b border-gray-200 mb-6 bg-white p-0 h-auto">
+        <TabsList className="flex justify-start border-b border-gray-200 mb-4 bg-white p-0 h-auto">
           <TabsTrigger
             value="content"
             className="relative px-4 py-3 text-base font-medium text-gray-700 data-[state=active]:text-gray-900 data-[state=active]:font-semibold data-[state=active]:border-b-2 data-[state=active]:border-blue-600 data-[state=active]:shadow-none rounded-none hover:text-gray-900 transition-colors duration-200"
@@ -141,7 +152,7 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
         </TabsList>
 
         <TabsContent value="content">
-          <div className="relative mb-6">
+          <div className="relative mb-4">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
             <Input
               type="text"
@@ -150,6 +161,30 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
+          </div>
+
+          {/* Subject category tabs (dynamic from data) */}
+          <div className="mb-4">
+            <div className="flex space-x-3 overflow-x-auto pb-2">
+              {availableSubjects.map((subj) => {
+                const active = subj === selectedSubject;
+                return (
+                  <button
+                    key={subj}
+                    onClick={() => setSelectedSubject(subj)}
+                    aria-pressed={active}
+                    className={cn(
+                      "whitespace-nowrap px-4 py-2 rounded-md border transition-colors text-sm flex-shrink-0",
+                      active
+                        ? "bg-blue-600 text-white border-blue-600"
+                        : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                    )}
+                  >
+                    {subj}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           <Accordion type="single" collapsible className="w-full">
