@@ -3,13 +3,14 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, Clock, HelpCircle } from "lucide-react";
+import { ShoppingCart, Clock, HelpCircle, Gift } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { showSuccess } from "@/utils/toast";
 
 interface CoursePurchaseCardV3Props {
   imageUrl: string;
@@ -28,11 +29,21 @@ const CoursePurchaseCardV3: React.FC<CoursePurchaseCardV3Props> = ({
   promoText,
   includedItems,
 }) => {
+  const [claimed, setClaimed] = React.useState(false);
+  const [giftActive, setGiftActive] = React.useState(true);
+
+  const handleClaim = () => {
+    if (claimed) return;
+    setClaimed(true);
+    setGiftActive(false);
+    showSuccess("Bạn đã nhận quà: Voucher 200.000đ — kiểm tra trong tài khoản của bạn!");
+  };
+
   return (
     <Card className="p-6 shadow-lg rounded-lg">
       <img src={imageUrl} alt="Livestream Thumbnail" className="w-full h-auto rounded-lg object-cover mb-4" />
       <div className="flex items-baseline justify-start mb-2"> {/* Changed justify-center to justify-start */}
-        <span className="text-4xl font-bold text-v3-primary mr-2">{currentPrice}</span>
+        <span className={`text-4xl font-bold text-v3-primary mr-2 ${giftActive ? "animate-pulse" : ""}`}>{currentPrice}</span>
         <span className="text-xl text-v3-text-muted line-through">{oldPrice}</span>
       </div>
       <p className="flex items-center justify-start text-v3-primary font-semibold mb-4"> {/* Changed justify-center to justify-start */}
@@ -64,7 +75,7 @@ const CoursePurchaseCardV3: React.FC<CoursePurchaseCardV3Props> = ({
           ))}
         </ul>
 
-        {/* New Time section */}
+        {/* Time section */}
         <div className="mt-4">
           <h4 className="text-sm font-semibold text-v3-text-default mb-2">Thời gian</h4>
           <div className="text-sm text-v3-text-muted space-y-1">
@@ -87,6 +98,39 @@ const CoursePurchaseCardV3: React.FC<CoursePurchaseCardV3Props> = ({
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
+            </div>
+          </div>
+
+          {/* Gift/promotion section (below Time) */}
+          <div className="mt-4 border rounded-md p-3 bg-yellow-50">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div
+                  className={`p-2 rounded-md bg-white text-yellow-600 shadow-sm flex items-center justify-center ${giftActive ? "animate-bounce" : ""
+                    }`}
+                  aria-hidden
+                >
+                  <Gift size={20} />
+                </div>
+                <div>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-sm font-semibold text-v3-text-default">Quà tặng mua khóa</span>
+                    <span className="text-xs text-v3-text-muted">— ưu đãi</span>
+                  </div>
+                  <div className="text-xs text-v3-text-muted">Voucher 200.000đ khi mua khóa</div>
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={handleClaim}
+                  className={`rounded-full px-4 py-2 text-sm font-medium ${claimed ? "bg-gray-200 text-gray-700" : "bg-yellow-500 hover:bg-yellow-600 text-white"
+                    }`}
+                  aria-pressed={claimed}
+                >
+                  {claimed ? "Đã nhận" : "Nhận quà"}
+                </button>
+              </div>
             </div>
           </div>
         </div>

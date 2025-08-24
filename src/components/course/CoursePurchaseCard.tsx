@@ -3,13 +3,14 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, Clock, HelpCircle } from "lucide-react";
+import { ShoppingCart, Clock, HelpCircle, Gift } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { showSuccess } from "@/utils/toast";
 
 interface CoursePurchaseCardProps {
   imageUrl: string;
@@ -28,11 +29,25 @@ const CoursePurchaseCard: React.FC<CoursePurchaseCardProps> = ({
   promoText,
   includedItems,
 }) => {
+  const [claimed, setClaimed] = React.useState(false);
+  const [giftActive, setGiftActive] = React.useState(true);
+
+  const handleClaim = () => {
+    if (claimed) return;
+    setClaimed(true);
+    setGiftActive(false);
+    showSuccess("Bạn đã nhận quà: Voucher 200.000đ — kiểm tra trong tài khoản của bạn!");
+  };
+
   return (
     <Card className="p-6 shadow-lg rounded-lg">
       <img src={imageUrl} alt="Livestream Thumbnail" className="w-full h-auto rounded-lg object-cover mb-4" />
       <div className="flex items-baseline justify-center mb-2">
-        <span className="text-4xl font-bold text-v2-primary mr-2">{currentPrice}</span>
+        <span
+          className={`text-4xl font-bold text-v2-primary mr-2 ${giftActive ? "animate-pulse" : ""}`}
+        >
+          {currentPrice}
+        </span>
         <span className="text-xl text-v2-text-muted line-through">{oldPrice}</span>
       </div>
       <p className="flex items-center justify-center text-v2-primary font-semibold mb-4">
@@ -62,7 +77,7 @@ const CoursePurchaseCard: React.FC<CoursePurchaseCardProps> = ({
           ))}
         </ul>
 
-        {/* New Time section */}
+        {/* Time section */}
         <div className="mt-4">
           <h4 className="text-sm font-semibold text-v2-text-default mb-2">Thời gian</h4>
           <div className="text-sm text-v2-text-muted space-y-1">
@@ -85,6 +100,39 @@ const CoursePurchaseCard: React.FC<CoursePurchaseCardProps> = ({
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
+            </div>
+          </div>
+
+          {/* Gift/promotion section (below Time) */}
+          <div className="mt-4 border rounded-md p-3 bg-yellow-50">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div
+                  className={`p-2 rounded-md bg-white text-yellow-600 shadow-sm flex items-center justify-center ${giftActive ? "animate-bounce" : ""
+                    }`}
+                  aria-hidden
+                >
+                  <Gift size={20} />
+                </div>
+                <div>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-sm font-semibold text-v2-text-default">Quà tặng mua khóa</span>
+                    <span className="text-xs text-v2-text-muted">— ưu đãi</span>
+                  </div>
+                  <div className="text-xs text-v2-text-muted">Voucher 200.000đ khi mua khóa</div>
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={handleClaim}
+                  className={`rounded-full px-4 py-2 text-sm font-medium ${claimed ? "bg-gray-200 text-gray-700" : "bg-yellow-500 hover:bg-yellow-600 text-white"
+                    }`}
+                  aria-pressed={claimed}
+                >
+                  {claimed ? "Đã nhận" : "Nhận quà"}
+                </button>
+              </div>
             </div>
           </div>
         </div>
