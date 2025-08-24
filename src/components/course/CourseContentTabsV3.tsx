@@ -49,12 +49,15 @@ const LIVESTREAM_BADGE_CLASSES = LIVESTREAM_COMMON_CLASSES + " bg-red-600 text-w
 
 const LIVESTREAM_BUTTON_BASE_CLASSES = LIVESTREAM_COMMON_CLASSES + " transition-colors duration-200";
 
-// Fixed subject tabs requested by the user
-const SUBJECTS = ["Văn", "Anh", "Lịch Sử", "Địa Lý", "Hóa Học"];
-
 const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedSubject, setSelectedSubject] = useState<string>(SUBJECTS[0]); // Default to first subject (Văn)
+  const [selectedSubject, setSelectedSubject] = useState<string>("Tất cả");
+
+  // Dynamically compute available subjects from chapters (keep order with 'Tất cả' first)
+  const availableSubjects = useMemo(() => {
+    const subs = Array.from(new Set(chapters.map((c) => c.subject || "Khác")));
+    return ["Tất cả", ...subs];
+  }, []);
 
   // Khai báo freeLessonsTitles ở đây để dùng trong render
   const freeLessonsTitles = [
@@ -102,8 +105,10 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
   const filteredContent = useMemo(() => {
     const lowerSearch = searchTerm.trim().toLowerCase();
 
-    // Chapter-level filtering by selectedSubject (only show chapters whose subject matches)
-    const subjectFiltered = courseContent.filter((c) => c.subject === selectedSubject);
+    // Chapter-level filtering by subject
+    const subjectFiltered = courseContent.filter((c) =>
+      selectedSubject === "Tất cả" ? true : c.subject === selectedSubject
+    );
 
     // Search filtering inside each remaining chapter
     return subjectFiltered
@@ -158,10 +163,10 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
             />
           </div>
 
-          {/* Fixed Subject category tabs */}
+          {/* Subject category tabs (dynamic from data) */}
           <div className="mb-4">
             <div className="flex space-x-3 overflow-x-auto pb-2">
-              {SUBJECTS.map((subj) => {
+              {availableSubjects.map((subj) => {
                 const active = subj === selectedSubject;
                 return (
                   <button
@@ -186,7 +191,7 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
             {filteredContent.length > 0 ? (
               filteredContent.map((session) => (
                 <AccordionItem key={session.id} value={session.id} className="border-b border-gray-200 last:border-b-0">
-                  <AccordionTrigger className="flex itemscenter justify-between py-4 text-base font-semibold text-gray-800 hover:no-underline hover:bg-gray-100 transition-colors duration-200">
+                  <AccordionTrigger className="flex items-center justify-between py-4 text-base font-semibold text-gray-800 hover:no-underline hover:bg-gray-100 transition-colors duration-200">
                     <div className="flex items-center flex-grow">
                       <span className="ml-2">{session.title}</span>
                     </div>
@@ -252,8 +257,8 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
 
                         return (
                           <div key={lesson.id} className="flex items-center justify-between py-1">
-                            <div className="flex flex-col flex-grow pr-4">
-                              <div className="flex items-center space-x-2">
+                            <div className="flex flex-col flex-grow pr-4"> {/* Changed to flex-col and flex-grow */}
+                              <div className="flex items-center space-x-2"> {/* New div for title and badge */}
                                 <Link
                                   to={lesson.type === 'livestream' ? `/lesson/${lesson.id}` : `/lesson-v2/${lesson.id}`}
                                   className="text-gray-800 hover:text-blue-600 font-medium text-sm transition-colors duration-200 truncate"
@@ -292,7 +297,7 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
                                     {lesson.status === "pro" && lesson.locked ? (
                                       <Lock size={14} color="#000000" />
                                     ) : (
-                                      <div className="w-4" />
+                                      <div className="w-4" /> // Empty space to keep alignment
                                     )}
                                   </div>
                                 </div>
