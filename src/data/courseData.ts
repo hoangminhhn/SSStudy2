@@ -22,7 +22,10 @@ export interface Chapter {
   sessions: Session[];
 }
 
-export const chapters: Chapter[] = [
+/**
+ * Base "Toán" chapters (original content)
+ */
+const mathChapters: Chapter[] = [
   {
     id: "chapter-1",
     progress: "0/8",
@@ -36,34 +39,34 @@ export const chapters: Chapter[] = [
         views: 19,
         date: new Date().toLocaleDateString('en-GB'), // Set to today's date for "Vào học"
         type: 'livestream',
-        timeSlots: [{ time: '19:00 - 21:00', teacher: 'Thầy Nguyễn Tiến Đạt', registrationStatus: 'registered' }], // Can be 'registered' or 'register' for today
+        timeSlots: [{ time: '19:00 - 21:00', teacher: 'Thầy Nguyễn Tiến Đạt', registrationStatus: 'registered' }],
       },
       {
         sessionId: "buoi-2-tong-on-luong-giac-phan-2",
         title: "Buổi 2: Tổng ôn lượng giác (phần 2)",
         teacher: "Thầy Nguyễn Tiến Đạt",
         views: 15,
-        date: "25/07/2024", // Future date
+        date: "25/07/2024",
         type: 'livestream',
-        timeSlots: [{ time: '19:00 - 21:00', teacher: 'Thầy Nguyễn Tiến Đạt', registrationStatus: 'register' }], // "Đăng Ký học"
+        timeSlots: [{ time: '19:00 - 21:00', teacher: 'Thầy Nguyễn Tiến Đạt', registrationStatus: 'register' }],
       },
       {
         sessionId: "buoi-3-tong-on-csc-csn",
         title: "Buổi 3: Tổng ôn CSC – CSN",
         teacher: "Thầy Nguyễn Tiến Đạt",
         views: 10,
-        date: "26/07/2024", // Future date
+        date: "26/07/2024",
         type: 'livestream',
-        timeSlots: [{ time: '19:00 - 21:00', teacher: 'Thầy Nguyễn Tiến Đạt', registrationStatus: 'registered' }], // "Đã đăng ký"
+        timeSlots: [{ time: '19:00 - 21:00', teacher: 'Thầy Nguyễn Tiến Đạt', registrationStatus: 'registered' }],
       },
       {
         sessionId: "buoi-4-tong-on-ham-so-mu-loga",
         title: "Buổi 4: Tổng ôn hàm số mũ loga",
         teacher: "Thầy Nguyễn Tiến Đạt",
         views: 12,
-        date: "27/07/2024", // Future date
+        date: "27/07/2024",
         type: 'livestream',
-        timeSlots: [{ time: '19:00 - 21:00', teacher: 'Thầy Nguyễn Tiến Đạt', registrationStatus: 'full' }], // "Hết chỗ"
+        timeSlots: [{ time: '19:00 - 21:00', teacher: 'Thầy Nguyễn Tiến Đạt', registrationStatus: 'full' }],
       },
       { sessionId: "buoi-5-tong-on-pt-bpt-mu-loga", title: "Buổi 5: Tổng ôn PT, BPT mũ loga", teacher: "Thầy Nguyễn Tiến Đạt", views: 8, date: "18/07/2024" },
       { sessionId: "buoi-6-tong-on-bai-toan-tang-truong-lai-suat", title: "Buổi 6: Tổng ôn bài toán tăng trưởng, lãi suất", teacher: "Thầy Nguyễn Tiến Đạt", views: 7, date: "20/07/2024" },
@@ -220,4 +223,48 @@ export const chapters: Chapter[] = [
       { sessionId: "buoi-1-gioi-thieu-ssvod-oxyz", title: "Buổi 1: Giới thiệu", teacher: "Thầy Nguyễn Tiến Đạt", views: 22, date: "29/08/2024" },
     ],
   },
+];
+
+/**
+ * Helper to clone chapters for a different subject while ensuring unique ids/sessionIds
+ */
+function cloneChaptersForSubject(subjectPrefix: string, subjectName: string, sourceChapters: Chapter[], limit = 3): Chapter[] {
+  return sourceChapters.slice(0, limit).map((ch, idx) => {
+    const newId = `${subjectPrefix}-chapter-${idx + 1}`;
+    const newSessions = ch.sessions.map((s, sidx) => ({
+      ...s,
+      sessionId: `${subjectPrefix}-${s.sessionId}`,
+      // keep title, teacher, date, type, timeSlots, views unchanged for demo
+    }));
+    return {
+      id: newId,
+      progress: ch.progress,
+      title: `${ch.title} (Demo ${subjectName})`,
+      subject: subjectName,
+      sessions: newSessions,
+    };
+  });
+}
+
+/**
+ * Create demo chapters for the requested subjects by copying base math chapters.
+ */
+const subjects = [
+  { prefix: "van", name: "Văn" },
+  { prefix: "anh", name: "Anh" },
+  { prefix: "ly", name: "Lý" },
+  { prefix: "hoa", name: "Hóa" },
+  { prefix: "su", name: "Sử" },
+  { prefix: "dia", name: "Địa" },
+];
+
+const demoSubjectChapters = subjects.flatMap((s) => cloneChaptersForSubject(s.prefix, s.name, mathChapters, 2));
+
+/**
+ * Export final chapters array: original math chapters + demo chapters for other subjects.
+ * This keeps original data intact and provides demo content when filtering by subject.
+ */
+export const chapters: Chapter[] = [
+  ...mathChapters,
+  ...demoSubjectChapters,
 ];
