@@ -49,15 +49,12 @@ const LIVESTREAM_BADGE_CLASSES = LIVESTREAM_COMMON_CLASSES + " bg-red-600 text-w
 
 const LIVESTREAM_BUTTON_BASE_CLASSES = LIVESTREAM_COMMON_CLASSES + " transition-colors duration-200";
 
+// Fixed subject tabs as requested
+const SUBJECT_TABS = ["Văn", "Anh", "Lý", "Hóa", "Sử", "Địa"];
+
 const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedSubject, setSelectedSubject] = useState<string>("Tất cả");
-
-  // Dynamically compute available subjects from chapters (keep order with 'Tất cả' first)
-  const availableSubjects = useMemo(() => {
-    const subs = Array.from(new Set(chapters.map((c) => c.subject || "Khác")));
-    return ["Tất cả", ...subs];
-  }, []);
+  const [selectedSubject, setSelectedSubject] = useState<string>(""); // empty = show all
 
   // Khai báo freeLessonsTitles ở đây để dùng trong render
   const freeLessonsTitles = [
@@ -105,10 +102,10 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
   const filteredContent = useMemo(() => {
     const lowerSearch = searchTerm.trim().toLowerCase();
 
-    // Chapter-level filtering by subject
-    const subjectFiltered = courseContent.filter((c) =>
-      selectedSubject === "Tất cả" ? true : c.subject === selectedSubject
-    );
+    // If no subject selected (selectedSubject === ""), show all chapters
+    const subjectFiltered = selectedSubject
+      ? courseContent.filter((c) => c.subject === selectedSubject)
+      : courseContent;
 
     // Search filtering inside each remaining chapter
     return subjectFiltered
@@ -163,15 +160,15 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
             />
           </div>
 
-          {/* Subject category tabs (dynamic from data) */}
+          {/* Fixed Subject category tabs (no "Tất cả") */}
           <div className="mb-4">
             <div className="flex space-x-3 overflow-x-auto pb-2">
-              {availableSubjects.map((subj) => {
+              {SUBJECT_TABS.map((subj) => {
                 const active = subj === selectedSubject;
                 return (
                   <button
                     key={subj}
-                    onClick={() => setSelectedSubject(subj)}
+                    onClick={() => setSelectedSubject(prev => (prev === subj ? "" : subj))}
                     aria-pressed={active}
                     className={cn(
                       "whitespace-nowrap px-4 py-2 rounded-md border transition-colors text-sm flex-shrink-0",
@@ -257,8 +254,8 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
 
                         return (
                           <div key={lesson.id} className="flex items-center justify-between py-1">
-                            <div className="flex flex-col flex-grow pr-4"> {/* Changed to flex-col and flex-grow */}
-                              <div className="flex items-center space-x-2"> {/* New div for title and badge */}
+                            <div className="flex flex-col flex-grow pr-4">
+                              <div className="flex items-center space-x-2">
                                 <Link
                                   to={lesson.type === 'livestream' ? `/lesson/${lesson.id}` : `/lesson-v2/${lesson.id}`}
                                   className="text-gray-800 hover:text-blue-600 font-medium text-sm transition-colors duration-200 truncate"
@@ -297,7 +294,7 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
                                     {lesson.status === "pro" && lesson.locked ? (
                                       <Lock size={14} color="#000000" />
                                     ) : (
-                                      <div className="w-4" /> // Empty space to keep alignment
+                                      <div className="w-4" />
                                     )}
                                   </div>
                                 </div>
