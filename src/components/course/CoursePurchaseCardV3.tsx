@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Clock, HelpCircle, Gift } from "lucide-react";
 import {
@@ -10,7 +10,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { showSuccess } from "@/utils/toast";
 
 interface CoursePurchaseCardV3Props {
   imageUrl: string;
@@ -29,15 +28,8 @@ const CoursePurchaseCardV3: React.FC<CoursePurchaseCardV3Props> = ({
   promoText,
   includedItems,
 }) => {
-  const [claimed, setClaimed] = React.useState(false);
-  const [giftActive, setGiftActive] = React.useState(true);
-
-  const handleClaim = () => {
-    if (claimed) return;
-    setClaimed(true);
-    setGiftActive(false);
-    showSuccess("Bạn đã nhận quà: Voucher 200.000đ — kiểm tra trong tài khoản của bạn!");
-  };
+  // Keep giftActive as a constant to preserve animations
+  const giftActive = true;
 
   return (
     <Card className="p-6 shadow-lg rounded-lg">
@@ -69,7 +61,7 @@ const CoursePurchaseCardV3: React.FC<CoursePurchaseCardV3Props> = ({
         <ul className="space-y-2 text-v3-text-default mb-4">
           {includedItems.map((item, index) => (
             <li key={index} className="flex items-start">
-              <span className="w-2 h-2 bg-v3-text-muted rounded-full flex-shrink-0 mt-2 mr-3"></span>
+              <span className="w-2 h-2 bg-v3-text-muted rounded-full flex-shrink-0 mt-2 mr-3" />
               <p className="text-sm">{item}</p>
             </li>
           ))}
@@ -107,8 +99,7 @@ const CoursePurchaseCardV3: React.FC<CoursePurchaseCardV3Props> = ({
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <div
-                  className={`p-2 rounded-md bg-white text-yellow-600 shadow-sm flex items-center justify-center ${giftActive ? "animate-bounce" : ""
-                    }`}
+                  className={`p-2 rounded-md bg-white text-yellow-600 shadow-sm flex items-center justify-center ${giftActive ? "animate-bounce" : ""}`}
                   aria-hidden
                 >
                   <Gift size={20} />
@@ -119,17 +110,6 @@ const CoursePurchaseCardV3: React.FC<CoursePurchaseCardV3Props> = ({
                     800k
                   </span>
                 </div>
-              </div>
-
-              <div>
-                <button
-                  onClick={handleClaim}
-                  className={`rounded-full px-4 py-2 text-sm font-medium ${claimed ? "bg-gray-200 text-gray-700" : "bg-yellow-500 hover:bg-yellow-600 text-white"
-                    }`}
-                  aria-pressed={claimed}
-                >
-                  {claimed ? "Đã nhận" : "Nhận quà"}
-                </button>
               </div>
             </div>
 

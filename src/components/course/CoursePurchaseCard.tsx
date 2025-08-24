@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Clock, HelpCircle, Gift } from "lucide-react";
 import {
@@ -10,7 +10,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { showSuccess } from "@/utils/toast";
 
 interface CoursePurchaseCardProps {
   imageUrl: string;
@@ -29,23 +28,14 @@ const CoursePurchaseCard: React.FC<CoursePurchaseCardProps> = ({
   promoText,
   includedItems,
 }) => {
-  const [claimed, setClaimed] = React.useState(false);
-  const [giftActive, setGiftActive] = React.useState(true);
-
-  const handleClaim = () => {
-    if (claimed) return;
-    setClaimed(true);
-    setGiftActive(false);
-    showSuccess("Bạn đã nhận quà: Voucher 200.000đ — kiểm tra trong tài khoản của bạn!");
-  };
+  // Keep giftActive as a constant to preserve the animations (icon bounce & price pulse)
+  const giftActive = true;
 
   return (
     <Card className="p-6 shadow-lg rounded-lg">
       <img src={imageUrl} alt="Livestream Thumbnail" className="w-full h-auto rounded-lg object-cover mb-4" />
       <div className="flex items-baseline justify-center mb-2">
-        <span
-          className={`text-4xl font-bold text-v2-primary mr-2 ${giftActive ? "animate-pulse" : ""}`}
-        >
+        <span className={`text-4xl font-bold text-v2-primary mr-2 ${giftActive ? "animate-pulse" : ""}`}>
           {currentPrice}
         </span>
         <span className="text-xl text-v2-text-muted line-through">{oldPrice}</span>
@@ -71,7 +61,7 @@ const CoursePurchaseCard: React.FC<CoursePurchaseCardProps> = ({
         <ul className="space-y-2 text-v2-text-default mb-4">
           {includedItems.map((item, index) => (
             <li key={index} className="flex items-start">
-              <span className="w-2 h-2 bg-v2-text-muted rounded-full flex-shrink-0 mt-2 mr-3"></span>
+              <span className="w-2 h-2 bg-v2-text-muted rounded-full flex-shrink-0 mt-2 mr-3" />
               <p className="text-sm">{item}</p>
             </li>
           ))}
@@ -105,35 +95,21 @@ const CoursePurchaseCard: React.FC<CoursePurchaseCardProps> = ({
 
           {/* Gift/promotion section (updated layout per image) */}
           <div className="mt-4 border rounded-md p-3 bg-yellow-50">
-            {/* Row 1: Icon + title + red pulsing badge + claim button */}
+            {/* Row 1: Icon + title + red pulsing badge */}
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <div
-                  className={`p-2 rounded-md bg-white text-yellow-600 shadow-sm flex items-center justify-center ${giftActive ? "animate-bounce" : ""
-                    }`}
+                  className={`p-2 rounded-md bg-white text-yellow-600 shadow-sm flex items-center justify-center ${giftActive ? "animate-bounce" : ""}`}
                   aria-hidden
                 >
                   <Gift size={20} />
                 </div>
                 <div className="flex items-baseline space-x-3">
                   <span className="text-sm font-semibold text-v2-text-default">Quà tặng trị giá</span>
-                  <span className="bg-red-600 text-white text-sm font-semibold px-3 py-1 rounded-full ${''}"
-                    className="bg-red-600 text-white text-sm font-semibold px-3 py-1 rounded-full animate-pulse"
-                  >
+                  <span className="bg-red-600 text-white text-sm font-semibold px-3 py-1 rounded-full animate-pulse">
                     800k
                   </span>
                 </div>
-              </div>
-
-              <div>
-                <button
-                  onClick={handleClaim}
-                  className={`rounded-full px-4 py-2 text-sm font-medium ${claimed ? "bg-gray-200 text-gray-700" : "bg-yellow-500 hover:bg-yellow-600 text-white"
-                    }`}
-                  aria-pressed={claimed}
-                >
-                  {claimed ? "Đã nhận" : "Nhận quà"}
-                </button>
               </div>
             </div>
 
