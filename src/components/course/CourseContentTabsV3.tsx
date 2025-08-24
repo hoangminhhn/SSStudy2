@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Search, Lock } from "lucide-react";
@@ -48,8 +48,11 @@ const LIVESTREAM_BADGE_CLASSES = LIVESTREAM_COMMON_CLASSES + " bg-red-600 text-w
 
 const LIVESTREAM_BUTTON_BASE_CLASSES = LIVESTREAM_COMMON_CLASSES + " transition-colors duration-200";
 
+const DEFAULT_SUBJECTS = ["Tất cả", "Văn", "Toán", "Anh", "Lịch sử", "Địa lý", "Hoá học"];
+
 const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedSubject, setSelectedSubject] = useState<string>("Tất cả");
 
   // Khai báo freeLessonsTitles ở đây để dùng trong render
   const freeLessonsTitles = [
@@ -91,35 +94,59 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
     };
   });
 
-  const filteredContent = courseContent.filter(session => {
-    const lowerCaseSearchTerm = searchTerm.toLowerCase();
-    const sessionTitleMatches = session.title.toLowerCase().includes(lowerCaseSearchTerm);
+  // Filter by search term AND by selected subject
+  const filteredContent = useMemo(() => {
+    const lowerSearch = searchTerm.trim().toLowerCase();
 
-    const hasMatchingLessons = session.lessons.some(lesson =>
-      lesson.title.toLowerCase().includes(lowerCaseSearchTerm)
-    );
-
-    return sessionTitleMatches || hasMatchingLessons;
-  }).map(session => {
-    const lowerCaseSearchTerm = searchTerm.toLowerCase();
-    const filteredLessons = session.lessons.filter(lesson =>
-      lesson.title.toLowerCase().includes(lowerCaseSearchTerm)
-    );
-
-    const lessonsToDisplay = session.title.toLowerCase().includes(lowerCaseSearchTerm)
-      ? session.lessons
-      : filteredLessons;
-
-    return {
-      ...session,
-      lessons: lessonsToDisplay,
+    // Helper: check if a session/chapter/lesson matches the subject
+    const matchesSubject = (sessionTitle: string, lessonTitles: string[]) => {
+      if (!selectedSubject || selectedSubject === "Tất cả") return true;
+      const subj = selectedSubject.toLowerCase();
+      // match chapter/session title or any lesson title includes the subject token
+      if (sessionTitle.toLowerCase().includes(subj)) return true;
+      return lessonTitles.some(t => t.toLowerCase().includes(subj));
     };
-  }).filter(session => session.lessons.length > 0 || session.title.toLowerCase().includes(searchTerm.toLowerCase()));
+
+    // First map sessions but apply subject filter
+    const subjectFiltered = courseContent
+      .map(session => {
+        const lessonTitles = session.lessons.map(l => l.title);
+        if (!matchesSubject(session.title, lessonTitles)) {
+          // If the chapter doesn't match the subject and none of its lessons match, return session with empty lessons
+          return { ...session, lessons: [] };
+        }
+        return session;
+      });
+
+    // Then apply search filtering inside each session
+    return subjectFiltered
+      .map(session => {
+        const lowerSearchTerm = lowerSearch;
+        if (!lowerSearchTerm) {
+          return session;
+        }
+
+        const filteredLessons = session.lessons.filter(lesson =>
+          lesson.title.toLowerCase().includes(lowerSearchTerm)
+        );
+
+        // If the session title matches search term, keep all lessons
+        if (session.title.toLowerCase().includes(lowerSearchTerm)) {
+          return session;
+        }
+
+        return {
+          ...session,
+          lessons: filteredLessons,
+        };
+      })
+      .filter(session => session.lessons.length > 0 || session.title.toLowerCase().includes(lowerSearch));
+  }, [courseContent, searchTerm, selectedSubject]);
 
   return (
     <Card className="p-6 shadow-lg rounded-lg mt-8">
       <Tabs defaultValue="content" className="w-full">
-        <TabsList className="flex justify-start border-b border-gray-200 mb-6 bg-white p-0 h-auto">
+        <TabsList className="flex justify-start border-b border-gray-200 mb-4 bg-white p-0 h-auto">
           <TabsTrigger
             value="content"
             className="relative px-4 py-3 text-base font-medium text-gray-700 data-[state=active]:text-gray-900 data-[state=active]:font-semibold data-[state=active]:border-b-2 data-[state=active]:border-blue-600 data-[state=active]:shadow-none rounded-none hover:text-gray-900 transition-colors duration-200"
@@ -141,7 +168,7 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
         </TabsList>
 
         <TabsContent value="content">
-          <div className="relative mb-6">
+          <div className="relative mb-4">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
             <Input
               type="text"
@@ -150,6 +177,30 @@ const CourseContentTabsV3: React.FC<CourseContentTabsV3Props> = ({ courseId }) =
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
+          </div>
+
+          {/* Subject category tabs */}
+          <div className="mb-4">
+            <div className="flex space-x-3 overflow-x-auto pb-2">
+              {DEFAULT_SUBJECTS.map((subj) => {
+                const active = subj === selectedSubject;
+                return (
+                  <button
+                    key={subj}
+                    onClick={() => setSelectedSubject(subj)}
+                    aria-pressed={active}
+                    className={cn(
+                      "whitespace-nowrap px-4 py-2 rounded-md border transition-colors text-sm flex-shrink-0",
+                      active
+                        ? "bg-blue-600 text-white border-blue-600"
+                        : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                    )}
+                  >
+                    {subj}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           <Accordion type="single" collapsible className="w-full">
