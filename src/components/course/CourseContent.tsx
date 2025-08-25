@@ -22,7 +22,15 @@ interface CourseContentProps {
   isSidebar?: boolean;
 }
 
-const SUBJECTS_FALLBACK = ["Toán", "Văn", "Anh", "Lý", "Hóa", "Sử", "Địa"];
+const SUBJECTS_FALLBACK = [
+  "Toán",
+  "Tiếng Anh",
+  "Văn",
+  "Lý",
+  "Hóa",
+  "Lịch sử",
+  "Địa lý",
+];
 
 const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
   const [openChapters, setOpenChapters] = React.useState<string[]>([]);
@@ -34,12 +42,8 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
 
   // Search + subject tabs
   const [searchTerm, setSearchTerm] = useState("");
-  const subjects = useMemo(() => {
-    const s = Array.from(new Set(chapters.map((c) => c.subject || "").filter(Boolean)));
-    // Ensure nice ordering and fallback to common subjects if dataset is small
-    const ordered = SUBJECTS_FALLBACK.filter((x) => s.includes(x)).concat(s.filter((x) => !SUBJECTS_FALLBACK.includes(x)));
-    return ordered.length > 0 ? ordered : SUBJECTS_FALLBACK;
-  }, []);
+  // Use fixed subjects list so tabs show exactly as desired regardless of data
+  const subjects = useMemo(() => SUBJECTS_FALLBACK, []);
 
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
 
@@ -79,7 +83,7 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
     updateArrowVisibility();
     const handleResize = () => updateArrowVisibility();
     window.addEventListener("resize", handleResize);
-    // also observe mutations (children change) - simple interval fallback
+    // interval to catch content changes that affect scrollWidth
     const interval = setInterval(updateArrowVisibility, 500);
     return () => {
       window.removeEventListener("resize", handleResize);
@@ -150,9 +154,9 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
 
           {/* Tabs: container wraps arrows and scroll area */}
           <div className="relative">
-            {/* Left arrow */}
+            {/* Left arrow: visible only on md and up to avoid overlap on small screens */}
             {showLeftArrow && (
-              <div className="absolute left-[-6px] top-1/2 z-20 -translate-y-1/2 pointer-events-auto">
+              <div className="hidden md:block absolute left-[-12px] top-1/2 z-20 -translate-y-1/2 pointer-events-auto">
                 <Button
                   onClick={() => {
                     const el = tabContainerRef.current;
@@ -173,7 +177,7 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
               onPointerMove={onPointerMove}
               onPointerUp={onPointerUp}
               onScroll={handleTabScroll}
-              className="flex space-x-2 overflow-x-auto no-scrollbar py-1 px-2 touch-pan-x scrollbar-hidden"
+              className="flex gap-2 overflow-x-auto no-scrollbar py-1 px-2 touch-pan-x"
               style={{ WebkitOverflowScrolling: "touch" }}
             >
               {subjects.map((subj) => {
@@ -183,7 +187,7 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
                     key={subj}
                     onClick={() => setSelectedSubject((prev) => (prev === subj ? null : subj))}
                     className={cn(
-                      "flex-shrink-0 px-4 py-2 rounded-md text-sm border transition-colors duration-150",
+                      "flex-shrink-0 px-4 py-2 rounded-md text-sm border transition-colors duration-150 whitespace-nowrap",
                       active
                         ? "bg-blue-600 text-white border-blue-600 shadow"
                         : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
@@ -195,9 +199,9 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
               })}
             </div>
 
-            {/* Right arrow (placed outside scroll area so it won't overlap scrollbar) */}
+            {/* Right arrow: visible only on md and up */}
             {showRightArrow && (
-              <div className="absolute right-[-6px] top-1/2 z-20 -translate-y-1/2 pointer-events-auto">
+              <div className="hidden md:block absolute right-[-12px] top-1/2 z-20 -translate-y-1/2 pointer-events-auto">
                 <Button
                   onClick={() => {
                     const el = tabContainerRef.current;
@@ -291,7 +295,7 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
                         <div key={session.sessionId} className="flex justify-between items-start py-2">
                           <div className="flex flex-col flex-grow pr-4">
                             <div className="flex items-center space-x-3 mb-1">
-                              <span className="w-2 h-2 bg-gray-400 rounded-full flex-shrink-0"></span>
+                              <span className="w-2 h-2 bg-gray-400 rounded-full flex-shrink-0" />
                               {session.type === 'livestream' ? (
                                 <Play size={18} className="text-orange-500 flex-shrink-0" />
                               ) : (
