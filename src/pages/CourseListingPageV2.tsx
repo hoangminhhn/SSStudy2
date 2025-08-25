@@ -15,6 +15,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import TeacherFilter from "@/components/filters/TeacherFilter";
 
 interface Course {
   id: string;
@@ -232,6 +233,11 @@ const CourseListingPageV2: React.FC = () => {
 
   const displayed = COURSES.slice((page - 1) * perPage, page * perPage);
 
+  // Prepare teacher list from courses (unique)
+  const teacherList = Array.from(new Set(COURSES.map((c) => c.teacher)));
+
+  const [selectedTeacher, setSelectedTeacher] = React.useState<string | null>(null);
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
@@ -249,11 +255,10 @@ const CourseListingPageV2: React.FC = () => {
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-3">
               <h1 className="text-xl font-semibold text-gray-800">Các Khóa Học (Phiên bản V2)</h1>
               <div className="flex items-center space-x-3">
-                <select className="border border-gray-200 rounded-md px-3 py-2 bg-white text-sm">
-                  <option>Giảng viên</option>
-                  <option>Nguyễn Tiến Đạt</option>
-                  <option>Phạm Thị H</option>
-                </select>
+                <TeacherFilter
+                  teachers={teacherList}
+                  onSelect={(t) => setSelectedTeacher(t)}
+                />
                 <select className="border border-gray-200 rounded-md px-3 py-2 bg-white text-sm">
                   <option>Giá tiền</option>
                   <option>0 - 500k</option>
@@ -264,9 +269,11 @@ const CourseListingPageV2: React.FC = () => {
 
             {/* Cards grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {displayed.map((c) => (
-                <CourseCard key={c.id} course={c} />
-              ))}
+              {displayed
+                .filter((c) => (selectedTeacher ? c.teacher === selectedTeacher : true))
+                .map((c) => (
+                  <CourseCard key={c.id} course={c} />
+                ))}
             </div>
 
             {/* Pagination */}
