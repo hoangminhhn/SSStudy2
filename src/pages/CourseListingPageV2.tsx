@@ -7,8 +7,14 @@ import Footer from "@/components/layout/Footer";
 import BreadcrumbNav from "@/components/layout/BreadcrumbNav";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BookOpen, User } from "lucide-react";
+import { BookOpen, User, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 interface Course {
   id: string;
@@ -91,45 +97,93 @@ const COURSES: Course[] = [
   },
 ];
 
+const categories = [
+  {
+    id: "cat-dgnl",
+    title: "Luyện thi ĐGNL - ĐGTD",
+    items: ["HSA", "APT", "TSA"],
+  },
+  {
+    id: "cat-uni",
+    title: "Đại học - Cao đẳng",
+    items: ["Toán Cao Cấp", "Vật Lý Đại Cương"],
+  },
+  {
+    id: "cat-12",
+    title: "Lớp 12 - Luyện thi ĐH",
+    items: ["Toán", "Lý", "Tiếng Anh", "Lịch sử"],
+  },
+  {
+    id: "cat-thcs",
+    title: "Luyện thi THCS",
+    items: ["Toán", "Văn"],
+  },
+  {
+    id: "cat-10-11",
+    title: "Luyện thi 10 - 11",
+    items: ["Toán", "Lý"],
+  },
+];
+
 const Sidebar: React.FC = () => {
+  const [activeItem, setActiveItem] = React.useState<string | null>("HSA");
+  // Keep accordion single so it behaves like the image (one open at a time)
   return (
     <aside className="hidden lg:block w-full max-w-[260px]">
-      <div className="bg-white rounded-lg shadow-sm p-4">
-        <div className="mb-4">
-          <button className="w-full text-left bg-blue-600 text-white rounded-md px-3 py-2 flex items-center justify-between">
-            <span className="font-medium">Luyện thi ĐGNL - ĐGTD</span>
-            <span className="ml-2 w-2 h-2 rounded-full bg-white" />
-          </button>
-        </div>
+      <div className="bg-white rounded-lg shadow-sm p-3">
+        <Accordion type="single" collapsible defaultValue="cat-dgnl">
+          {categories.map((cat) => (
+            <AccordionItem key={cat.id} value={cat.id} className="border-b last:border-b-0">
+              <AccordionTrigger className="px-2 py-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    {/* If the category contains the active item, visually show the left blue indicator */}
+                    <div
+                      className={cn(
+                        "mr-2 w-2 h-8 rounded-l-full",
+                        cat.items.includes(activeItem || "") ? "bg-blue-600" : "bg-transparent"
+                      )}
+                    />
+                    <div
+                      className={cn(
+                        "text-sm font-medium",
+                        cat.items.includes(activeItem || "") ? "text-blue-700" : "text-gray-800"
+                      )}
+                    >
+                      {cat.title}
+                    </div>
+                  </div>
+                  <ChevronDown className="h-4 w-4 text-gray-400" />
+                </div>
+              </AccordionTrigger>
 
-        <nav className="text-sm text-gray-700 space-y-2">
-          <div className="pl-2">
-            <div className="text-xs font-semibold text-gray-500 mb-2">HSA</div>
-            <ul className="space-y-1">
-              <li className="pl-2 text-blue-600 font-medium">HSA</li>
-              <li className="pl-2">APT</li>
-              <li className="pl-2">TSA</li>
-            </ul>
-          </div>
-
-          <div className="mt-4">
-            <div className="text-xs font-semibold text-gray-500 mb-2">Đại học - Cao đẳng</div>
-            <ul className="space-y-1">
-              <li className="pl-2">Toán Cao Cấp</li>
-              <li className="pl-2">Vật Lý Đại Cương</li>
-            </ul>
-          </div>
-
-          <div className="mt-4">
-            <div className="text-xs font-semibold text-gray-500 mb-2">Lớp 12 - Luyện thi ĐH</div>
-            <ul className="space-y-1">
-              <li className="pl-2">Toán</li>
-              <li className="pl-2">Lý</li>
-              <li className="pl-2">Tiếng Anh</li>
-              <li className="pl-2">Lịch sử</li>
-            </ul>
-          </div>
-        </nav>
+              <AccordionContent className="px-2 pb-3 pt-0">
+                <ul className="text-sm text-gray-600 space-y-2">
+                  {cat.items.map((item) => {
+                    const selected = item === activeItem;
+                    return (
+                      <li key={item}>
+                        <button
+                          onClick={() => setActiveItem(item)}
+                          className={cn(
+                            "w-full text-left px-3 py-2 rounded-md transition-colors flex items-center justify-between",
+                            selected
+                              ? "bg-blue-600 text-white"
+                              : "hover:bg-gray-50 text-gray-700"
+                          )}
+                        >
+                          <span className={cn("truncate", selected ? "font-semibold" : "")}>{item}</span>
+                          {/* optional small indicator on the right for selected item */}
+                          {selected && <span className="ml-2 text-xs opacity-80">✓</span>}
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
       </div>
     </aside>
   );
