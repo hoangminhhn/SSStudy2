@@ -152,9 +152,29 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
             />
           </div>
 
-          {/* Tabs: wrapper hides overflow completely so no tab parts stick out */}
-          <div className="relative overflow-hidden">
-            {/* Left arrow button (above clipped region, clickable) */}
+          {/* Tabs: container wraps arrows, fade overlays, and scroll area */}
+          <div className="relative">
+            {/* Left gradient fade overlay (masks tab edges softly) */}
+            {showLeftArrow && (
+              <div
+                className="hidden md:block absolute left-0 top-0 bottom-0 w-12 z-20 pointer-events-none"
+                style={{
+                  background: "linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 70%)",
+                }}
+              />
+            )}
+
+            {/* Right gradient fade overlay */}
+            {showRightArrow && (
+              <div
+                className="hidden md:block absolute right-0 top-0 bottom-0 w-12 z-20 pointer-events-none"
+                style={{
+                  background: "linear-gradient(270deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 70%)",
+                }}
+              />
+            )}
+
+            {/* Left arrow button (above gradient, clickable) */}
             {showLeftArrow && (
               <div className="hidden md:block absolute left-2 top-1/2 z-30 -translate-y-1/2 pointer-events-auto">
                 <Button
@@ -177,7 +197,7 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
               onPointerMove={onPointerMove}
               onPointerUp={onPointerUp}
               onScroll={handleTabScroll}
-              className="flex gap-2 overflow-x-auto no-scrollbar py-1 px-6 touch-pan-x relative z-10"
+              className="flex gap-2 overflow-x-auto no-scrollbar py-1 px-4 touch-pan-x relative z-10"
               style={{ WebkitOverflowScrolling: "touch" }}
             >
               {subjects.map((subj) => {
@@ -199,7 +219,7 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
               })}
             </div>
 
-            {/* Right arrow button (above clipped region, clickable) */}
+            {/* Right arrow button (above gradient, clickable) */}
             {showRightArrow && (
               <div className="hidden md:block absolute right-2 top-1/2 z-30 -translate-y-1/2 pointer-events-auto">
                 <Button
