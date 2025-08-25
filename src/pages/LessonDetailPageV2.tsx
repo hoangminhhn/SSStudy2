@@ -156,33 +156,38 @@ const LessonDetailPageV2 = () => {
           </div>
 
           <div className="flex flex-wrap items-center gap-4 mt-0 px-6 pb-6 pr-24">
-            <Button id="tour-download-no-ans" variant="ghost" className="text-orange-500 hover:text-orange-600 hover:bg-orange-50 rounded-full px-4 py-2">
-              <Download size={16} className="mr-2" />
-              Tải đề (không đáp án)
-            </Button>
+            <div className="flex items-center gap-4">
+              <Button id="tour-download-no-ans" variant="ghost" className="text-orange-500 hover:text-orange-600 hover:bg-orange-50 rounded-full px-4 py-2">
+                <Download size={16} className="mr-2" />
+                Tải đề (không đáp án)
+              </Button>
 
-            <Button variant="ghost" className="text-orange-500 hover:text-orange-600 hover:bg-orange-50 rounded-full px-4 py-2">
-              <Download size={16} className="mr-2" />
-              Tải đề (có đáp án)
-            </Button>
+              <Button variant="ghost" className="text-orange-500 hover:text-orange-600 hover:bg-orange-50 rounded-full px-4 py-2">
+                <Download size={16} className="mr-2" />
+                Tải đề (có đáp án)
+              </Button>
 
-            {/* Thêm Ghi chú button placed in the same row so it's aligned with other actions */}
-            <Button
-              id="tour-add-note-button"
-              variant="outline"
-              className="text-gray-700 border-gray-300 hover:bg-gray-100 rounded-full px-4 py-2"
-              onClick={() => setIsAddNotePanelOpen(true)}
-            >
-              <Plus size={16} className="mr-2" />
-              Thêm ghi chú
-            </Button>
+              <Button id="tour-do-exercise" className="bg-gray-300 text-gray-700 rounded-full px-6 py-3 cursor-not-allowed" disabled>
+                Làm bài tập <Edit size={16} className="ml-2" />
+              </Button>
 
-            <Button id="tour-do-exercise" className="bg-gray-300 text-gray-700 rounded-full px-6 py-3 cursor-not-allowed" disabled>
-              Làm bài tập <Edit size={16} className="ml-2" />
-            </Button>
-            <Button variant="outline" className="text-gray-700 border-gray-300 hover:bg-gray-100 rounded-full px-6 py-3">
-              Báo lỗi <AlertTriangle size={16} className="ml-2" />
-            </Button>
+              <Button variant="outline" className="text-gray-700 border-gray-300 hover:bg-gray-100 rounded-full px-6 py-3">
+                Báo lỗi <AlertTriangle size={16} className="ml-2" />
+              </Button>
+            </div>
+
+            {/* Add Note button moved to the far right */}
+            <div className="ml-auto">
+              <Button
+                id="tour-add-note-button"
+                variant="outline"
+                className="text-gray-700 border-gray-300 hover:bg-gray-100 rounded-full px-4 py-2"
+                onClick={() => setIsAddNotePanelOpen(true)}
+              >
+                <Plus size={16} className="mr-2" />
+                Thêm ghi chú
+              </Button>
+            </div>
           </div>
 
           <FloatingAskQuestionButton onClick={() => setIsAskQuestionSidebarOpen(true)} />
