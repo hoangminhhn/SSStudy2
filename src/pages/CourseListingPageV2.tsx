@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import BreadcrumbNav from "@/components/layout/BreadcrumbNav";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BookOpen, User, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -15,6 +15,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Input } from "@/components/ui/input";
 
 interface Course {
   id: string;
@@ -125,29 +126,117 @@ const categories = [
   },
 ];
 
+/**
+ * Demo list of instructors. In a real app this would come from the backend.
+ */
+const INSTRUCTORS = [
+  "Nguyễn Tiến Đạt",
+  "Phạm Thị H",
+  "Lê Văn K",
+  "Nguyễn Thị M",
+  "Trần Thị B",
+  "Hoàng Minh E",
+  "Đỗ Thị F",
+  "Lê Thanh G",
+  "Vũ Minh H",
+  "Phan Quốc I",
+  "Đặng Văn J",
+  "Bùi Thị K",
+];
+
 const Sidebar: React.FC = () => {
   const [activeItem, setActiveItem] = React.useState<string | null>("HSA");
-  // Keep accordion single so it behaves like the image (one open at a time)
+  const [activeInstructor, setActiveInstructor] = React.useState<string | null>(null);
+  const [instructorQuery, setInstructorQuery] = React.useState("");
+  const [expandInstructors, setExpandInstructors] = React.useState(false);
+
+  const filteredInstructors = INSTRUCTORS.filter((n) =>
+    n.toLowerCase().includes(instructorQuery.trim().toLowerCase()),
+  );
+
+  const showCount = 5;
+  const visibleInstructors = expandInstructors ? filteredInstructors : filteredInstructors.slice(0, showCount);
+
   return (
-    <aside className="hidden lg:block w-full max-w-[260px]">
-      <div className="bg-white rounded-lg shadow-sm p-3">
+    <aside className="hidden lg:block w-full max-w-[300px]">
+      <div className="bg-white rounded-lg shadow-sm p-4 space-y-4">
+        {/* Instructors panel */}
+        <div>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-semibold text-gray-700">Giảng viên</h3>
+            <span className="text-xs text-gray-400">{INSTRUCTORS.length} người</span>
+          </div>
+
+          <div className="mb-3">
+            <Input
+              placeholder="Tìm giảng viên..."
+              value={instructorQuery}
+              onChange={(e) => {
+                setInstructorQuery(e.target.value);
+                // If search narrows down, auto-expand to show results
+                if (!expandInstructors) {
+                  setExpandInstructors(true);
+                }
+              }}
+              className="w-full"
+            />
+          </div>
+
+          <div className="space-y-2">
+            {visibleInstructors.length > 0 ? (
+              visibleInstructors.map((name) => {
+                const selected = activeInstructor === name;
+                return (
+                  <button
+                    key={name}
+                    onClick={() => setActiveInstructor(selected ? null : name)}
+                    className={cn(
+                      "w-full text-left px-3 py-2 rounded-md transition-colors flex items-center justify-between",
+                      selected ? "bg-blue-600 text-white" : "hover:bg-gray-50 text-gray-700",
+                    )}
+                  >
+                    <span className={cn("truncate", selected ? "font-semibold" : "")}>{name}</span>
+                    {selected && <span className="ml-2 text-xs opacity-80">✓</span>}
+                  </button>
+                );
+              })
+            ) : (
+              <div className="text-sm text-gray-500 px-2 py-2">Không tìm thấy giảng viên.</div>
+            )}
+          </div>
+
+          {filteredInstructors.length > showCount && (
+            <div className="mt-3">
+              <button
+                onClick={() => setExpandInstructors((v) => !v)}
+                className="text-sm text-blue-600 hover:underline"
+              >
+                {expandInstructors ? "Thu gọn" : `Xem tất cả (${filteredInstructors.length})`}
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Divider */}
+        <div className="border-t border-gray-100" />
+
+        {/* Category accordion */}
         <Accordion type="single" collapsible defaultValue="cat-dgnl">
           {categories.map((cat) => (
             <AccordionItem key={cat.id} value={cat.id} className="border-b last:border-b-0">
               <AccordionTrigger className="px-2 py-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
-                    {/* If the category contains the active item, visually show the left blue indicator */}
                     <div
                       className={cn(
                         "mr-2 w-2 h-8 rounded-l-full",
-                        cat.items.includes(activeItem || "") ? "bg-blue-600" : "bg-transparent"
+                        cat.items.includes(activeItem || "") ? "bg-blue-600" : "bg-transparent",
                       )}
                     />
                     <div
                       className={cn(
                         "text-sm font-medium",
-                        cat.items.includes(activeItem || "") ? "text-blue-700" : "text-gray-800"
+                        cat.items.includes(activeItem || "") ? "text-blue-700" : "text-gray-800",
                       )}
                     >
                       {cat.title}
@@ -167,13 +256,10 @@ const Sidebar: React.FC = () => {
                           onClick={() => setActiveItem(item)}
                           className={cn(
                             "w-full text-left px-3 py-2 rounded-md transition-colors flex items-center justify-between",
-                            selected
-                              ? "bg-blue-600 text-white"
-                              : "hover:bg-gray-50 text-gray-700"
+                            selected ? "bg-blue-600 text-white" : "hover:bg-gray-50 text-gray-700",
                           )}
                         >
                           <span className={cn("truncate", selected ? "font-semibold" : "")}>{item}</span>
-                          {/* optional small indicator on the right for selected item */}
                           {selected && <span className="ml-2 text-xs opacity-80">✓</span>}
                         </button>
                       </li>
