@@ -167,17 +167,12 @@ const LessonDetailPageV2 = () => {
                 Tải đề (có đáp án)
               </Button>
 
+              {/* Do Exercise button */}
               <Button id="tour-do-exercise" className="bg-gray-300 text-gray-700 rounded-full px-6 py-3 cursor-not-allowed" disabled>
                 Làm bài tập <Edit size={16} className="ml-2" />
               </Button>
 
-              <Button variant="outline" className="text-gray-700 border-gray-300 hover:bg-gray-100 rounded-full px-6 py-3">
-                Báo lỗi <AlertTriangle size={16} className="ml-2" />
-              </Button>
-            </div>
-
-            {/* Add Note button moved to the far right */}
-            <div className="ml-auto">
+              {/* Add Note placed immediately to the right of Do Exercise */}
               <Button
                 id="tour-add-note-button"
                 variant="outline"
@@ -186,6 +181,13 @@ const LessonDetailPageV2 = () => {
               >
                 <Plus size={16} className="mr-2" />
                 Thêm ghi chú
+              </Button>
+            </div>
+
+            {/* Report button moved to the far right */}
+            <div className="ml-auto">
+              <Button variant="outline" className="text-gray-700 border-gray-300 hover:bg-gray-100 rounded-full px-6 py-3">
+                Báo lỗi <AlertTriangle size={16} className="ml-2" />
               </Button>
             </div>
           </div>
