@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import BreadcrumbNav from "@/components/layout/BreadcrumbNav";
+import CategorySidebar from "@/components/layout/CategorySidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BookOpen, User } from "lucide-react";
@@ -91,50 +92,6 @@ const COURSES: Course[] = [
   },
 ];
 
-const Sidebar: React.FC = () => {
-  return (
-    <aside className="hidden lg:block w-full max-w-[260px]">
-      <div className="bg-white rounded-lg shadow-sm p-4">
-        <div className="mb-4">
-          <button className="w-full text-left bg-blue-600 text-white rounded-md px-3 py-2 flex items-center justify-between">
-            <span className="font-medium">Luyện thi ĐGNL - ĐGTD</span>
-            <span className="ml-2 w-2 h-2 rounded-full bg-white" />
-          </button>
-        </div>
-
-        <nav className="text-sm text-gray-700 space-y-2">
-          <div className="pl-2">
-            <div className="text-xs font-semibold text-gray-500 mb-2">HSA</div>
-            <ul className="space-y-1">
-              <li className="pl-2 text-blue-600 font-medium">HSA</li>
-              <li className="pl-2">APT</li>
-              <li className="pl-2">TSA</li>
-            </ul>
-          </div>
-
-          <div className="mt-4">
-            <div className="text-xs font-semibold text-gray-500 mb-2">Đại học - Cao đẳng</div>
-            <ul className="space-y-1">
-              <li className="pl-2">Toán Cao Cấp</li>
-              <li className="pl-2">Vật Lý Đại Cương</li>
-            </ul>
-          </div>
-
-          <div className="mt-4">
-            <div className="text-xs font-semibold text-gray-500 mb-2">Lớp 12 - Luyện thi ĐH</div>
-            <ul className="space-y-1">
-              <li className="pl-2">Toán</li>
-              <li className="pl-2">Lý</li>
-              <li className="pl-2">Tiếng Anh</li>
-              <li className="pl-2">Lịch sử</li>
-            </ul>
-          </div>
-        </nav>
-      </div>
-    </aside>
-  );
-};
-
 const CourseCard: React.FC<{ course: Course }> = ({ course }) => {
   return (
     <Card className="rounded-lg overflow-hidden shadow-sm">
@@ -186,7 +143,7 @@ const CourseListingPageV2: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Sidebar */}
           <div className="lg:col-span-3">
-            <Sidebar />
+            <CategorySidebar />
           </div>
 
           {/* Main content */}
