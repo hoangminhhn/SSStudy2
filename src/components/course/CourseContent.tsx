@@ -197,7 +197,7 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
               onPointerMove={onPointerMove}
               onPointerUp={onPointerUp}
               onScroll={handleTabScroll}
-              className="flex gap-2 overflow-x-auto no-scrollbar py-1 px-4 touch-pan-x relative z-10"
+              className="flex gap-2 overflow-x-auto no-scrollbar py-1 px-0 touch-pan-x relative z-10"
               style={{ WebkitOverflowScrolling: "touch" }}
             >
               {subjects.map((subj) => {
