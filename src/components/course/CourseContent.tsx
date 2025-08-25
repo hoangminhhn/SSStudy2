@@ -83,7 +83,6 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
     updateArrowVisibility();
     const handleResize = () => updateArrowVisibility();
     window.addEventListener("resize", handleResize);
-    // interval to catch content changes that affect scrollWidth
     const interval = setInterval(updateArrowVisibility, 500);
     return () => {
       window.removeEventListener("resize", handleResize);
@@ -152,70 +151,73 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
             />
           </div>
 
-          {/* Tabs: container wraps arrows and scroll area */}
+          {/* Tabs: arrows + scroll area are inline so arrows center with the tab row */}
           <div className="relative">
-            {/* Left arrow: visible only on md and up */}
-            {showLeftArrow && (
-              <div className="hidden md:flex absolute left-2 top-1/2 z-30 -translate-y-1/2 pointer-events-auto">
-                <Button
-                  onClick={() => {
-                    const el = tabContainerRef.current;
-                    if (!el) return;
-                    scrollTabsBy(-Math.round(el.clientWidth * 0.6));
-                  }}
-                  className="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-2 shadow w-9 h-9 flex items-center justify-center"
-                  aria-label="scroll tabs left"
-                >
-                  <ChevronLeft size={16} />
-                </Button>
-              </div>
-            )}
-
-            {/* Tab scroll area: add horizontal padding so arrows don't overlap content */}
-            <div
-              ref={tabContainerRef}
-              onPointerDown={onPointerDown}
-              onPointerMove={onPointerMove}
-              onPointerUp={onPointerUp}
-              onScroll={handleTabScroll}
-              className="flex gap-2 overflow-x-auto no-scrollbar py-1 px-12 touch-pan-x"
-              style={{ WebkitOverflowScrolling: "touch" }}
-            >
-              {subjects.map((subj) => {
-                const active = subj === selectedSubject;
-                return (
-                  <button
-                    key={subj}
-                    onClick={() => setSelectedSubject((prev) => (prev === subj ? null : subj))}
-                    className={cn(
-                      "flex-shrink-0 px-4 py-2 rounded-md text-sm border transition-colors duration-150 whitespace-nowrap",
-                      active
-                        ? "bg-blue-600 text-white border-blue-600 shadow"
-                        : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
-                    )}
+            <div className="flex items-center">
+              {/* Left arrow: visible only on md and up */}
+              <div className="hidden md:flex items-center">
+                {showLeftArrow ? (
+                  <Button
+                    onClick={() => {
+                      scrollTabsBy(-Math.round((tabContainerRef.current?.clientWidth ?? 240) * 0.6));
+                    }}
+                    className="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-2 shadow w-9 h-9 flex items-center justify-center"
+                    aria-label="scroll tabs left"
                   >
-                    {subj}
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Right arrow: visible only on md and up */}
-            {showRightArrow && (
-              <div className="hidden md:flex absolute right-2 top-1/2 z-30 -translate-y-1/2 pointer-events-auto">
-                <Button
-                  onClick={() => {
-                    const el = tabContainerRef.current;
-                    if (!el) return;
-                    scrollTabsBy(Math.round(el.clientWidth * 0.6));
-                  }}
-                  className="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-2 shadow w-9 h-9 flex items-center justify-center"
-                  aria-label="scroll tabs right"
-                >
-                  <ChevronRight size={16} />
-                </Button>
+                    <ChevronLeft size={16} />
+                  </Button>
+                ) : (
+                  // maintain spacing so arrows stay aligned even when disabled/hidden
+                  <div className="w-9 h-9" />
+                )}
               </div>
-            )}
+
+              {/* Scrollable tab row */}
+              <div
+                ref={tabContainerRef}
+                onPointerDown={onPointerDown}
+                onPointerMove={onPointerMove}
+                onPointerUp={onPointerUp}
+                onScroll={handleTabScroll}
+                className="flex-1 flex gap-2 overflow-x-auto no-scrollbar py-1 px-2 touch-pan-x"
+                style={{ WebkitOverflowScrolling: "touch" }}
+              >
+                {subjects.map((subj) => {
+                  const active = subj === selectedSubject;
+                  return (
+                    <button
+                      key={subj}
+                      onClick={() => setSelectedSubject((prev) => (prev === subj ? null : subj))}
+                      className={cn(
+                        "flex-shrink-0 px-4 py-2 rounded-md text-sm border transition-colors duration-150 whitespace-nowrap",
+                        active
+                          ? "bg-blue-600 text-white border-blue-600 shadow"
+                          : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
+                      )}
+                    >
+                      {subj}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Right arrow: visible only on md and up */}
+              <div className="hidden md:flex items-center">
+                {showRightArrow ? (
+                  <Button
+                    onClick={() => {
+                      scrollTabsBy(Math.round((tabContainerRef.current?.clientWidth ?? 240) * 0.6));
+                    }}
+                    className="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-2 shadow w-9 h-9 flex items-center justify-center"
+                    aria-label="scroll tabs right"
+                  >
+                    <ChevronRight size={16} />
+                  </Button>
+                ) : (
+                  <div className="w-9 h-9" />
+                )}
+              </div>
+            </div>
           </div>
         </div>
       )}
