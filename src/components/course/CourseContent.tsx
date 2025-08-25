@@ -3,7 +3,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BookOpen, FileText, Play, ChevronLeft, ChevronRight } from "lucide-react";
+import { FileText, Play, ChevronLeft, ChevronRight } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -154,16 +154,16 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
 
           {/* Tabs: container wraps arrows and scroll area */}
           <div className="relative">
-            {/* Left arrow: visible only on md and up to avoid overlap on small screens */}
+            {/* Left arrow: visible only on md and up */}
             {showLeftArrow && (
-              <div className="hidden md:block absolute left-[-12px] top-1/2 z-20 -translate-y-1/2 pointer-events-auto">
+              <div className="hidden md:flex absolute left-2 top-1/2 z-30 -translate-y-1/2 pointer-events-auto">
                 <Button
                   onClick={() => {
                     const el = tabContainerRef.current;
                     if (!el) return;
                     scrollTabsBy(-Math.round(el.clientWidth * 0.6));
                   }}
-                  className="bg-white hover:bg-gray-100 text-gray-700 rounded-full p-2 shadow-sm w-9 h-9 flex items-center justify-center"
+                  className="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-2 shadow w-9 h-9 flex items-center justify-center"
                   aria-label="scroll tabs left"
                 >
                   <ChevronLeft size={16} />
@@ -171,13 +171,14 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
               </div>
             )}
 
+            {/* Tab scroll area: add horizontal padding so arrows don't overlap content */}
             <div
               ref={tabContainerRef}
               onPointerDown={onPointerDown}
               onPointerMove={onPointerMove}
               onPointerUp={onPointerUp}
               onScroll={handleTabScroll}
-              className="flex gap-2 overflow-x-auto no-scrollbar py-1 px-2 touch-pan-x"
+              className="flex gap-2 overflow-x-auto no-scrollbar py-1 px-12 touch-pan-x"
               style={{ WebkitOverflowScrolling: "touch" }}
             >
               {subjects.map((subj) => {
@@ -201,7 +202,7 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
 
             {/* Right arrow: visible only on md and up */}
             {showRightArrow && (
-              <div className="hidden md:block absolute right-[-12px] top-1/2 z-20 -translate-y-1/2 pointer-events-auto">
+              <div className="hidden md:flex absolute right-2 top-1/2 z-30 -translate-y-1/2 pointer-events-auto">
                 <Button
                   onClick={() => {
                     const el = tabContainerRef.current;
