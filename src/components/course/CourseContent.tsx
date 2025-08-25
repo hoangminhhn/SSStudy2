@@ -3,7 +3,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BookOpen, FileText, Play, User, ChevronRight } from "lucide-react";
+import { BookOpen, FileText, Play, ChevronLeft, ChevronRight } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -13,14 +13,16 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { isToday, parse } from "date-fns";
 import { Link } from "react-router-dom";
-import { chapters, Chapter, Session, TimeSlot } from "@/data/courseData";
-import { showSuccess, showError } from "@/utils/toast"; // Import toast utilities
+import { chapters, Chapter } from "@/data/courseData";
+import { showSuccess, showError } from "@/utils/toast";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
 interface CourseContentProps {
   isSidebar?: boolean;
 }
+
+const SUBJECTS_FALLBACK = ["Toán", "Văn", "Anh", "Lý", "Hóa", "Sử", "Địa"];
 
 const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
   const [openChapters, setOpenChapters] = React.useState<string[]>([]);
@@ -30,16 +32,17 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
     setOpenChapters(values);
   };
 
-  // --- New: search & subject tabs for sidebar ---
+  // Search + subject tabs
   const [searchTerm, setSearchTerm] = useState("");
   const subjects = useMemo(() => {
-    const s = Array.from(new Set(chapters.map((c) => c.subject || "Khác")));
-    return s;
+    const s = Array.from(new Set(chapters.map((c) => c.subject || "").filter(Boolean)));
+    // Ensure nice ordering and fallback to common subjects if dataset is small
+    const ordered = SUBJECTS_FALLBACK.filter((x) => s.includes(x)).concat(s.filter((x) => !SUBJECTS_FALLBACK.includes(x)));
+    return ordered.length > 0 ? ordered : SUBJECTS_FALLBACK;
   }, []);
 
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
 
-  // Filter chapters based on selected subject and search term (search applied to chapter title + lesson titles)
   const filteredChapters = useMemo(() => {
     const q = searchTerm.trim().toLowerCase();
     return chapters
@@ -53,25 +56,35 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
       .filter((ch) => ch.sessions.length > 0 || ch.title.toLowerCase().includes(q));
   }, [searchTerm, selectedSubject]);
 
-  // --- New: horizontal tabs scroll + arrow visibility + drag-to-scroll ---
+  // Tabs scrolling + arrows
   const tabContainerRef = useRef<HTMLDivElement | null>(null);
+  const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(false);
   const dragState = useRef({ active: false, startX: 0, scrollLeft: 0 });
 
   const updateArrowVisibility = () => {
     const el = tabContainerRef.current;
     if (!el) {
+      setShowLeftArrow(false);
       setShowRightArrow(false);
       return;
     }
-    setShowRightArrow(el.scrollWidth > el.clientWidth + 4);
+    const atLeft = el.scrollLeft <= 4;
+    const atRight = el.scrollLeft + el.clientWidth >= el.scrollWidth - 4;
+    setShowLeftArrow(!atLeft);
+    setShowRightArrow(!atRight);
   };
 
   useEffect(() => {
     updateArrowVisibility();
     const handleResize = () => updateArrowVisibility();
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    // also observe mutations (children change) - simple interval fallback
+    const interval = setInterval(updateArrowVisibility, 500);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      clearInterval(interval);
+    };
   }, [subjects, selectedSubject, searchTerm]);
 
   const handleTabScroll = () => updateArrowVisibility();
@@ -80,8 +93,7 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
     const el = tabContainerRef.current;
     if (!el) return;
     el.scrollBy({ left: amount, behavior: "smooth" });
-    // after scroll, update arrow visibility with a small delay
-    setTimeout(updateArrowVisibility, 250);
+    setTimeout(updateArrowVisibility, 220);
   };
 
   const onPointerDown = (e: React.PointerEvent) => {
@@ -111,7 +123,6 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
     el.classList.remove("cursor-grabbing");
   };
 
-  // Helper: get chapters to render (use filteredChapters when in sidebar, else full chapters)
   const chaptersToRender: Chapter[] = isSidebar ? filteredChapters : chapters;
 
   return (
@@ -137,15 +148,32 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
             />
           </div>
 
-          {/* Horizontal subject tabs with drag-to-scroll and right arrow */}
+          {/* Tabs: container wraps arrows and scroll area */}
           <div className="relative">
+            {/* Left arrow */}
+            {showLeftArrow && (
+              <div className="absolute left-[-6px] top-1/2 z-20 -translate-y-1/2 pointer-events-auto">
+                <Button
+                  onClick={() => {
+                    const el = tabContainerRef.current;
+                    if (!el) return;
+                    scrollTabsBy(-Math.round(el.clientWidth * 0.6));
+                  }}
+                  className="bg-white hover:bg-gray-100 text-gray-700 rounded-full p-2 shadow-sm w-9 h-9 flex items-center justify-center"
+                  aria-label="scroll tabs left"
+                >
+                  <ChevronLeft size={16} />
+                </Button>
+              </div>
+            )}
+
             <div
               ref={tabContainerRef}
               onPointerDown={onPointerDown}
               onPointerMove={onPointerMove}
               onPointerUp={onPointerUp}
               onScroll={handleTabScroll}
-              className="flex space-x-2 overflow-x-auto no-scrollbar py-1 px-1 touch-pan-x"
+              className="flex space-x-2 overflow-x-auto no-scrollbar py-1 px-2 touch-pan-x scrollbar-hidden"
               style={{ WebkitOverflowScrolling: "touch" }}
             >
               {subjects.map((subj) => {
@@ -155,9 +183,9 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
                     key={subj}
                     onClick={() => setSelectedSubject((prev) => (prev === subj ? null : subj))}
                     className={cn(
-                      "flex-shrink-0 px-4 py-2 rounded-md text-sm border",
+                      "flex-shrink-0 px-4 py-2 rounded-md text-sm border transition-colors duration-150",
                       active
-                        ? "bg-blue-600 text-white border-blue-600"
+                        ? "bg-blue-600 text-white border-blue-600 shadow"
                         : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
                     )}
                   >
@@ -167,19 +195,19 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
               })}
             </div>
 
-            {/* Right arrow when overflow */}
+            {/* Right arrow (placed outside scroll area so it won't overlap scrollbar) */}
             {showRightArrow && (
-              <div className="absolute right-1 top-1/2 -translate-y-1/2 pointer-events-auto">
+              <div className="absolute right-[-6px] top-1/2 z-20 -translate-y-1/2 pointer-events-auto">
                 <Button
                   onClick={() => {
                     const el = tabContainerRef.current;
                     if (!el) return;
-                    // scroll roughly by 60% of visible width
                     scrollTabsBy(Math.round(el.clientWidth * 0.6));
                   }}
-                  className="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-2 shadow"
+                  className="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-2 shadow w-9 h-9 flex items-center justify-center"
+                  aria-label="scroll tabs right"
                 >
-                  <ChevronRight size={18} />
+                  <ChevronRight size={16} />
                 </Button>
               </div>
             )}
@@ -261,7 +289,6 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
 
                       return (
                         <div key={session.sessionId} className="flex justify-between items-start py-2">
-                          {/* Left Section: Icon, Title, Livestream Badge */}
                           <div className="flex flex-col flex-grow pr-4">
                             <div className="flex items-center space-x-3 mb-1">
                               <span className="w-2 h-2 bg-gray-400 rounded-full flex-shrink-0"></span>
@@ -285,7 +312,6 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
                             )}
                           </div>
 
-                          {/* Right Section: Date and Button */}
                           <div className="flex flex-col items-end space-y-2 flex-shrink-0">
                             <span className="text-gray-500 text-sm">
                               Ngày: {session.date}
