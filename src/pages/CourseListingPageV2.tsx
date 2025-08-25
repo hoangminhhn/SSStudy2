@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import BreadcrumbNav from "@/components/layout/BreadcrumbNav";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BookOpen, User, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -15,6 +15,13 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Input } from "@/components/ui/input";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 
 interface Course {
   id: string;
@@ -125,29 +132,117 @@ const categories = [
   },
 ];
 
+/**
+ * Demo list of instructors. In a real app this would come from the backend.
+ */
+const INSTRUCTORS = [
+  "Nguyễn Tiến Đạt",
+  "Phạm Thị H",
+  "Lê Văn K",
+  "Nguyễn Thị M",
+  "Trần Thị B",
+  "Hoàng Minh E",
+  "Đỗ Thị F",
+  "Lê Thanh G",
+  "Vũ Minh H",
+  "Phan Quốc I",
+  "Đặng Văn J",
+  "Bùi Thị K",
+];
+
 const Sidebar: React.FC = () => {
   const [activeItem, setActiveItem] = React.useState<string | null>("HSA");
-  // Keep accordion single so it behaves like the image (one open at a time)
+  const [activeInstructor, setActiveInstructor] = React.useState<string | null>(null);
+  const [instructorQuery, setInstructorQuery] = React.useState("");
+  const [expandInstructors, setExpandInstructors] = React.useState(false);
+
+  const filteredInstructors = INSTRUCTORS.filter((n) =>
+    n.toLowerCase().includes(instructorQuery.trim().toLowerCase()),
+  );
+
+  const showCount = 5;
+  const visibleInstructors = expandInstructors ? filteredInstructors : filteredInstructors.slice(0, showCount);
+
   return (
-    <aside className="hidden lg:block w-full max-w-[260px]">
-      <div className="bg-white rounded-lg shadow-sm p-3">
+    <aside className="hidden lg:block w-full max-w-[300px]">
+      <div className="bg-white rounded-lg shadow-sm p-4 space-y-4">
+        {/* Instructors panel */}
+        <div>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-semibold text-gray-700">Giảng viên</h3>
+            <span className="text-xs text-gray-400">{INSTRUCTORS.length} người</span>
+          </div>
+
+          <div className="mb-3">
+            <Input
+              placeholder="Tìm giảng viên..."
+              value={instructorQuery}
+              onChange={(e) => {
+                setInstructorQuery(e.target.value);
+                // If search narrows down, auto-expand to show results
+                if (!expandInstructors) {
+                  setExpandInstructors(true);
+                }
+              }}
+              className="w-full"
+            />
+          </div>
+
+          <div className="space-y-2">
+            {visibleInstructors.length > 0 ? (
+              visibleInstructors.map((name) => {
+                const selected = activeInstructor === name;
+                return (
+                  <button
+                    key={name}
+                    onClick={() => setActiveInstructor(selected ? null : name)}
+                    className={cn(
+                      "w-full text-left px-3 py-2 rounded-md transition-colors flex items-center justify-between",
+                      selected ? "bg-blue-600 text-white" : "hover:bg-gray-50 text-gray-700",
+                    )}
+                  >
+                    <span className={cn("truncate", selected ? "font-semibold" : "")}>{name}</span>
+                    {selected && <span className="ml-2 text-xs opacity-80">✓</span>}
+                  </button>
+                );
+              })
+            ) : (
+              <div className="text-sm text-gray-500 px-2 py-2">Không tìm thấy giảng viên.</div>
+            )}
+          </div>
+
+          {filteredInstructors.length > showCount && (
+            <div className="mt-3">
+              <button
+                onClick={() => setExpandInstructors((v) => !v)}
+                className="text-sm text-blue-600 hover:underline"
+              >
+                {expandInstructors ? "Thu gọn" : `Xem tất cả (${filteredInstructors.length})`}
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Divider */}
+        <div className="border-t border-gray-100" />
+
+        {/* Category accordion */}
         <Accordion type="single" collapsible defaultValue="cat-dgnl">
           {categories.map((cat) => (
             <AccordionItem key={cat.id} value={cat.id} className="border-b last:border-b-0">
               <AccordionTrigger className="px-2 py-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
-                    {/* If the category contains the active item, visually show the left blue indicator */}
                     <div
                       className={cn(
                         "mr-2 w-2 h-8 rounded-l-full",
-                        cat.items.includes(activeItem || "") ? "bg-blue-600" : "bg-transparent"
+                        cat.items.includes(activeItem || "") ? "bg-blue-600" : "bg-transparent",
                       )}
                     />
                     <div
                       className={cn(
                         "text-sm font-medium",
-                        cat.items.includes(activeItem || "") ? "text-blue-700" : "text-gray-800"
+                        cat.items.includes(activeItem || "") ? "text-blue-700" : "text-gray-800",
                       )}
                     >
                       {cat.title}
@@ -167,13 +262,10 @@ const Sidebar: React.FC = () => {
                           onClick={() => setActiveItem(item)}
                           className={cn(
                             "w-full text-left px-3 py-2 rounded-md transition-colors flex items-center justify-between",
-                            selected
-                              ? "bg-blue-600 text-white"
-                              : "hover:bg-gray-50 text-gray-700"
+                            selected ? "bg-blue-600 text-white" : "hover:bg-gray-50 text-gray-700",
                           )}
                         >
                           <span className={cn("truncate", selected ? "font-semibold" : "")}>{item}</span>
-                          {/* optional small indicator on the right for selected item */}
                           {selected && <span className="ml-2 text-xs opacity-80">✓</span>}
                         </button>
                       </li>
@@ -224,13 +316,31 @@ const CourseCard: React.FC<{ course: Course }> = ({ course }) => {
 };
 
 const CourseListingPageV2: React.FC = () => {
+  // top-level filter state
+  const [instructorQueryTop, setInstructorQueryTop] = React.useState("");
+  const [selectedInstructorTop, setSelectedInstructorTop] = React.useState<string | null>(null);
+  const [showAllInDropdown, setShowAllInDropdown] = React.useState(false);
+
   // pagination stub
   const [page, setPage] = React.useState(1);
   const perPage = 6;
-  const total = COURSES.length;
-  const totalPages = Math.max(1, Math.ceil(total / perPage));
 
-  const displayed = COURSES.slice((page - 1) * perPage, page * perPage);
+  // filter courses client-side based on selected instructor or quick query
+  const filteredCourses = COURSES.filter((c) => {
+    const matchesInstructor = selectedInstructorTop ? c.teacher === selectedInstructorTop : true;
+    const q = instructorQueryTop.trim().toLowerCase();
+    const matchesQuery = q === "" || c.teacher.toLowerCase().includes(q) || c.title.toLowerCase().includes(q);
+    return matchesInstructor && matchesQuery;
+  });
+
+  const total = filteredCourses.length;
+  const totalPages = Math.max(1, Math.ceil(total / perPage));
+  const displayed = filteredCourses.slice((page - 1) * perPage, page * perPage);
+
+  // instructors filtered by top quick-search
+  const filteredInstructorsTop = INSTRUCTORS.filter((n) => n.toLowerCase().includes(instructorQueryTop.trim().toLowerCase()));
+  const dropdownLimit = 5;
+  const shownInstructors = showAllInDropdown ? filteredInstructorsTop : filteredInstructorsTop.slice(0, dropdownLimit);
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -248,12 +358,78 @@ const CourseListingPageV2: React.FC = () => {
             {/* Filters row */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-3">
               <h1 className="text-xl font-semibold text-gray-800">Các Khóa Học (Phiên bản V2)</h1>
+
               <div className="flex items-center space-x-3">
-                <select className="border border-gray-200 rounded-md px-3 py-2 bg-white text-sm">
-                  <option>Giảng viên</option>
-                  <option>Nguyễn Tiến Đạt</option>
-                  <option>Phạm Thị H</option>
-                </select>
+                {/* Quick search input */}
+                <div className="relative">
+                  <Input
+                    placeholder="Tìm nhanh giảng viên..."
+                    value={instructorQueryTop}
+                    onChange={(e) => {
+                      setInstructorQueryTop(e.target.value);
+                      // when user types, reset selected instructor (so query takes precedence)
+                      setSelectedInstructorTop(null);
+                      // show limited dropdown by default
+                      setShowAllInDropdown(false);
+                      // reset page to 1
+                      setPage(1);
+                    }}
+                    className="w-60"
+                  />
+                </div>
+
+                {/* Dropdown listing up to 5 instructors */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button className="min-w-[220px] flex items-center justify-between px-3 py-2 border border-gray-200 bg-white text-sm">
+                      <span className="truncate">
+                        {selectedInstructorTop ? selectedInstructorTop : "Giảng viên"}
+                      </span>
+                      <ChevronDown className="ml-2 h-4 w-4 text-gray-400" />
+                    </Button>
+                  </DropdownMenuTrigger>
+
+                  <DropdownMenuContent className="min-w-[220px] max-h-56 overflow-auto">
+                    {shownInstructors.length > 0 ? (
+                      shownInstructors.map((name) => {
+                        const selected = selectedInstructorTop === name;
+                        return (
+                          <DropdownMenuItem asChild key={name}>
+                            <button
+                              onClick={() => {
+                                setSelectedInstructorTop(selected ? null : name);
+                                // reset page when selecting filter
+                                setPage(1);
+                              }}
+                              className={cn(
+                                "w-full text-left px-3 py-2 rounded-md transition-colors flex items-center justify-between",
+                                selected ? "bg-blue-600 text-white" : "hover:bg-gray-50 text-gray-700",
+                              )}
+                            >
+                              <span className={cn("truncate", selected ? "font-semibold" : "")}>{name}</span>
+                              {selected && <span className="ml-2 text-xs opacity-80">✓</span>}
+                            </button>
+                          </DropdownMenuItem>
+                        );
+                      })
+                    ) : (
+                      <div className="px-3 py-2 text-sm text-gray-500">Không tìm thấy giảng viên.</div>
+                    )}
+
+                    {filteredInstructorsTop.length > dropdownLimit && (
+                      <div className="px-3 py-2">
+                        <button
+                          onClick={() => setShowAllInDropdown((v) => !v)}
+                          className="text-sm text-blue-600 hover:underline"
+                        >
+                          {showAllInDropdown ? "Thu gọn" : `Xem tất cả (${filteredInstructorsTop.length})`}
+                        </button>
+                      </div>
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* Price filter placeholder (kept as select) */}
                 <select className="border border-gray-200 rounded-md px-3 py-2 bg-white text-sm">
                   <option>Giá tiền</option>
                   <option>0 - 500k</option>
@@ -273,7 +449,10 @@ const CourseListingPageV2: React.FC = () => {
             <div className="mt-8 flex items-center justify-center space-x-2">
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
-                className={cn("px-3 py-1 rounded-md border", page === 1 ? "bg-white text-gray-400 border-gray-200" : "bg-white text-gray-700 border-gray-300")}
+                className={cn(
+                  "px-3 py-1 rounded-md border",
+                  page === 1 ? "bg-white text-gray-400 border-gray-200" : "bg-white text-gray-700 border-gray-300",
+                )}
                 disabled={page === 1}
               >
                 Prev
@@ -286,7 +465,7 @@ const CourseListingPageV2: React.FC = () => {
                     onClick={() => setPage(n)}
                     className={cn(
                       "px-3 py-1 rounded-md border",
-                      page === n ? "bg-blue-600 text-white border-blue-600" : "bg-white text-gray-700 border-gray-300"
+                      page === n ? "bg-blue-600 text-white border-blue-600" : "bg-white text-gray-700 border-gray-300",
                     )}
                   >
                     {n}
@@ -295,7 +474,10 @@ const CourseListingPageV2: React.FC = () => {
               })}
               <button
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                className={cn("px-3 py-1 rounded-md border", page === totalPages ? "bg-white text-gray-400 border-gray-200" : "bg-white text-gray-700 border-gray-300")}
+                className={cn(
+                  "px-3 py-1 rounded-md border",
+                  page === totalPages ? "bg-white text-gray-400 border-gray-200" : "bg-white text-gray-700 border-gray-300",
+                )}
                 disabled={page === totalPages}
               >
                 Next
