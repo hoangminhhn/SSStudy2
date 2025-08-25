@@ -119,3 +119,23 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Helper: hide native scrollbars for elements that should be scrollable but without visible scrollbars.
+   Applied to elements that already use the helper classes `no-scrollbar` or `scrollbar-hidden`.
+   This covers Chrome/Safari/Edge/Firefox/IE. */
+.no-scrollbar,
+.scrollbar-hidden {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.no-scrollbar::-webkit-scrollbar,
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* Optional: make sure the helper doesn't interfere with interactive area on small screens */
+.no-scrollbar,
+.scrollbar-hidden {
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
