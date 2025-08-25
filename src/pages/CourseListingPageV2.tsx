@@ -5,9 +5,9 @@ import { Link } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import BreadcrumbNav from "@/components/layout/BreadcrumbNav";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BookOpen, User, ChevronDown } from "lucide-react";
+import { BookOpen, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   Accordion,
@@ -15,6 +15,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import InstructorFilter from "@/components/course/InstructorFilter";
 
 interface Course {
   id: string;
@@ -125,9 +126,7 @@ const categories = [
   },
 ];
 
-const Sidebar: React.FC = () => {
-  const [activeItem, setActiveItem] = React.useState<string | null>("HSA");
-  // Keep accordion single so it behaves like the image (one open at a time)
+const Sidebar: React.FC<{ activeItem: string | null; setActiveItem: (s: string | null) => void }> = ({ activeItem, setActiveItem }) => {
   return (
     <aside className="hidden lg:block w-full max-w-[260px]">
       <div className="bg-white rounded-lg shadow-sm p-3">
@@ -137,7 +136,6 @@ const Sidebar: React.FC = () => {
               <AccordionTrigger className="px-2 py-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
-                    {/* If the category contains the active item, visually show the left blue indicator */}
                     <div
                       className={cn(
                         "mr-2 w-2 h-8 rounded-l-full",
@@ -153,7 +151,9 @@ const Sidebar: React.FC = () => {
                       {cat.title}
                     </div>
                   </div>
-                  <ChevronDown className="h-4 w-4 text-gray-400" />
+                  <svg className="h-4 w-4 text-gray-400" viewBox="0 0 20 20" fill="none">
+                    <path d="M5 7l5 5 5-5" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
                 </div>
               </AccordionTrigger>
 
@@ -173,7 +173,6 @@ const Sidebar: React.FC = () => {
                           )}
                         >
                           <span className={cn("truncate", selected ? "font-semibold" : "")}>{item}</span>
-                          {/* optional small indicator on the right for selected item */}
                           {selected && <span className="ml-2 text-xs opacity-80">✓</span>}
                         </button>
                       </li>
@@ -224,13 +223,19 @@ const CourseCard: React.FC<{ course: Course }> = ({ course }) => {
 };
 
 const CourseListingPageV2: React.FC = () => {
-  // pagination stub
   const [page, setPage] = React.useState(1);
-  const perPage = 6;
-  const total = COURSES.length;
-  const totalPages = Math.max(1, Math.ceil(total / perPage));
+  const [activeItem, setActiveItem] = React.useState<string | null>("HSA");
+  const [selectedInstructor, setSelectedInstructor] = React.useState<string | null>(null);
 
-  const displayed = COURSES.slice((page - 1) * perPage, page * perPage);
+  const perPage = 6;
+  const filteredCourses = COURSES.filter((c) => {
+    if (!selectedInstructor) return true;
+    return c.teacher === selectedInstructor;
+  });
+
+  const total = filteredCourses.length;
+  const totalPages = Math.max(1, Math.ceil(total / perPage));
+  const displayed = filteredCourses.slice((page - 1) * perPage, page * perPage);
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -238,22 +243,21 @@ const CourseListingPageV2: React.FC = () => {
       <BreadcrumbNav courseTitle="Khóa học" bgColor="white" variant="v2" />
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Sidebar */}
           <div className="lg:col-span-3">
-            <Sidebar />
+            <Sidebar activeItem={activeItem} setActiveItem={setActiveItem} />
           </div>
 
-          {/* Main content */}
           <div className="lg:col-span-9">
-            {/* Filters row */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-3">
               <h1 className="text-xl font-semibold text-gray-800">Các Khóa Học (Phiên bản V2)</h1>
               <div className="flex items-center space-x-3">
-                <select className="border border-gray-200 rounded-md px-3 py-2 bg-white text-sm">
-                  <option>Giảng viên</option>
-                  <option>Nguyễn Tiến Đạt</option>
-                  <option>Phạm Thị H</option>
-                </select>
+                <InstructorFilter
+                  selected={selectedInstructor}
+                  onSelect={(ins) => {
+                    setSelectedInstructor(ins);
+                    setPage(1);
+                  }}
+                />
                 <select className="border border-gray-200 rounded-md px-3 py-2 bg-white text-sm">
                   <option>Giá tiền</option>
                   <option>0 - 500k</option>
@@ -262,14 +266,12 @@ const CourseListingPageV2: React.FC = () => {
               </div>
             </div>
 
-            {/* Cards grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {displayed.map((c) => (
                 <CourseCard key={c.id} course={c} />
               ))}
             </div>
 
-            {/* Pagination */}
             <div className="mt-8 flex items-center justify-center space-x-2">
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
