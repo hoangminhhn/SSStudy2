@@ -12,6 +12,7 @@ interface LessonVideoPlayerProps {
   onAddNote?: () => void; // Changed to simple callback without popup
   rootId?: string; // New prop for the root div's ID
   addNoteButtonId?: string; // New prop for the add note button's ID
+  showAddNoteButton?: boolean; // New prop to control whether the internal add-note button is shown
 }
 
 const LessonVideoPlayer: React.FC<LessonVideoPlayerProps> = ({
@@ -22,6 +23,7 @@ const LessonVideoPlayer: React.FC<LessonVideoPlayerProps> = ({
   onAddNote,
   rootId,
   addNoteButtonId,
+  showAddNoteButton = true,
 }) => {
   return (
     <div className="flex flex-col h-full">
@@ -51,7 +53,7 @@ const LessonVideoPlayer: React.FC<LessonVideoPlayerProps> = ({
           <h1 className="text-2xl font-bold text-gray-800 mb-0">{lessonTitle}</h1>
           <p className="text-sm text-gray-500 mb-0">Cập nhật {updatedDate}</p>
         </div>
-        {onAddNote && (
+        {onAddNote && showAddNoteButton && (
           <Button
             id={addNoteButtonId}
             variant="outline"

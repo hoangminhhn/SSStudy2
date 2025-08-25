@@ -8,7 +8,7 @@ import LessonNavigation from "@/components/lesson/LessonNavigation";
 import CourseContent from "@/components/course/CourseContent";
 import FloatingAskQuestionButton from "@/components/lesson/FloatingAskQuestionButton";
 import { Button } from "@/components/ui/button";
-import { Download, Edit, AlertTriangle } from "lucide-react";
+import { Download, Edit, AlertTriangle, Plus } from "lucide-react";
 import GuidedTourOverlay from "@/components/tour/GuidedTourOverlay";
 import NotesSidebar from "@/components/lesson/NotesSidebar";
 import AskQuestionSidebar from "@/components/lesson/AskQuestionSidebar";
@@ -150,8 +150,8 @@ const LessonDetailPageV2 = () => {
               rootId="tour-video-player"
               lessonTitle={currentLesson.title}
               updatedDate="tháng 11 năm 2022"
-              onAddNote={() => setIsAddNotePanelOpen(true)} // Open panel on add note click
-              addNoteButtonId="tour-add-note-button"
+              onAddNote={() => setIsAddNotePanelOpen(true)}
+              showAddNoteButton={false} // hide internal button so we render it in the action row
             />
           </div>
 
@@ -160,10 +160,23 @@ const LessonDetailPageV2 = () => {
               <Download size={16} className="mr-2" />
               Tải đề (không đáp án)
             </Button>
+
             <Button variant="ghost" className="text-orange-500 hover:text-orange-600 hover:bg-orange-50 rounded-full px-4 py-2">
               <Download size={16} className="mr-2" />
               Tải đề (có đáp án)
             </Button>
+
+            {/* Thêm Ghi chú button placed in the same row so it's aligned with other actions */}
+            <Button
+              id="tour-add-note-button"
+              variant="outline"
+              className="text-gray-700 border-gray-300 hover:bg-gray-100 rounded-full px-4 py-2"
+              onClick={() => setIsAddNotePanelOpen(true)}
+            >
+              <Plus size={16} className="mr-2" />
+              Thêm ghi chú
+            </Button>
+
             <Button id="tour-do-exercise" className="bg-gray-300 text-gray-700 rounded-full px-6 py-3 cursor-not-allowed" disabled>
               Làm bài tập <Edit size={16} className="ml-2" />
             </Button>
