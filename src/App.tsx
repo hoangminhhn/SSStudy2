@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index"; // This is now the Home Page
 import CourseListingPage from "./pages/CourseListingPage"; // New Course Listing Page
+import CourseListingPageV2 from "./pages/CourseListingPageV2"; // V2 Course Listing Page
 import CourseDetailPage from "./pages/CourseDetailPage"; // Course Detail Page
 import LessonDetailPage from "./pages/LessonDetailPage";
 import LessonDetailPageV2 from "./pages/LessonDetailPageV2";
@@ -23,6 +24,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} /> {/* Home Page */}
           <Route path="/courses" element={<CourseListingPage />} /> {/* Course Listing Page */}
+          <Route path="/courses-v2" element={<CourseListingPageV2 />} /> {/* NEW: Course Listing Page V2 */}
           <Route path="/courses/:courseId" element={<CourseDetailPage />} /> {/* Course Detail Page */}
           <Route path="/courses-v2/:courseId" element={<CourseDetailPageV2 />} /> {/* New Course Detail Page V2 */}
           <Route path="/courses-v3/:courseId" element={<CourseDetailPageV3 />} /> {/* New Course Detail Page V3 */}
