@@ -1,9 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BookOpen, FileText, Play, User } from "lucide-react";
+import { BookOpen, FileText, Play, User, ChevronRight } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -11,10 +11,12 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
-import { isToday, parse } from 'date-fns';
+import { isToday, parse } from "date-fns";
 import { Link } from "react-router-dom";
 import { chapters, Chapter, Session, TimeSlot } from "@/data/courseData";
 import { showSuccess, showError } from "@/utils/toast"; // Import toast utilities
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
 interface CourseContentProps {
   isSidebar?: boolean;
@@ -28,6 +30,90 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
     setOpenChapters(values);
   };
 
+  // --- New: search & subject tabs for sidebar ---
+  const [searchTerm, setSearchTerm] = useState("");
+  const subjects = useMemo(() => {
+    const s = Array.from(new Set(chapters.map((c) => c.subject || "Khác")));
+    return s;
+  }, []);
+
+  const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
+
+  // Filter chapters based on selected subject and search term (search applied to chapter title + lesson titles)
+  const filteredChapters = useMemo(() => {
+    const q = searchTerm.trim().toLowerCase();
+    return chapters
+      .filter((ch) => (selectedSubject ? ch.subject === selectedSubject : true))
+      .map((ch) => {
+        if (!q) return ch;
+        const chapterMatches = ch.title.toLowerCase().includes(q);
+        const filteredSessions = ch.sessions.filter((s) => s.title.toLowerCase().includes(q));
+        return chapterMatches ? ch : { ...ch, sessions: filteredSessions };
+      })
+      .filter((ch) => ch.sessions.length > 0 || ch.title.toLowerCase().includes(q));
+  }, [searchTerm, selectedSubject]);
+
+  // --- New: horizontal tabs scroll + arrow visibility + drag-to-scroll ---
+  const tabContainerRef = useRef<HTMLDivElement | null>(null);
+  const [showRightArrow, setShowRightArrow] = useState(false);
+  const dragState = useRef({ active: false, startX: 0, scrollLeft: 0 });
+
+  const updateArrowVisibility = () => {
+    const el = tabContainerRef.current;
+    if (!el) {
+      setShowRightArrow(false);
+      return;
+    }
+    setShowRightArrow(el.scrollWidth > el.clientWidth + 4);
+  };
+
+  useEffect(() => {
+    updateArrowVisibility();
+    const handleResize = () => updateArrowVisibility();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [subjects, selectedSubject, searchTerm]);
+
+  const handleTabScroll = () => updateArrowVisibility();
+
+  const scrollTabsBy = (amount: number) => {
+    const el = tabContainerRef.current;
+    if (!el) return;
+    el.scrollBy({ left: amount, behavior: "smooth" });
+    // after scroll, update arrow visibility with a small delay
+    setTimeout(updateArrowVisibility, 250);
+  };
+
+  const onPointerDown = (e: React.PointerEvent) => {
+    const el = tabContainerRef.current;
+    if (!el) return;
+    dragState.current.active = true;
+    dragState.current.startX = e.clientX;
+    dragState.current.scrollLeft = el.scrollLeft;
+    (e.target as Element).setPointerCapture?.(e.pointerId);
+    el.classList.add("cursor-grabbing");
+  };
+
+  const onPointerMove = (e: React.PointerEvent) => {
+    const el = tabContainerRef.current;
+    if (!el || !dragState.current.active) return;
+    const x = e.clientX;
+    const walk = x - dragState.current.startX;
+    el.scrollLeft = dragState.current.scrollLeft - walk;
+    updateArrowVisibility();
+  };
+
+  const onPointerUp = (e: React.PointerEvent) => {
+    const el = tabContainerRef.current;
+    if (!el) return;
+    dragState.current.active = false;
+    (e.target as Element).releasePointerCapture?.(e.pointerId);
+    el.classList.remove("cursor-grabbing");
+  };
+
+  // Helper: get chapters to render (use filteredChapters when in sidebar, else full chapters)
+  const chaptersToRender: Chapter[] = isSidebar ? filteredChapters : chapters;
+
   return (
     <div className={isSidebar ? "" : "mt-8"}>
       {!isSidebar && (
@@ -39,8 +125,70 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
         </>
       )}
 
+      {isSidebar && (
+        <div className="mb-4">
+          {/* Quick search input */}
+          <div className="mb-3">
+            <Input
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Tìm kiếm đề thi - bài học ở đây"
+              className="w-full"
+            />
+          </div>
+
+          {/* Horizontal subject tabs with drag-to-scroll and right arrow */}
+          <div className="relative">
+            <div
+              ref={tabContainerRef}
+              onPointerDown={onPointerDown}
+              onPointerMove={onPointerMove}
+              onPointerUp={onPointerUp}
+              onScroll={handleTabScroll}
+              className="flex space-x-2 overflow-x-auto no-scrollbar py-1 px-1 touch-pan-x"
+              style={{ WebkitOverflowScrolling: "touch" }}
+            >
+              {subjects.map((subj) => {
+                const active = subj === selectedSubject;
+                return (
+                  <button
+                    key={subj}
+                    onClick={() => setSelectedSubject((prev) => (prev === subj ? null : subj))}
+                    className={cn(
+                      "flex-shrink-0 px-4 py-2 rounded-md text-sm border",
+                      active
+                        ? "bg-blue-600 text-white border-blue-600"
+                        : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
+                    )}
+                  >
+                    {subj}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Right arrow when overflow */}
+            {showRightArrow && (
+              <div className="absolute right-1 top-1/2 -translate-y-1/2 pointer-events-auto">
+                <Button
+                  onClick={() => {
+                    const el = tabContainerRef.current;
+                    if (!el) return;
+                    // scroll roughly by 60% of visible width
+                    scrollTabsBy(Math.round(el.clientWidth * 0.6));
+                  }}
+                  className="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-2 shadow"
+                >
+                  <ChevronRight size={18} />
+                </Button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       <Accordion type="multiple" value={openChapters} onValueChange={handleAccordionChange} className="w-full space-y-4">
-        {chapters.map((chapter) => {
+        {chaptersToRender.map((chapter) => {
           const isOpen = openChapters.includes(chapter.id);
           return (
             <Card key={chapter.id} className="p-4 shadow-sm rounded-lg">
@@ -93,7 +241,7 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
                         } else if (hasRegisteredSlot) {
                           buttonContent = (
                             <Button
-                              className="bg-gray-400 text-gray-700 rounded-full px-4 py-2 text-sm" // Removed cursor-not-allowed and disabled
+                              className="bg-gray-400 text-gray-700 rounded-full px-4 py-2 text-sm"
                               onClick={() => showError("Bài học livestream sẽ được mở vào giờ và ngày học chính thức")}
                             >
                               Đã đăng ký
@@ -102,7 +250,7 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
                         } else {
                           buttonContent = (
                             <Button
-                              className="bg-red-600 text-white rounded-full px-4 py-2 text-sm" // Removed cursor-not-allowed and disabled
+                              className="bg-red-600 text-white rounded-full px-4 py-2 text-sm"
                               onClick={() => showError("Vui lòng liên hệ bộ phận chăm sóc khách hàng để được hướng dẫn")}
                             >
                               Hết chỗ
