@@ -163,7 +163,7 @@ const CourseContent: React.FC<CourseContentProps> = ({ isSidebar = false }) => {
                     if (!el) return;
                     scrollTabsBy(-Math.round(el.clientWidth * 0.6));
                   }}
-                  className="bg-white hover:bg-gray-100 text-gray-700 rounded-full p-2 shadow-sm w-9 h-9 flex items-center justify-center"
+                  className="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-2 shadow w-9 h-9 flex items-center justify-center"
                   aria-label="scroll tabs left"
                 >
                   <ChevronLeft size={16} />
