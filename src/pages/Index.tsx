@@ -14,6 +14,7 @@ import ReviewsSection from "@/components/home/ReviewsSection";
 import ParentsFeedbackSection from "@/components/home/ParentsFeedbackSection";
 import NewsEventsSection from "@/components/home/NewsEventsSection";
 import PartnersSection from "@/components/home/PartnersSection";
+import PressSection from "@/components/home/PressSection";
 
 const Index = () => {
   return (
@@ -37,6 +38,8 @@ const Index = () => {
         <NewsEventsSection />
         {/* Partners section placed under News & Events */}
         <PartnersSection />
+        {/* Press / Báo chí section placed under Partners */}
+        <PressSection />
       </main>
       <Footer />
     </div>
