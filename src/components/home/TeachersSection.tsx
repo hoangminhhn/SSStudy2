@@ -2,8 +2,7 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { User } from "lucide-react";
 
 interface Teacher {
@@ -39,11 +38,12 @@ const TeachersSection: React.FC = () => {
           {TEACHERS.map((t) => (
             <Card key={t.id} className="overflow-hidden rounded-lg shadow-sm">
               <div className="bg-white">
-                <div className="w-full h-56 bg-gray-100 flex items-center justify-center overflow-hidden">
+                {/* Portrait-oriented image container */}
+                <div className="w-full h-96 bg-gray-100 flex items-center justify-center overflow-hidden">
                   <img
                     src={t.image}
                     alt={t.name}
-                    className="w-full h-full object-cover"
+                    className="h-full w-auto object-cover"
                     style={{ display: "block" }}
                   />
                 </div>
