@@ -69,15 +69,16 @@ const UniqueValuesSection: React.FC = () => {
                 className="hidden sm:block absolute -left-6 top-6 w-64 h-64 rounded-lg bg-blue-100"
                 aria-hidden
               />
-              {/* Image (square-ish) */}
+              {/* Image (square) */}
               <div
-                className="relative z-10 w-64 h-64 rounded-lg overflow-hidden shadow-md bg-white"
+                className="relative z-10 w-64 h-64 rounded-lg overflow-hidden shadow-md bg-white p-4"
                 style={{ aspectRatio: "1 / 1" }}
               >
+                {/* Use object-contain + object-top so full PNG (including head) is visible and aligned to top */}
                 <img
                   src="/images/anh-giao-vien.png"
                   alt="Giáo viên SSStudy"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain object-top"
                   style={{ display: "block" }}
                 />
               </div>
