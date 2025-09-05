@@ -3,7 +3,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
-import { User, MapPin } from "lucide-react";
+import { User } from "lucide-react";
 
 interface Champion {
   id: string;
@@ -18,7 +18,7 @@ interface Champion {
 const CHAMPIONS: Champion[] = [
   {
     id: "c-1",
-    image: "/images/bang-vang-1.png",
+    image: "/images/bang-vang-1.webp",
     score: "9,8 toán",
     subject: "toán",
     name: "Nguyễn Phương Thảo",
@@ -27,7 +27,7 @@ const CHAMPIONS: Champion[] = [
   },
   {
     id: "c-2",
-    image: "/images/bang-vang-2.png",
+    image: "/images/bang-vang-2.webp",
     score: "9,8 toán",
     subject: "toán",
     name: "Nguyễn Phương Thảo",
@@ -36,7 +36,7 @@ const CHAMPIONS: Champion[] = [
   },
   {
     id: "c-3",
-    image: "/images/bang-vang-3.png",
+    image: "/images/bang-vang-3.webp",
     score: "9,8 toán",
     subject: "toán",
     name: "Nguyễn Phương Thảo",
@@ -45,7 +45,7 @@ const CHAMPIONS: Champion[] = [
   },
   {
     id: "c-4",
-    image: "/images/bang-vang-4.png",
+    image: "/images/bang-vang-4.webp",
     score: "9,8 toán",
     subject: "toán",
     name: "Nguyễn Phương Thảo",
@@ -58,7 +58,11 @@ const ChampionCard: React.FC<{ champ: Champion }> = ({ champ }) => {
   return (
     <Card className="rounded-lg overflow-hidden shadow-sm">
       <div className="w-full h-44 bg-gray-100">
-        <img src={champ.image} alt={champ.name} className="w-full h-full object-cover" />
+        <picture>
+          <source srcSet={champ.image} type="image/webp" />
+          {/* Fallback to the same path in case only webp exists; browsers that don't support webp will try to load this (may 404 if not present) */}
+          <img src={champ.image} alt={champ.name} className="w-full h-full object-cover" />
+        </picture>
       </div>
       <CardContent className="p-4">
         <div className="text-red-600 font-semibold text-lg">{champ.score}</div>
