@@ -25,12 +25,9 @@ const PressSection: React.FC = () => {
   const loopItems = [...PRESS, ...PRESS];
 
   return (
-    <section aria-labelledby="press-heading" className="py-10 bg-white">
+    <section aria-label="Báo chí nói về chúng tôi" className="py-10 bg-white">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between mb-6">
-          <h2 id="press-heading" className="text-2xl md:text-3xl font-bold text-slate-900">
-            Báo chí nói về chúng tôi
-          </h2>
           <div className="text-sm text-gray-500">Đơn vị truyền thông tiêu biểu</div>
         </div>
 
