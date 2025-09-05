@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 const WelcomeSection: React.FC = () => {
@@ -13,11 +12,6 @@ const WelcomeSection: React.FC = () => {
           Nền tảng học tập trực tuyến hàng đầu, cung cấp các khóa học chất lượng cao giúp bạn đạt được mục tiêu học tập.
         </p>
         <div className="space-x-4">
-          <Link to="/courses">
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-8 py-4 text-lg font-semibold">
-              Khám phá Khóa học
-            </Button>
-          </Link>
           <Button variant="outline" className="text-blue-600 border-blue-600 hover:bg-blue-50 rounded-full px-8 py-4 text-lg font-semibold">
             Tìm hiểu thêm
           </Button>
