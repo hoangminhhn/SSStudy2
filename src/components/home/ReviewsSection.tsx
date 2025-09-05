@@ -3,7 +3,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Star } from "lucide-react";
 
 const reviews = [
@@ -28,24 +27,24 @@ const sideAvatars = [
 const ReviewsSection: React.FC = () => {
   return (
     <section aria-labelledby="reviews-heading" className="py-12">
-      <div className="max-w-7xl mx-auto px-4">
+      <div className="container mx-auto px-4">
         <div className="relative bg-gradient-to-b from-blue-50/60 to-white rounded-2xl p-10 overflow-visible">
-          {/* Heading row */}
-          <div className="flex items-center justify-between mb-6">
-            <div className="max-w-lg">
+          {/* Heading row - centered title and subtitle */}
+          <div className="grid grid-cols-3 items-center mb-6">
+            <div />
+            <div className="text-center">
               <h2
                 id="reviews-heading"
-                className="text-center md:text-left text-2xl md:text-3xl font-bold text-slate-900"
+                className="text-2xl md:text-3xl font-bold text-slate-900"
               >
                 Review của học viên tại SSStudy
               </h2>
-              <p className="mt-2 text-sm text-slate-500 flex items-center gap-2">
+              <p className="mt-2 text-sm text-slate-500 flex items-center justify-center gap-2">
                 <span className="text-yellow-500">🎓</span>
                 <span>Hơn 130.000 học viên tin tưởng và theo học tại SSStudy</span>
               </p>
             </div>
-
-            <div className="hidden sm:flex items-center">
+            <div className="hidden sm:flex items-center justify-end">
               <Link to="#" className="text-sm text-blue-600 hover:underline inline-flex items-center">
                 Xem tất cả <span className="ml-2">→</span>
               </Link>
