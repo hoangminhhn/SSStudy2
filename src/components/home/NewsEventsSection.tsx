@@ -10,11 +10,11 @@ import { CalendarDays } from "lucide-react";
  * - Left: Featured article with overlay title + date, thumbnail strip underneath
  * - Right: Tabs (Tin tức / Sự kiện) with list items (thumbnail, title, date)
  *
- * Images should exist in public/images:
- *  - /images/tintuc-1.png
- *  - /images/tintuc-2.png
- *  - /images/tintuc-3.png
- *  - /images/tintuc-4.png
+ * Uses images from public/images:
+ *  - /images/anh-tin-tuc-1.png
+ *  - /images/anh-tin-tuc-2.png
+ *  - /images/anh-tin-tuc-3.png
+ *  - /images/anh-tin-tuc-4.png
  */
 
 const posts = [
@@ -22,25 +22,25 @@ const posts = [
     id: "n-1",
     title: "Thêm trường Sư phạm tổ chức kỳ thi",
     date: "05/08/2025",
-    image: "/images/tintuc-1.png",
+    image: "/images/anh-tin-tuc-1.png",
   },
   {
     id: "n-2",
     title: "Nam sinh đạt IELTS 8.5, SAT top 1%",
     date: "04/08/2025",
-    image: "/images/tintuc-2.png",
+    image: "/images/anh-tin-tuc-2.png",
   },
   {
     id: "n-3",
     title: "Hội thảo giáo dục sáng tạo 2025",
     date: "01/08/2025",
-    image: "/images/tintuc-3.png",
+    image: "/images/anh-tin-tuc-3.png",
   },
   {
     id: "n-4",
     title: "SSStudy đồng hành cùng kỳ thi thử",
     date: "28/07/2025",
-    image: "/images/tintuc-4.png",
+    image: "/images/anh-tin-tuc-4.png",
   },
 ];
 
