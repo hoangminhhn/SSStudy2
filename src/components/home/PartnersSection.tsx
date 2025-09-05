@@ -55,7 +55,8 @@ const PartnersSection: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {PARTNERS.map((p) => (
             <Card key={p.id} className="shadow-md rounded-lg overflow-hidden">
-              <div className="w-full h-44 bg-gray-100 overflow-hidden">
+              {/* Increased image height: h-56 on small screens, h-64 on md+ */}
+              <div className="w-full h-56 md:h-64 bg-gray-100 overflow-hidden">
                 <img src={p.image} alt={p.title} className="w-full h-full object-cover" />
               </div>
               <CardHeader className="pt-4 px-4 pb-0">
