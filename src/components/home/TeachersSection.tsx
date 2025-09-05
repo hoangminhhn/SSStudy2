@@ -53,7 +53,7 @@ const TeachersSection: React.FC = () => {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
                       <div>
-                        <h3 className="text-sm font-semibold text-gray-800">{t.name}</h3>
+                        <h3 className="text-base font-semibold text-gray-800">{t.name}</h3>
                         <p className="text-xs text-gray-500 mt-1">{t.role}</p>
                       </div>
                     </div>
