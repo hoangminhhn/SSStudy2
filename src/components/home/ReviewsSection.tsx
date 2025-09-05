@@ -35,7 +35,8 @@ const ReviewsSection: React.FC = () => {
             <div className="text-center">
               <h2
                 id="reviews-heading"
-                className="text-2xl md:text-3xl font-bold text-slate-900"
+                className="text-2xl md:text-3xl font-bold text-slate-900 truncate"
+                title="Review của học viên tại SSStudy"
               >
                 Review của học viên tại SSStudy
               </h2>
