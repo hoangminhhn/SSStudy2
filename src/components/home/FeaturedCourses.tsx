@@ -104,7 +104,7 @@ const FeaturedCourses: React.FC = () => {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-3 items-center mb-6">
           <div />
-          <h2 id="featured-heading" className="text-center text-2xl font-bold text-gray-700">
+          <h2 id="featured-heading" className="text-center text-3xl sm:text-4xl font-bold text-gray-700">
             Khóa học nổi bật
           </h2>
           <div className="text-right">
