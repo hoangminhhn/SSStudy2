@@ -27,9 +27,6 @@ const PressSection: React.FC = () => {
   return (
     <section aria-label="Báo chí nói về chúng tôi" className="py-10 bg-white">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between mb-6">
-          <div className="text-sm text-gray-500">Đơn vị truyền thông tiêu biểu</div>
-        </div>
 
         {/* Inline styles for marquee keyframes */}
         <style>
