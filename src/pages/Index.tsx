@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import HeroSlider from "@/components/home/HeroSlider";
-import WelcomeSection from "@/components/home/WelcomeSection";
+import StatsSection from "@/components/home/StatsSection";
 
 const Index = () => {
   return (
@@ -13,7 +13,7 @@ const Index = () => {
       <Header />
       <main className="flex-grow">
         <HeroSlider />
-        <WelcomeSection />
+        <StatsSection />
       </main>
       <Footer />
     </div>
