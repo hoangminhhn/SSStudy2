@@ -9,6 +9,7 @@ import ProgramsSection from "@/components/home/ProgramsSection";
 import FeaturedCourses from "@/components/home/FeaturedCourses";
 import ChampionBoard from "@/components/home/ChampionBoard";
 import UniqueValuesSection from "@/components/home/UniqueValuesSection";
+import TeachersSection from "@/components/home/TeachersSection";
 
 const Index = () => {
   return (
@@ -22,6 +23,8 @@ const Index = () => {
         <ChampionBoard />
         {/* UniqueValuesSection placed directly under ChampionBoard as requested */}
         <UniqueValuesSection />
+        {/* New TeachersSection placed under UniqueValuesSection */}
+        <TeachersSection />
       </main>
       <Footer />
     </div>
