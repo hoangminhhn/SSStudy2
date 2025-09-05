@@ -13,10 +13,10 @@ interface Teacher {
 }
 
 const TEACHERS: Teacher[] = [
-  { id: "t-1", name: "Thầy Dĩ Thâm", role: "Giáo viên vật lý", image: "/images/anh-giao-vien.png" },
-  { id: "t-2", name: "Nguyễn Bá Thọ", role: "Giáo viên vật lý", image: "/images/anh-giao-vien.png" },
-  { id: "t-3", name: "Từ Kim Loan", role: "Giáo viên vật lý", image: "/images/anh-giao-vien.png" },
-  { id: "t-4", name: "Nguyễn Bá Thọ", role: "Giáo viên vật lý", image: "/images/anh-giao-vien.png" },
+  { id: "t-1", name: "Thầy Dĩ Thâm", role: "Giáo viên vật lý", image: "/images/anh-giang-vien.png" },
+  { id: "t-2", name: "Nguyễn Bá Thọ", role: "Giáo viên vật lý", image: "/images/anh-giang-vien.png" },
+  { id: "t-3", name: "Từ Kim Loan", role: "Giáo viên vật lý", image: "/images/anh-giang-vien.png" },
+  { id: "t-4", name: "Nguyễn Bá Thọ", role: "Giáo viên vật lý", image: "/images/anh-giang-vien.png" },
 ];
 
 const TeachersSection: React.FC = () => {
@@ -44,6 +44,7 @@ const TeachersSection: React.FC = () => {
                     src={t.image}
                     alt={t.name}
                     className="h-full w-auto object-cover"
+                    loading="lazy"
                     style={{ display: "block" }}
                   />
                 </div>
