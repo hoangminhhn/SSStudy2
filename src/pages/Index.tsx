@@ -13,6 +13,7 @@ import TeachersSection from "@/components/home/TeachersSection";
 import ReviewsSection from "@/components/home/ReviewsSection";
 import ParentsFeedbackSection from "@/components/home/ParentsFeedbackSection";
 import NewsEventsSection from "@/components/home/NewsEventsSection";
+import PartnersSection from "@/components/home/PartnersSection";
 
 const Index = () => {
   return (
@@ -28,12 +29,14 @@ const Index = () => {
         <UniqueValuesSection />
         {/* TeachersSection */}
         <TeachersSection />
-        {/* New ReviewsSection placed under TeachersSection */}
+        {/* ReviewsSection */}
         <ReviewsSection />
         {/* Parents Feedback section */}
         <ParentsFeedbackSection />
         {/* News & Events placed under Parents Feedback */}
         <NewsEventsSection />
+        {/* Partners section placed under News & Events */}
+        <PartnersSection />
       </main>
       <Footer />
     </div>
