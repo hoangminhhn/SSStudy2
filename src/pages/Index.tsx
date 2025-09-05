@@ -7,6 +7,7 @@ import HeroSlider from "@/components/home/HeroSlider";
 import StatsSection from "@/components/home/StatsSection";
 import ProgramsSection from "@/components/home/ProgramsSection";
 import FeaturedCourses from "@/components/home/FeaturedCourses";
+import ChampionBoard from "@/components/home/ChampionBoard";
 
 const Index = () => {
   return (
@@ -17,6 +18,7 @@ const Index = () => {
         <StatsSection />
         <ProgramsSection />
         <FeaturedCourses />
+        <ChampionBoard />
       </main>
       <Footer />
     </div>
