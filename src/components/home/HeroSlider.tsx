@@ -48,9 +48,9 @@ const HeroSlider: React.FC = () => {
 
             {/* Right image / hero */}
             <div className="lg:col-span-5 flex justify-end">
-              <div className="relative w-full max-w-sm lg:max-w-md">
-                {/* circular background */}
-                <div className="absolute -right-10 -top-8 w-[420px] h-[420px] rounded-full bg-blue-100 opacity-90 hidden lg:block" />
+              <div className="relative w-full max-w-[260px] lg:max-w-[340px]">
+                {/* circular background (reduced size) */}
+                <div className="absolute -right-6 -top-6 w-[320px] h-[320px] rounded-full bg-blue-100 opacity-90 hidden lg:block" />
 
                 {/* main image */}
                 <div className="relative z-10">
@@ -62,9 +62,9 @@ const HeroSlider: React.FC = () => {
                 </div>
 
                 {/* Badge: courses */}
-                <div className="absolute left-4 bottom-8 bg-white rounded-xl px-3 py-2 shadow-md flex items-center space-x-3">
-                  <div className="w-9 h-9 rounded-full bg-red-50 flex items-center justify-center text-red-600">
-                    <BookOpen size={18} />
+                <div className="absolute left-3 bottom-6 bg-white rounded-xl px-3 py-2 shadow-md flex items-center space-x-3">
+                  <div className="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center text-red-600">
+                    <BookOpen size={16} />
                   </div>
                   <div>
                     <div className="text-xs text-slate-500">Courses</div>
@@ -73,9 +73,9 @@ const HeroSlider: React.FC = () => {
                 </div>
 
                 {/* Badge: rating */}
-                <div className="absolute right-4 top-10 bg-white rounded-xl px-3 py-2 shadow-md flex items-center space-x-3">
-                  <div className="w-9 h-9 rounded-full bg-green-50 flex items-center justify-center text-green-600">
-                    <Star size={16} />
+                <div className="absolute right-3 top-8 bg-white rounded-xl px-3 py-2 shadow-md flex items-center space-x-3">
+                  <div className="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center text-green-600">
+                    <Star size={14} />
                   </div>
                   <div>
                     <div className="text-xs text-slate-500">Skilled Growth</div>
