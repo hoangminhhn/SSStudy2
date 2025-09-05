@@ -55,8 +55,8 @@ const HeroSlider: React.FC = () => {
                 {/* main image */}
                 <div className="relative z-10">
                   <img
-                    src="/images/20250630150800-ugrw2nuezq.png"
-                    alt="Instructor"
+                    src="/images/anh-giao-vien.png"
+                    alt="Anh giáo viên"
                     className="w-full h-auto rounded-xl object-cover shadow-2xl"
                   />
                 </div>
