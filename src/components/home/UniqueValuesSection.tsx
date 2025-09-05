@@ -61,12 +61,12 @@ const UniqueValuesSection: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          {/* Left: teacher image with larger blue block behind */}
+          {/* Left: teacher image with slightly smaller blue block behind */}
           <div className="lg:col-span-5 flex justify-center lg:justify-start">
             <div className="relative w-full max-w-[440px]">
-              {/* Blue rounded rectangle behind (slightly larger) */}
+              {/* Blue rounded rectangle behind (shrunk slightly) */}
               <div
-                className="hidden sm:block absolute -left-10 top-10 w-96 h-96 rounded-lg bg-blue-100"
+                className="hidden sm:block absolute -left-8 top-8 w-72 h-72 rounded-lg bg-blue-100"
                 aria-hidden
               />
               {/* Image (larger square) with extra padding so PNG head isn't cut */}
