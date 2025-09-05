@@ -2,6 +2,7 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -17,6 +18,13 @@ const NavLinks: React.FC = () => {
       </Link>
 
       <nav className="hidden md:flex space-x-6 items-center">
+        {/* Khám phá button placed to the left of 'Giới thiệu' */}
+        <Link to="/courses" className="flex items-center">
+          <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-4 py-2 text-sm">
+            Khám phá
+          </Button>
+        </Link>
+
         <Link to="#" className="text-gray-700 hover:text-blue-600 font-medium">
           Giới thiệu
         </Link>
