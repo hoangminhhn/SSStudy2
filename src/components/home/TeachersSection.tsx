@@ -38,8 +38,8 @@ const TeachersSection: React.FC = () => {
           {TEACHERS.map((t) => (
             <Card key={t.id} className="overflow-hidden rounded-lg shadow-sm">
               <div className="bg-white">
-                {/* Portrait-oriented image container */}
-                <div className="w-full h-96 bg-gray-100 flex items-center justify-center overflow-hidden">
+                {/* Portrait-oriented image container (slightly smaller height) */}
+                <div className="w-full h-80 bg-gray-100 flex items-center justify-center overflow-hidden">
                   <img
                     src={t.image}
                     alt={t.name}
