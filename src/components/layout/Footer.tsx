@@ -8,15 +8,6 @@ const Footer = () => {
   return (
     <footer className="bg-white py-10 px-6 mt-12 border-t border-gray-200">
       <div className="max-w-7xl mx-auto">
-        {/* Partner Logos */}
-        <div className="flex flex-wrap justify-center items-center gap-8 mb-10">
-          <img src="https://via.placeholder.com/120x40?text=Logo1" alt="Partner Logo 1" className="h-10 object-contain" />
-          <img src="https://via.placeholder.com/120x40?text=Logo2" alt="Partner Logo 2" className="h-10 object-contain" />
-          <img src="https://via.placeholder.com/120x40?text=Logo3" alt="Partner Logo 3" className="h-10 object-contain" />
-          <img src="https://via.placeholder.com/120x40?text=Logo4" alt="Partner Logo 4" className="h-10 object-contain" />
-          <img src="https://via.placeholder.com/120x40?text=Logo5" alt="Partner Logo 5" className="h-10 object-contain" />
-        </div>
-
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-gray-700">
           <div>
