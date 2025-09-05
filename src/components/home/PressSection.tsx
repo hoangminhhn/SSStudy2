@@ -18,6 +18,10 @@ const PRESS: PressItem[] = [
   { id: "p-6", image: "/images/anhbao2.webp", alt: "Báo 6" },
 ];
 
+const ITEM_MIN_WIDTH = 120; // reduced from 160
+const ITEM_HEIGHT = 72; // reduced from 96
+const TRACK_GAP = "3rem"; // increase spacing between logos
+
 const PressSection: React.FC = () => {
   const [hovered, setHovered] = React.useState<number | null>(null);
 
@@ -43,7 +47,7 @@ const PressSection: React.FC = () => {
               width: max-content;
               display: flex;
               align-items: center;
-              gap: 2rem;
+              gap: ${TRACK_GAP};
             }
           `}
         </style>
@@ -56,8 +60,6 @@ const PressSection: React.FC = () => {
             aria-hidden={false}
           >
             {loopItems.map((item, idx) => {
-              // Visual index to determine which original item is hovered (if needed)
-              const originalIndex = idx % PRESS.length;
               const isHovered = hovered === idx;
               const anyHover = hovered !== null;
 
@@ -76,9 +78,8 @@ const PressSection: React.FC = () => {
                       : "opacity-100"
                   }`}
                   style={{
-                    minWidth: 160,
-                    // keep consistent height
-                    height: 96,
+                    minWidth: ITEM_MIN_WIDTH,
+                    height: ITEM_HEIGHT,
                     WebkitTapHighlightColor: "transparent",
                   }}
                   aria-label={item.alt}
@@ -87,7 +88,7 @@ const PressSection: React.FC = () => {
                     className={`relative flex items-center justify-center w-full h-full transition-all duration-200`}
                     style={{
                       borderRadius: 12,
-                      padding: 8,
+                      padding: 6,
                       boxShadow: isHovered ? "0 10px 30px rgba(16,24,40,0.12)" : "none",
                       outline: isHovered ? "3px solid rgba(59,130,246,0.12)" : undefined,
                     }}
