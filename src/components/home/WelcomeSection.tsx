@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 
 const WelcomeSection: React.FC = () => {
   return (
-    <section className="py-12 bg-white">
+    <div className="py-12 bg-white">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
           <div>
@@ -29,7 +29,7 @@ const WelcomeSection: React.FC = () => {
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 
