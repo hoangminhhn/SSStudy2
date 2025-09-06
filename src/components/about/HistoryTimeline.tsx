@@ -55,14 +55,18 @@ const HistoryTimeline: React.FC = () => {
   return (
     <section className="py-12">
       <div className="container mx-auto px-4">
-        <h2 className="text-2xl md:text-3xl font-bold text-center text-slate-900 mb-10">
+        {/* Make the heading sit above the timeline (z-index) and give it extra bottom spacing */}
+        <h2
+          className="relative z-30 text-2xl md:text-3xl font-bold text-center text-slate-900 mb-16 inline-block px-3 bg-gray-50"
+          style={{ marginBottom: 48 }}
+        >
           Lịch sử hình thành và phát triển
         </h2>
 
         {/* Desktop / large: horizontal 4-column timeline */}
         <div
           className="hidden md:block relative"
-          style={{ minHeight: totalHeight }}
+          style={{ minHeight: totalHeight + 40, paddingTop: 8 }} // extra room to avoid overlapping the heading
           aria-hidden={false}
         >
           {/* Center dashed line positioned using computed px value so it never overlaps the heading */}
@@ -95,7 +99,7 @@ const HistoryTimeline: React.FC = () => {
                         <img
                           src={ev.image}
                           alt={`${ev.year} image`}
-                          className="w-full h-28 object-cover rounded-md shadow-sm mb-3"
+                          className="w-full h-28 object-cover rounded-md shadow-sm mb-3 relative z-10"
                         />
                         <div>
                           <div className="text-lg font-semibold text-gray-800">{ev.year}</div>
@@ -170,7 +174,7 @@ const HistoryTimeline: React.FC = () => {
                         <img
                           src={ev.image}
                           alt={`${ev.year} image`}
-                          className="w-full h-28 object-cover rounded-md shadow-sm mt-3"
+                          className="w-full h-28 object-cover rounded-md shadow-sm mt-3 relative z-10"
                         />
                       </div>
                     ) : (
