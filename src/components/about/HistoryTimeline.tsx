@@ -13,35 +13,45 @@ const events: Event[] = [
   {
     year: "2011",
     text: "Anh Nguyễn Tiến Đạt bắt đầu dạy gia sư cho các bạn học sinh lớp 10, 11, 12",
-    image: "/images/20250630150800-ugrw2nuezq.png",
+    image: "/images/anh-lich-su.png",
     position: "top",
   },
   {
     year: "2013",
     text: "Thành lập lớp toán thầy Đạt với quy mô 15 học sinh/lớp. Phục vụ 60 học sinh/năm",
-    image: "/images/20250630150800-ugrw2nuezq.png",
+    image: "/images/anh-lich-su.png",
     position: "bottom",
   },
   {
     year: "2014",
     text: "Thành lập trung tâm luyện thi Tiến Đạt tại Tân Mai - Hoàng Mai, Hà Nội tập các môn: Toán, Lý, Hóa, Anh",
-    image: "/images/20250630150800-ugrw2nuezq.png",
+    image: "/images/anh-lich-su.png",
     position: "top",
   },
   {
     year: "2016",
     text: "Mở rộng quy mô trung tâm luyện thi Tiến Đạt với quy mô 80 học sinh/lớp, phục vụ 1800 học sinh/năm",
-    image: "/images/20250630150800-ugrw2nuezq.png",
+    image: "/images/anh-lich-su.png",
     position: "bottom",
   },
 ];
 
-const DOT_SIZE = 14;
-const TOP_BOX_HEIGHT = 140; // px
-const CENTER_BOX_HEIGHT = 72;
-const BOTTOM_BOX_HEIGHT = 140;
+/**
+ * Layout constants (change these to tweak spacing)
+ */
+const TOP_BOX_HEIGHT = 140; // px: reserved vertical space for top cards
+const CENTER_BOX_HEIGHT = 72; // px: center area where the dots/line live
+const BOTTOM_BOX_HEIGHT = 140; // px: reserved vertical space for bottom cards
+const DOT_SIZE = 14; // px diameter of the dot
 
 const HistoryTimeline: React.FC = () => {
+  // Total timeline height (desktop) so we can avoid overlap with heading
+  const totalHeight = TOP_BOX_HEIGHT + CENTER_BOX_HEIGHT + BOTTOM_BOX_HEIGHT;
+
+  // Compute dashed line position in px from top of the timeline container
+  // Place it roughly in the middle of the center box
+  const dashedTop = TOP_BOX_HEIGHT + Math.round(CENTER_BOX_HEIGHT / 2) - Math.round(DOT_SIZE / 2);
+
   return (
     <section className="py-12">
       <div className="container mx-auto px-4">
@@ -50,15 +60,18 @@ const HistoryTimeline: React.FC = () => {
         </h2>
 
         {/* Desktop / large: horizontal 4-column timeline */}
-        <div className="hidden md:block relative">
-          {/* Center dashed line area */}
+        <div
+          className="hidden md:block relative"
+          style={{ minHeight: totalHeight }}
+          aria-hidden={false}
+        >
+          {/* Center dashed line positioned using computed px value so it never overlaps the heading */}
           <div
-            className="absolute inset-x-0"
+            className="absolute inset-x-0 pointer-events-none"
             style={{
-              top: `calc(50% - ${DOT_SIZE / 2}px)`,
-              height: `${DOT_SIZE}px`,
+              top: `${dashedTop}px`,
             }}
-            aria-hidden
+            role="presentation"
           >
             <div className="w-full border-t-2 border-dashed border-gray-300" />
           </div>
@@ -68,7 +81,7 @@ const HistoryTimeline: React.FC = () => {
               const isTop = ev.position === "top";
               const isFirst = idx === 0;
               const dotColor = isFirst ? "bg-orange-400" : "bg-blue-500";
-              const dotRing = isFirst ? "ring-orange-200" : "ring-blue-200";
+              const ringColor = isFirst ? "ring-orange-200" : "ring-blue-200";
 
               return (
                 <div key={ev.year} className="relative flex flex-col items-center">
@@ -78,28 +91,28 @@ const HistoryTimeline: React.FC = () => {
                     style={{ height: `${TOP_BOX_HEIGHT}px` }}
                   >
                     {isTop ? (
-                      <div className="max-w-xs w-full">
+                      <div className="max-w-xs w-full text-left">
                         <img
                           src={ev.image}
                           alt={`${ev.year} image`}
                           className="w-full h-28 object-cover rounded-md shadow-sm mb-3"
                         />
-                        <div className="pl-0">
+                        <div>
                           <div className="text-lg font-semibold text-gray-800">{ev.year}</div>
                           <p className="text-sm text-gray-600 mt-2 leading-snug">{ev.text}</p>
                         </div>
                       </div>
                     ) : (
-                      <div /> /* empty to reserve space */
+                      <div style={{ height: 0 }} />
                     )}
                   </div>
 
-                  {/* Center box contains dashed line (full-width) and dot; we also add small vertical connector pieces here */}
+                  {/* Center box contains the dot and small vertical connector */}
                   <div
                     className="w-full flex items-center justify-center relative"
                     style={{ height: `${CENTER_BOX_HEIGHT}px` }}
                   >
-                    {/* Short vertical connector from dot upward (for top cards) */}
+                    {/* Vertical connector: top */}
                     {isTop && (
                       <div
                         className="absolute"
@@ -109,13 +122,13 @@ const HistoryTimeline: React.FC = () => {
                           bottom: `${CENTER_BOX_HEIGHT / 2 + DOT_SIZE / 2}px`,
                           width: 2,
                           height: `${(CENTER_BOX_HEIGHT / 2) + 12}px`,
-                          background: "#E5E7EB", // gray-300
+                          background: "#E5E7EB",
                         }}
                         aria-hidden
                       />
                     )}
 
-                    {/* Short vertical connector from dot downward (for bottom cards) */}
+                    {/* Vertical connector: bottom */}
                     {!isTop && (
                       <div
                         className="absolute"
@@ -131,9 +144,9 @@ const HistoryTimeline: React.FC = () => {
                       />
                     )}
 
-                    {/* Dot positioned centered over dashed line */}
-                    <div
-                      className={`w-${DOT_SIZE} h-${DOT_SIZE} rounded-full ${dotColor} ${dotRing} ring-4 ring-white shadow-md`}
+                    {/* Dot */}
+                    <span
+                      className={`${dotColor} ${ringColor} ring-4 ring-white shadow-md rounded-full inline-block`}
                       style={{
                         width: DOT_SIZE,
                         height: DOT_SIZE,
@@ -149,8 +162,8 @@ const HistoryTimeline: React.FC = () => {
                     style={{ height: `${BOTTOM_BOX_HEIGHT}px` }}
                   >
                     {!isTop ? (
-                      <div className="max-w-xs w-full">
-                        <div className="pl-0">
+                      <div className="max-w-xs w-full text-left">
+                        <div>
                           <div className="text-lg font-semibold text-gray-800">{ev.year}</div>
                           <p className="text-sm text-gray-600 mt-2 leading-snug">{ev.text}</p>
                         </div>
@@ -161,7 +174,7 @@ const HistoryTimeline: React.FC = () => {
                         />
                       </div>
                     ) : (
-                      <div /> /* empty to reserve space */
+                      <div style={{ height: 0 }} />
                     )}
                   </div>
                 </div>
