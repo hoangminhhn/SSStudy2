@@ -6,6 +6,7 @@ import Footer from "@/components/layout/Footer";
 import BreadcrumbNav from "@/components/layout/BreadcrumbNav";
 import AboutHero from "@/components/about/AboutHero";
 import HistoryTimeline from "@/components/about/HistoryTimeline";
+import SSStudySection from "@/components/about/SSStudySection";
 
 const About: React.FC = () => {
   return (
@@ -18,6 +19,9 @@ const About: React.FC = () => {
 
         {/* New History / Timeline section */}
         <HistoryTimeline />
+
+        {/* New SSStudy section placed directly under the timeline */}
+        <SSStudySection />
       </main>
       <Footer />
     </div>
