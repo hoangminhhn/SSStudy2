@@ -53,68 +53,84 @@ const HistoryTimeline: React.FC = () => {
           Lịch sử hình thành và phát triển
         </h2>
 
-        {/* Desktop: 4-column horizontal timeline */}
+        {/* Desktop: 4-column timeline with 3 rows (top / center / bottom) */}
         <div className="hidden lg:block relative">
-          {/* center dashed line across the whole grid */}
-          <div className="absolute inset-x-0 top-1/2 h-px border-t-2 border-dashed border-slate-300 -translate-y-1/2" />
+          {/* dashed center line (behind content) */}
+          <div
+            className="absolute inset-x-0 top-1/2 -translate-y-1/2 pointer-events-none"
+            aria-hidden
+          >
+            <div className="h-px border-t-2 border-dashed border-slate-300" />
+          </div>
 
-          <div className="grid grid-cols-4 gap-8">
+          {/* Grid: 4 columns; 3 rows (top content, center dot row, bottom content).
+              Using explicit grid rows ensures all content remains in normal flow
+              and nothing overlaps other sections. */}
+          <div className="grid grid-cols-4 grid-rows-[1fr_auto_1fr] gap-8 items-start">
             {timeline.map((item, idx) => (
-              // Each cell has fixed height so we can split it into top/bottom halves.
-              <div key={idx} className="relative h-72">
-                {/* Dot positioned exactly in the vertical center of the cell */}
-                <div
-                  className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 z-20"
-                  aria-hidden
-                >
-                  <div
-                    className={`w-4 h-4 rounded-full ring-4 ring-white shadow ${
-                      item.position === "top" ? "bg-blue-600" : "bg-slate-300"
-                    }`}
-                  />
-                </div>
-
-                {/* Top half area */}
-                <div className="absolute inset-x-0 top-0 h-1/2 flex items-end justify-center p-4">
+              <React.Fragment key={idx}>
+                {/* Top cell (row 1) */}
+                <div className="flex items-end justify-center">
                   {item.position === "top" ? (
                     <div className="w-full max-w-xs">
                       <div className="overflow-hidden rounded-md shadow">
-                        <img src={item.image} alt={item.year} className="w-full h-36 object-cover" />
+                        <img
+                          src={item.image}
+                          alt={item.year}
+                          className="w-full h-36 object-cover"
+                        />
                       </div>
                       <div className="mt-4 bg-white p-4 border border-slate-100 rounded">
-                        <div className="text-lg font-semibold text-slate-900">{item.year}</div>
+                        <div className="text-lg font-semibold text-slate-900">
+                          {item.year}
+                        </div>
                         <p className="text-sm text-slate-600 mt-2">{item.description}</p>
                       </div>
                     </div>
                   ) : (
-                    // empty placeholder to keep top half visually empty for bottom items
                     <div className="w-full max-w-xs" aria-hidden />
                   )}
                 </div>
 
-                {/* Bottom half area */}
-                <div className="absolute inset-x-0 bottom-0 h-1/2 flex items-start justify-center p-4">
+                {/* Center cell (row 2) - contains dot */}
+                <div className="flex items-center justify-center">
+                  <div className="w-8 h-8 flex items-center justify-center">
+                    <div
+                      className={`w-4 h-4 rounded-full ring-4 ring-white shadow ${
+                        item.position === "top" ? "bg-blue-600" : "bg-slate-300"
+                      }`}
+                    />
+                  </div>
+                </div>
+
+                {/* Bottom cell (row 3) */}
+                <div className="flex items-start justify-center">
                   {item.position === "bottom" ? (
                     <div className="w-full max-w-xs">
                       <div className="overflow-hidden rounded-md shadow">
-                        <img src={item.image} alt={item.year} className="w-full h-36 object-cover" />
+                        <img
+                          src={item.image}
+                          alt={item.year}
+                          className="w-full h-36 object-cover"
+                        />
                       </div>
                       <div className="mt-4 bg-white p-4 border border-slate-100 rounded">
-                        <div className="text-lg font-semibold text-slate-900">{item.year}</div>
+                        <div className="text-lg font-semibold text-slate-900">
+                          {item.year}
+                        </div>
                         <p className="text-sm text-slate-600 mt-2">{item.description}</p>
                       </div>
                     </div>
                   ) : (
-                    // empty placeholder to keep bottom half visually empty for top items
                     <div className="w-full max-w-xs" aria-hidden />
                   )}
                 </div>
-              </div>
+              </React.Fragment>
             ))}
           </div>
         </div>
 
-        {/* Mobile: vertical stacked timeline (unchanged) */}
+        {/* Mobile: stacked vertical timeline (unchanged) */}
         <div className="lg:hidden">
           <div className="relative pl-8">
             {/* vertical line */}
