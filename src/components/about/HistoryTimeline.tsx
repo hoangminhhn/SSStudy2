@@ -55,10 +55,9 @@ const HistoryTimeline: React.FC = () => {
   return (
     <section className="py-12">
       <div className="container mx-auto px-4">
-        {/* Make the heading sit above the timeline (z-index) and give it extra bottom spacing */}
+        {/* Centered heading with extra bottom margin to avoid overlap */}
         <h2
-          className="relative z-30 text-2xl md:text-3xl font-bold text-center text-slate-900 mb-16 inline-block px-3 bg-gray-50"
-          style={{ marginBottom: 48 }}
+          className="relative z-30 text-2xl md:text-3xl font-bold text-center text-slate-900 mb-28 bg-gray-50 inline-block px-3 py-2 mx-auto"
         >
           Lịch sử hình thành và phát triển
         </h2>
