@@ -16,7 +16,7 @@ const timeline: TimelineItem[] = [
     title: "",
     description:
       "Anh Nguyễn Tiến Đạt bắt đầu dạy gia sư cho các bạn học sinh lớp 10, 11, 12",
-    image: "/images/20250630150800-ugrw2nuezq.png",
+    image: "/images/lich-su-hinh-thanh.png",
     position: "top",
   },
   {
@@ -24,7 +24,7 @@ const timeline: TimelineItem[] = [
     title: "",
     description:
       "Thành lập lớp toán thầy Đạt với quy mô 15 học sinh/lớp. Phục vụ 60 học sinh/năm",
-    image: "/images/20250630150800-ugrw2nuezq.png",
+    image: "/images/lich-su-hinh-thanh.png",
     position: "bottom",
   },
   {
@@ -32,7 +32,7 @@ const timeline: TimelineItem[] = [
     title: "",
     description:
       "Thành lập trung tâm luyện thi Đại học Tiến Đạt tại Tân Mai - Hoàng Mai, Hà Nội. Đào tạo các môn: Toán, Lý, Hóa, Anh",
-    image: "/images/20250630150800-ugrw2nuezq.png",
+    image: "/images/lich-su-hinh-thanh.png",
     position: "top",
   },
   {
@@ -40,7 +40,7 @@ const timeline: TimelineItem[] = [
     title: "",
     description:
       "Mở rộng quy mô trung tâm luyện thi Đại học Tiến Đạt tại Tạ Quang Bửu với quy mô 80 học sinh/lớp. Phục vụ 1800 học sinh/năm",
-    image: "/images/20250630150800-ugrw2nuezq.png",
+    image: "/images/lich-su-hinh-thanh.png",
     position: "bottom",
   },
 ];
