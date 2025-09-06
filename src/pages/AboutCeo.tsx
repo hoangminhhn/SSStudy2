@@ -6,6 +6,7 @@ import Footer from "@/components/layout/Footer";
 import BreadcrumbNav from "@/components/layout/BreadcrumbNav";
 import CeoHero from "@/components/about/CeoHero";
 import DevelopmentJourney from "@/components/about/DevelopmentJourney";
+import PressCoverage from "@/components/about/PressCoverage";
 
 const AboutCeo: React.FC = () => {
   return (
@@ -18,6 +19,9 @@ const AboutCeo: React.FC = () => {
 
         {/* Chặng đường phát triển */}
         <DevelopmentJourney />
+
+        {/* Báo chí nói về thầy */}
+        <PressCoverage />
       </main>
       <Footer />
     </div>
