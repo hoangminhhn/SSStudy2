@@ -25,9 +25,26 @@ const NavLinks: React.FC = () => {
           </Button>
         </Link>
 
-        <Link to="#" className="text-gray-700 hover:text-blue-600 font-medium">
-          Giới thiệu
-        </Link>
+        {/* Giới thiệu with dropdown submenu */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="text-gray-700 hover:text-blue-600 font-medium">
+              Giới thiệu
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="min-w-[180px]">
+            <DropdownMenuItem asChild>
+              <Link to="/about" className="block w-full">
+                Về chúng tôi
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link to="/about/ceo" className="block w-full">
+                CEO Nguyễn Tiến Đạt
+              </Link>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
         {/* Khóa học with dropdown submenu */}
         <DropdownMenu>
