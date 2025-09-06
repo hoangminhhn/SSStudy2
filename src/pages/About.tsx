@@ -5,7 +5,6 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import BreadcrumbNav from "@/components/layout/BreadcrumbNav";
 import AboutHero from "@/components/about/AboutHero";
-import HistoryTimeline from "@/components/about/HistoryTimeline";
 
 const About: React.FC = () => {
   return (
@@ -15,9 +14,6 @@ const About: React.FC = () => {
       <main className="flex-grow container mx-auto px-4 py-12 space-y-8">
         {/* Hero section (matches provided image) */}
         <AboutHero />
-
-        {/* New History / Timeline section */}
-        <HistoryTimeline />
       </main>
       <Footer />
     </div>
