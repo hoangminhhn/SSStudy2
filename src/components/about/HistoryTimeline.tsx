@@ -36,7 +36,10 @@ const events: Event[] = [
   },
 ];
 
-const dotSize = 18;
+const DOT_SIZE = 14;
+const TOP_BOX_HEIGHT = 140; // px
+const CENTER_BOX_HEIGHT = 72;
+const BOTTOM_BOX_HEIGHT = 140;
 
 const HistoryTimeline: React.FC = () => {
   return (
@@ -46,119 +49,156 @@ const HistoryTimeline: React.FC = () => {
           Lịch sử hình thành và phát triển
         </h2>
 
-        <div className="relative">
-          {/* center dashed line */}
-          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 pointer-events-none">
+        {/* Desktop / large: horizontal 4-column timeline */}
+        <div className="hidden md:block relative">
+          {/* Center dashed line area */}
+          <div
+            className="absolute inset-x-0"
+            style={{
+              top: `calc(50% - ${DOT_SIZE / 2}px)`,
+              height: `${DOT_SIZE}px`,
+            }}
+            aria-hidden
+          >
             <div className="w-full border-t-2 border-dashed border-gray-300" />
           </div>
 
-          {/* grid columns */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-6 items-start">
+          <div className="grid grid-cols-4 gap-x-8">
             {events.map((ev, idx) => {
               const isTop = ev.position === "top";
               const isFirst = idx === 0;
               const dotColor = isFirst ? "bg-orange-400" : "bg-blue-500";
-              const ringColor = isFirst ? "ring-orange-200" : "ring-blue-200";
+              const dotRing = isFirst ? "ring-orange-200" : "ring-blue-200";
 
               return (
                 <div key={ev.year} className="relative flex flex-col items-center">
-                  {/* If top: card above the line */}
-                  {isTop ? (
-                    <>
-                      <div className="flex flex-col items-center max-w-xs text-center">
+                  {/* Top box (fixed height) — if item is top, card sits here, bottom-aligned */}
+                  <div
+                    className="w-full flex items-end justify-center"
+                    style={{ height: `${TOP_BOX_HEIGHT}px` }}
+                  >
+                    {isTop ? (
+                      <div className="max-w-xs w-full">
                         <img
                           src={ev.image}
                           alt={`${ev.year} image`}
                           className="w-full h-28 object-cover rounded-md shadow-sm mb-3"
                         />
-                        <div className="text-left">
+                        <div className="pl-0">
                           <div className="text-lg font-semibold text-gray-800">{ev.year}</div>
-                          <p className="text-sm text-gray-600 mt-2">{ev.text}</p>
+                          <p className="text-sm text-gray-600 mt-2 leading-snug">{ev.text}</p>
                         </div>
                       </div>
-                    </>
-                  ) : (
-                    <>
-                      {/* empty space above so bottom cards sit lower */}
-                      <div style={{ height: 120 }} />
-                    </>
-                  )}
-
-                  {/* Dot + vertical connector */}
-                  <div
-                    className="absolute left-1/2 transform -translate-x-1/2"
-                    style={{ top: "50%" }}
-                  >
-                    {/* vertical connector to top card */}
-                    {isTop ? (
-                      <div
-                        className="mx-auto"
-                        style={{
-                          width: 2,
-                          height: 56,
-                          background: "transparent",
-                          display: "flex",
-                          alignItems: "flex-end",
-                          justifyContent: "center",
-                        }}
-                        aria-hidden
-                      >
-                        <div className="w-[2px] h-14 bg-gray-300" />
-                      </div>
                     ) : (
-                      <div
-                        className="mx-auto"
-                        style={{
-                          width: 2,
-                          height: 56,
-                          background: "transparent",
-                          display: "flex",
-                          alignItems: "flex-start",
-                          justifyContent: "center",
-                        }}
-                        aria-hidden
-                      >
-                        <div className="w-[2px] h-14 bg-gray-300" />
-                      </div>
+                      <div /> /* empty to reserve space */
                     )}
-
-                    <div
-                      className={`w-${dotSize} h-${dotSize} rounded-full ${dotColor} ${ringColor} ring-4 ring-white shadow-lg inline-block mt-[-9px]`}
-                      style={{ width: dotSize, height: dotSize }}
-                      aria-hidden
-                    />
-
-                    {/* small dashed extension to the right to visually match connected dots (optional) */}
                   </div>
 
-                  {/* If bottom: card below the line */}
-                  {!isTop && (
-                    <div className="mt-6 flex flex-col items-center max-w-xs text-center">
-                      <div className="text-left">
-                        <div className="text-lg font-semibold text-gray-800">{ev.year}</div>
-                        <p className="text-sm text-gray-600 mt-2">{ev.text}</p>
-                      </div>
-                      <img
-                        src={ev.image}
-                        alt={`${ev.year} image`}
-                        className="w-full h-28 object-cover rounded-md shadow-sm mt-3"
+                  {/* Center box contains dashed line (full-width) and dot; we also add small vertical connector pieces here */}
+                  <div
+                    className="w-full flex items-center justify-center relative"
+                    style={{ height: `${CENTER_BOX_HEIGHT}px` }}
+                  >
+                    {/* Short vertical connector from dot upward (for top cards) */}
+                    {isTop && (
+                      <div
+                        className="absolute"
+                        style={{
+                          left: "50%",
+                          transform: "translateX(-50%)",
+                          bottom: `${CENTER_BOX_HEIGHT / 2 + DOT_SIZE / 2}px`,
+                          width: 2,
+                          height: `${(CENTER_BOX_HEIGHT / 2) + 12}px`,
+                          background: "#E5E7EB", // gray-300
+                        }}
+                        aria-hidden
                       />
-                    </div>
-                  )}
+                    )}
+
+                    {/* Short vertical connector from dot downward (for bottom cards) */}
+                    {!isTop && (
+                      <div
+                        className="absolute"
+                        style={{
+                          left: "50%",
+                          transform: "translateX(-50%)",
+                          top: `${CENTER_BOX_HEIGHT / 2 + DOT_SIZE / 2}px`,
+                          width: 2,
+                          height: `${(CENTER_BOX_HEIGHT / 2) + 12}px`,
+                          background: "#E5E7EB",
+                        }}
+                        aria-hidden
+                      />
+                    )}
+
+                    {/* Dot positioned centered over dashed line */}
+                    <div
+                      className={`w-${DOT_SIZE} h-${DOT_SIZE} rounded-full ${dotColor} ${dotRing} ring-4 ring-white shadow-md`}
+                      style={{
+                        width: DOT_SIZE,
+                        height: DOT_SIZE,
+                        zIndex: 20,
+                      }}
+                      aria-hidden
+                    />
+                  </div>
+
+                  {/* Bottom box (fixed height) — if item is bottom, card sits here, top-aligned */}
+                  <div
+                    className="w-full flex items-start justify-center"
+                    style={{ height: `${BOTTOM_BOX_HEIGHT}px` }}
+                  >
+                    {!isTop ? (
+                      <div className="max-w-xs w-full">
+                        <div className="pl-0">
+                          <div className="text-lg font-semibold text-gray-800">{ev.year}</div>
+                          <p className="text-sm text-gray-600 mt-2 leading-snug">{ev.text}</p>
+                        </div>
+                        <img
+                          src={ev.image}
+                          alt={`${ev.year} image`}
+                          className="w-full h-28 object-cover rounded-md shadow-sm mt-3"
+                        />
+                      </div>
+                    ) : (
+                      <div /> /* empty to reserve space */
+                    )}
+                  </div>
                 </div>
               );
             })}
           </div>
+        </div>
 
-          {/* decorative small blue nodes between dots (to mimic image) */}
-          <div className="hidden lg:block pointer-events-none">
-            {/* Place small nodes aligned on the center line between grid columns */}
-            <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between px-6">
-              {/* There will be 3 gaps between 4 columns; render small nodes at those positions */}
-              <div className="w-0" />
-              <div className="w-0" />
-              <div className="w-0" />
-            </div>
+        {/* Mobile: stacked vertical timeline — image + text together and small dot on left */}
+        <div className="md:hidden relative">
+          <div className="space-y-8">
+            {events.map((ev, idx) => {
+              const isFirst = idx === 0;
+              const dotColor = isFirst ? "bg-orange-400" : "bg-blue-500";
+              return (
+                <div key={ev.year} className="flex items-start">
+                  <div className="w-12 flex flex-col items-center">
+                    <div className="h-6 flex items-center">
+                      <div className={`w-3 h-3 rounded-full ${dotColor} ring-2 ring-white`} />
+                    </div>
+                    {idx < events.length - 1 && <div className="flex-1 w-px bg-gray-300 mt-2" />}
+                  </div>
+
+                  <div className="ml-4 bg-white rounded-md p-3 shadow-sm flex-1">
+                    <img
+                      src={ev.image}
+                      alt={`${ev.year} image`}
+                      className="w-full h-36 object-cover rounded-md mb-3"
+                    />
+                    <div>
+                      <div className="text-lg font-semibold text-gray-800">{ev.year}</div>
+                      <p className="text-sm text-gray-600 mt-2 leading-snug">{ev.text}</p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
