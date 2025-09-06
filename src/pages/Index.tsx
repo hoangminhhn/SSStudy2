@@ -15,7 +15,6 @@ import ParentsFeedbackSection from "@/components/home/ParentsFeedbackSection";
 import NewsEventsSection from "@/components/home/NewsEventsSection";
 import PartnersSection from "@/components/home/PartnersSection";
 import PressSection from "@/components/home/PressSection";
-import SSStudySection from "@/components/home/SSStudySection";
 
 const Index = () => {
   return (
@@ -29,8 +28,6 @@ const Index = () => {
         <ChampionBoard />
         {/* UniqueValuesSection placed directly under ChampionBoard as requested */}
         <UniqueValuesSection />
-        {/* SSStudy section (new) */}
-        <SSStudySection />
         {/* TeachersSection */}
         <TeachersSection />
         {/* ReviewsSection */}
