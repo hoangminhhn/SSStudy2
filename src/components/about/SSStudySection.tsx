@@ -38,8 +38,8 @@ const SSStudySection: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {cards.map((c, idx) => (
             <div key={`${c.id}-${idx}`} className="relative rounded-lg overflow-hidden shadow-md bg-white">
-              {/* Image background */}
-              <div className="w-full h-44 sm:h-48 lg:h-40 overflow-hidden">
+              {/* Image background — increased heights for better visual */}
+              <div className="w-full h-52 sm:h-56 lg:h-60 overflow-hidden">
                 <img
                   src={c.image}
                   alt={c.title}
