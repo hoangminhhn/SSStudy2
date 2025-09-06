@@ -61,7 +61,7 @@ const HistoryTimeline: React.FC = () => {
           <div className="grid grid-cols-4 gap-8">
             {timeline.map((item, idx) => (
               <div key={idx} className="relative flex flex-col items-center">
-                {/* For top items, render card above line; for bottom, below */}
+                {/* Render image then text for BOTH top and bottom items so they stay on the same side */}
                 {item.position === "top" ? (
                   <>
                     <div className="mb-6 w-full max-w-xs">
@@ -86,13 +86,14 @@ const HistoryTimeline: React.FC = () => {
                       <div className="w-4 h-4 rounded-full bg-slate-300 ring-4 ring-white shadow" />
                     </div>
 
+                    {/* For bottom items: place image then text below the line (image first, then text) */}
                     <div className="mt-6 w-full max-w-xs">
-                      <div className="bg-white p-4 border border-slate-100 rounded">
+                      <div className="overflow-hidden rounded-md shadow">
+                        <img src={item.image} alt={item.year} className="w-full h-36 object-cover" />
+                      </div>
+                      <div className="mt-4 bg-white p-4 border border-slate-100 rounded">
                         <div className="text-lg font-semibold text-slate-900">{item.year}</div>
                         <p className="text-sm text-slate-600 mt-2">{item.description}</p>
-                      </div>
-                      <div className="mt-4 overflow-hidden rounded-md shadow">
-                        <img src={item.image} alt={item.year} className="w-full h-36 object-cover" />
                       </div>
                     </div>
                   </>
