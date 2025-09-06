@@ -55,16 +55,29 @@ const HistoryTimeline: React.FC = () => {
 
         {/* Desktop: 4-column horizontal timeline */}
         <div className="hidden lg:block relative">
-          {/* center dashed line */}
-          <div className="absolute left-0 right-0 top-1/2 h-px border-t-2 border-dashed border-slate-300 -translate-y-1/2" />
+          {/* center dashed line across the whole grid */}
+          <div className="absolute inset-x-0 top-1/2 h-px border-t-2 border-dashed border-slate-300 -translate-y-1/2" />
 
           <div className="grid grid-cols-4 gap-8">
             {timeline.map((item, idx) => (
-              <div key={idx} className="relative flex flex-col items-center">
-                {/* Render image then text for BOTH top and bottom items so they stay on the same side */}
-                {item.position === "top" ? (
-                  <>
-                    <div className="mb-6 w-full max-w-xs">
+              // Each cell has fixed height so we can split it into top/bottom halves.
+              <div key={idx} className="relative h-72">
+                {/* Dot positioned exactly in the vertical center of the cell */}
+                <div
+                  className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 z-20"
+                  aria-hidden
+                >
+                  <div
+                    className={`w-4 h-4 rounded-full ring-4 ring-white shadow ${
+                      item.position === "top" ? "bg-blue-600" : "bg-slate-300"
+                    }`}
+                  />
+                </div>
+
+                {/* Top half area */}
+                <div className="absolute inset-x-0 top-0 h-1/2 flex items-end justify-center p-4">
+                  {item.position === "top" ? (
+                    <div className="w-full max-w-xs">
                       <div className="overflow-hidden rounded-md shadow">
                         <img src={item.image} alt={item.year} className="w-full h-36 object-cover" />
                       </div>
@@ -73,21 +86,16 @@ const HistoryTimeline: React.FC = () => {
                         <p className="text-sm text-slate-600 mt-2">{item.description}</p>
                       </div>
                     </div>
+                  ) : (
+                    // empty placeholder to keep top half visually empty for bottom items
+                    <div className="w-full max-w-xs" aria-hidden />
+                  )}
+                </div>
 
-                    {/* marker */}
-                    <div className="absolute top-1/2 -translate-y-1/2">
-                      <div className="w-4 h-4 rounded-full bg-blue-600 ring-4 ring-white shadow" />
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    {/* marker */}
-                    <div className="absolute top-1/2 -translate-y-1/2">
-                      <div className="w-4 h-4 rounded-full bg-slate-300 ring-4 ring-white shadow" />
-                    </div>
-
-                    {/* For bottom items: place image then text below the line (image first, then text) */}
-                    <div className="mt-6 w-full max-w-xs">
+                {/* Bottom half area */}
+                <div className="absolute inset-x-0 bottom-0 h-1/2 flex items-start justify-center p-4">
+                  {item.position === "bottom" ? (
+                    <div className="w-full max-w-xs">
                       <div className="overflow-hidden rounded-md shadow">
                         <img src={item.image} alt={item.year} className="w-full h-36 object-cover" />
                       </div>
@@ -96,14 +104,17 @@ const HistoryTimeline: React.FC = () => {
                         <p className="text-sm text-slate-600 mt-2">{item.description}</p>
                       </div>
                     </div>
-                  </>
-                )}
+                  ) : (
+                    // empty placeholder to keep bottom half visually empty for top items
+                    <div className="w-full max-w-xs" aria-hidden />
+                  )}
+                </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Mobile: vertical stacked timeline */}
+        {/* Mobile: vertical stacked timeline (unchanged) */}
         <div className="lg:hidden">
           <div className="relative pl-8">
             {/* vertical line */}
@@ -112,7 +123,11 @@ const HistoryTimeline: React.FC = () => {
               {timeline.map((item, idx) => (
                 <div key={idx} className="relative">
                   <div className="absolute -left-2 top-2">
-                    <div className={`w-4 h-4 rounded-full ${item.position === "top" ? "bg-blue-600" : "bg-slate-300"} ring-4 ring-white`} />
+                    <div
+                      className={`w-4 h-4 rounded-full ${
+                        item.position === "top" ? "bg-blue-600" : "bg-slate-300"
+                      } ring-4 ring-white`}
+                    />
                   </div>
                   <div className="pl-6">
                     <div className="overflow-hidden rounded-md shadow mb-3">
