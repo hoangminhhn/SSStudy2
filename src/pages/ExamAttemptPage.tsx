@@ -113,15 +113,68 @@ const PASSAGE_QUESTIONS: Question[] = [
   },
 ];
 
+/**
+ * NEW: second (longer) passage group for demo purposes
+ */
+const LONG_PASSAGE_HTML = `
+  <h4>Đề bài dài (ví dụ) — Nghiên cứu trường hợp: Tác động của biến đổi khí hậu tới hệ sinh thái ven biển</h4>
+  <p>Trong vài thập kỷ gần đây, biến đổi khí hậu đã và đang gây ra nhiều ảnh hưởng nghiêm trọng tới các hệ sinh thái ven biển. Sự gia tăng mực nước biển, hiện tượng xâm nhập mặn, tần suất bão mạnh hơn và biến động nhiệt độ nước đều là những yếu tố khiến hệ sinh thái này thay đổi nhanh chóng. Các rạn san hô đang bị tẩy trắng khi nhiệt độ nước tăng cao; vùng đầm lầy bị thu hẹp do xâm nhập mặn; và nhiều loài sinh vật phải di cư hoặc đối mặt với nguy cơ tuyệt chủng.</p>
+  <p>Người ta cũng nhận thấy rằng hoạt động nuôi trồng thủy sản công nghiệp tại các vùng ven biển có thể làm tăng áp lực lên các hệ sinh thái tự nhiên: ô nhiễm dinh dưỡng từ phân và thức ăn thừa làm giảm oxy hòa tan, trong khi việc san lấp và xây dựng cơ sở hạ tầng phá vỡ môi trường sống của các loài bản địa. Các giải pháp thích ứng có thể bao gồm phục hồi đầm lầy, thiết lập khu bảo tồn biển, và áp dụng kỹ thuật nuôi trồng bền vững nhằm giảm thiểu tác động môi trường.</p>
+  <p>Yêu cầu: Đọc kỹ đoạn văn trên và trả lời các câu hỏi sau. Chú ý phân tích kỹ nguyên nhân và hậu quả trước khi chọn đáp án.</p>
+`;
+
+const LONG_PASSAGE_QUESTIONS: Question[] = [
+  {
+    id: "q-11",
+    text: "Theo đoạn văn, yếu tố nào KHÔNG được nêu là nguyên nhân trực tiếp làm thay đổi hệ sinh thái ven biển?",
+    choices: [
+      { id: "a", text: "Gia tăng mực nước biển" },
+      { id: "b", text: "Hoạt động du lịch ven biển" },
+      { id: "c", text: "Xâm nhập mặn" },
+      { id: "d", text: "Tần suất bão mạnh hơn" },
+    ],
+  },
+  {
+    id: "q-12",
+    text: "Tác động của nhiệt độ nước tăng lên các rạn san hô được miêu tả là:",
+    choices: [
+      { id: "a", text: "Làm tăng đa dạng sinh học" },
+      { id: "b", text: "Gây tẩy trắng san hô" },
+      { id: "c", text: "Tăng sản lượng thủy sản" },
+      { id: "d", text: "Không có ảnh hưởng đáng kể" },
+    ],
+  },
+  {
+    id: "q-13",
+    text: "Trong đoạn văn, 'ô nhiễm dinh dưỡng' đặc biệt do nguồn nào gây ra?",
+    choices: [
+      { id: "a", text: "Nước thải sinh hoạt" },
+      { id: "b", text: "Phân và thức ăn thừa từ nuôi trồng thủy sản" },
+      { id: "c", text: "Khí thải công nghiệp" },
+      { id: "d", text: "Dầu tràn" },
+    ],
+  },
+  {
+    id: "q-14",
+    text: "Một trong các giải pháp thích ứng đề cập tới là:",
+    choices: [
+      { id: "a", text: "Tăng cường san lấp để làm bờ biển cao hơn" },
+      { id: "b", text: "Phục hồi đầm lầy và thiết lập khu bảo tồn biển" },
+      { id: "c", text: "Khuyến khích nuôi trồng thủy sản công nghiệp mở rộng" },
+      { id: "d", text: "Xây dựng nhiều cảng hơn" },
+    ],
+  },
+];
+
 const ExamAttemptPage: React.FC = () => {
   const { examId } = useParams<{ examId: string }>();
   const navigate = useNavigate();
 
   const questions = useMemo(() => SAMPLE_QUESTIONS, []);
 
-  // include passage-group questions in the answers map
+  // include both passage-group questions in the answers map
   const allQuestionList = useMemo(
-    () => [...questions, ...PASSAGE_QUESTIONS],
+    () => [...questions, ...PASSAGE_QUESTIONS, ...LONG_PASSAGE_QUESTIONS],
     [questions]
   );
 
@@ -194,7 +247,7 @@ const ExamAttemptPage: React.FC = () => {
       <BreadcrumbNav courseTitle={`Thi - ${examId ?? "V-ACT"}`} />
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Left: all questions (single questions first, then passage group) */}
+          {/* Left: all questions (single questions first, then passage groups) */}
           <div className="lg:col-span-8 space-y-6">
             {questions.map((q, idx) => (
               <div
@@ -212,7 +265,7 @@ const ExamAttemptPage: React.FC = () => {
               </div>
             ))}
 
-            {/* Passage question group (rendered as a two-column block) */}
+            {/* Passage question group (first group) */}
             <div className="rounded-md">
               <PassageQuestionGroup
                 passageHtml={PASSAGE_HTML}
@@ -221,7 +274,24 @@ const ExamAttemptPage: React.FC = () => {
                 answers={answers}
                 onSelect={handleSelectGroup}
                 registerRef={(localIndex, el) => {
+                  // register refs into flat groupQuestionRefs (first group's questions start at 0)
                   groupQuestionRefs.current[localIndex] = el;
+                }}
+              />
+            </div>
+
+            {/* NEW: Long passage question group (second group) */}
+            <div className="rounded-md">
+              <PassageQuestionGroup
+                passageHtml={LONG_PASSAGE_HTML}
+                questions={LONG_PASSAGE_QUESTIONS}
+                startIndex={questions.length + PASSAGE_QUESTIONS.length + 1}
+                answers={answers}
+                onSelect={handleSelectGroup}
+                registerRef={(localIndex, el) => {
+                  // second group's refs are appended after the first group's length
+                  const offset = PASSAGE_QUESTIONS.length;
+                  groupQuestionRefs.current[offset + localIndex] = el;
                 }}
               />
             </div>
