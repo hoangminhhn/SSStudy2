@@ -2,7 +2,6 @@
 
 import React from "react";
 import QuestionItem, { Choice } from "./QuestionItem";
-import { Button } from "@/components/ui/button";
 
 export interface Question {
   id: string;
@@ -16,9 +15,6 @@ interface QuestionPanelProps {
   total: number;
   selectedChoiceId?: string | null;
   onSelect: (choiceId: string) => void;
-  onNext: () => void;
-  onPrev: () => void;
-  onSubmit: () => void;
 }
 
 const QuestionPanel: React.FC<QuestionPanelProps> = ({
@@ -27,9 +23,6 @@ const QuestionPanel: React.FC<QuestionPanelProps> = ({
   total,
   selectedChoiceId,
   onSelect,
-  onNext,
-  onPrev,
-  onSubmit,
 }) => {
   return (
     <div className="space-y-4">
@@ -53,36 +46,6 @@ const QuestionPanel: React.FC<QuestionPanelProps> = ({
               onChange={onSelect}
             />
           ))}
-        </div>
-      </div>
-
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            className="rounded-full px-4 py-2"
-            onClick={onPrev}
-            disabled={index === 0}
-          >
-            Trước
-          </Button>
-          <Button
-            className="rounded-full px-4 py-2"
-            onClick={onNext}
-            disabled={index === total - 1}
-          >
-            Tiếp
-          </Button>
-        </div>
-
-        <div>
-          <Button
-            className="bg-red-600 hover:bg-red-700 text-white rounded-full px-4 py-2"
-            onClick={onSubmit}
-            aria-label="Nộp bài"
-          >
-            Nộp bài
-          </Button>
         </div>
       </div>
     </div>

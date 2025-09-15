@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -66,18 +66,16 @@ const ExamAttemptPage: React.FC = () => {
   const { examId } = useParams<{ examId: string }>();
   const navigate = useNavigate();
 
-  // For demo we use SAMPLE_QUESTIONS; in real app fetch by examId
   const questions = useMemo(() => SAMPLE_QUESTIONS, []);
 
-  // answers keyed by question id (e.g., q-1 -> 'a')
   const [answers, setAnswers] = useState<Record<string, string | null>>(() =>
     Object.fromEntries(questions.map((q) => [q.id, null])),
   );
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // Timer (seconds) - demo set to 20 minutes (1200s). Adjust as needed.
-  const initialSeconds = 90 * 60; // 90 minutes
-  const [remainingSeconds, setRemainingSeconds] = useState<number>(Math.min(5 * 60, initialSeconds)); // for demo we clamp to 5min to make testing faster
+  // Timer (seconds) - demo set to 90 minutes but clamped for demo to 5 minutes max
+  const initialSeconds = 90 * 60;
+  const [remainingSeconds, setRemainingSeconds] = useState<number>(Math.min(5 * 60, initialSeconds));
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -94,27 +92,23 @@ const ExamAttemptPage: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleSelect = (choiceId: string) => {
-    const qId = questions[currentIndex].id;
+  const questionRefs = useRef<Array<HTMLDivElement | null>>([]);
+
+  const handleSelect = (choiceId: string, qIndex: number) => {
+    const qId = questions[qIndex].id;
     setAnswers((prev) => ({ ...prev, [qId]: choiceId }));
-  };
-
-  const handleNext = () => {
-    setCurrentIndex((i) => Math.min(i + 1, questions.length - 1));
-  };
-
-  const handlePrev = () => {
-    setCurrentIndex((i) => Math.max(i - 1, 0));
   };
 
   const handleJump = (index: number) => {
     setCurrentIndex(index);
+    const el = questionRefs.current[index];
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
   };
 
   const handleSubmit = () => {
-    // simple demo action: show toast and navigate to a result URL
     showSuccess("Bài thi đã được nộp. Chuyển sang màn kết quả...");
-    // navigate to result page (you can implement result page later)
     setTimeout(() => {
       navigate(`/thi-thu/${examId}/result`);
     }, 900);
@@ -126,19 +120,26 @@ const ExamAttemptPage: React.FC = () => {
       <BreadcrumbNav courseTitle={`Thi - ${examId ?? "V-ACT"}`} />
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <div className="lg:col-span-8">
-            <QuestionPanel
-              question={questions[currentIndex]}
-              index={currentIndex}
-              total={questions.length}
-              selectedChoiceId={answers[questions[currentIndex].id] ?? null}
-              onSelect={handleSelect}
-              onNext={handleNext}
-              onPrev={handlePrev}
-              onSubmit={handleSubmit}
-            />
+          {/* Left: all questions */}
+          <div className="lg:col-span-8 space-y-6">
+            {questions.map((q, idx) => (
+              <div
+                key={q.id}
+                ref={(el) => (questionRefs.current[idx] = el)}
+                className={`rounded-md ${currentIndex === idx ? "ring-2 ring-blue-200" : ""}`}
+              >
+                <QuestionPanel
+                  question={q}
+                  index={idx}
+                  total={questions.length}
+                  selectedChoiceId={answers[q.id] ?? null}
+                  onSelect={(choiceId: string) => handleSelect(choiceId, idx)}
+                />
+              </div>
+            ))}
           </div>
 
+          {/* Right: sidebar */}
           <div className="lg:col-span-4">
             <SidebarPanel
               total={questions.length}
