@@ -3,7 +3,6 @@
 import React from "react";
 import ExamItem from "./ExamItem";
 import { Switch } from "@/components/ui/switch";
-import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -43,7 +42,6 @@ const useIsSmall = () => {
 
 const ExamList: React.FC = () => {
   const [onlyDone, setOnlyDone] = React.useState(false);
-  const [query, setQuery] = React.useState("");
   const [page, setPage] = React.useState(1);
 
   const isSmall = useIsSmall();
@@ -52,10 +50,9 @@ const ExamList: React.FC = () => {
   const filtered = React.useMemo(() => {
     return SAMPLE_EXAMS.filter((e) => {
       if (onlyDone && e.status !== "done") return false;
-      if (query && !e.title.toLowerCase().includes(query.toLowerCase())) return false;
       return true;
     });
-  }, [onlyDone, query]);
+  }, [onlyDone]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / perPage));
   React.useEffect(() => {
@@ -66,15 +63,25 @@ const ExamList: React.FC = () => {
 
   return (
     <div className="space-y-4">
-      {/* Controls: stack on mobile */}
+      {/* Controls: breadcrumb on the left, switch on the right (stack on mobile) */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-3 w-full sm:w-auto">
-          <div className="text-sm text-gray-600">Đã thi</div>
-          <Switch checked={onlyDone} onCheckedChange={setOnlyDone} />
+        <div className="w-full sm:w-auto">
+          <nav className="text-sm text-gray-600">
+            <ol className="flex items-center gap-2">
+              <li>
+                <a href="/" className="text-blue-600 hover:underline">Trang chủ</a>
+              </li>
+              <li className="text-gray-400">/</li>
+              <li className="text-gray-700">Thi thử</li>
+            </ol>
+          </nav>
         </div>
 
-        <div className="w-full sm:w-80">
-          <Input placeholder="Tìm đề..." value={query} onChange={(e) => setQuery(e.target.value)} />
+        <div className="w-full sm:w-auto flex items-center justify-end">
+          <div className="flex items-center gap-3">
+            <div className="text-sm text-gray-600">Đã thi</div>
+            <Switch checked={onlyDone} onCheckedChange={setOnlyDone} />
+          </div>
         </div>
       </div>
 
