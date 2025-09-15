@@ -7,6 +7,7 @@ import Footer from "@/components/layout/Footer";
 import BreadcrumbNav from "@/components/layout/BreadcrumbNav";
 import QuestionPanel, { Question } from "@/components/exam/attempt/QuestionPanel";
 import SidebarPanel from "@/components/exam/attempt/SidebarPanel";
+import PassageQuestionGroup from "@/components/exam/attempt/PassageQuestionGroup";
 import { showSuccess } from "@/utils/toast";
 
 const SAMPLE_QUESTIONS: Question[] = [
@@ -62,14 +63,50 @@ const SAMPLE_QUESTIONS: Question[] = [
   },
 ];
 
+// Define a passage group with two questions (like in the provided screenshot)
+const PASSAGE_HTML = `
+  <p><strong>Đọc đoạn trích dưới đây và trả lời các câu hỏi 7 đến 8.</strong></p>
+  <p>“Định nghĩa về mỹ học như 'khoa học của cái đẹp' xuất phát từ Baumgarten. Ông sử dụng thuật ngữ 'khoa học đẹp' (belles sciences) để chỉ những nghiên cứu về 'tư duy đẹp' (belles pensées) đã gợi cảm hứng cho con người chiêm ngắm mỹ thuật. 'Mỹ học' và 'cái đẹp' có mối liên hệ bền bỉ cho đến ngày nay, đến độ các thuật ngữ này đôi khi được cho là đồng nghĩa. Cho rằng đối tượng có tính thẩm mỹ có nghĩa là ta thừa nhận ở nó có một thuộc tính khiến cho nó trở nên thú vị khi nhìn[...]”</p>
+  <p style="font-size:12px;color:#6b7280"> (Trích đoạn ví dụ — Marc Jimenez, 50 câu hỏi mỹ học đương đại)</p>
+`;
+
+const PASSAGE_QUESTIONS: Question[] = [
+  {
+    id: "q-7",
+    text: "Phong cách ngôn ngữ của đoạn trích là gì?",
+    choices: [
+      { id: "a", text: "Báo chí" },
+      { id: "b", text: "Khoa học" },
+      { id: "c", text: "Nghệ thuật" },
+      { id: "d", text: "Chính luận" },
+    ],
+  },
+  {
+    id: "q-8",
+    text: "Theo lập luận của tác giả, mối quan hệ giữa 'mỹ học' và 'cái đẹp' theo lịch sử cụ thể thế nào?",
+    choices: [
+      { id: "a", text: "Có mối quan hệ hoàn toàn đối lập" },
+      { id: "b", text: "Có mối liên hệ bất biến với nhau về nội dung" },
+      { id: "c", text: "Có tính kế thừa với nhau trong quá trình tồn tại" },
+      { id: "d", text: "Có liên hệ với nhau nhưng mang tính nhất thời" },
+    ],
+  },
+];
+
 const ExamAttemptPage: React.FC = () => {
   const { examId } = useParams<{ examId: string }>();
   const navigate = useNavigate();
 
   const questions = useMemo(() => SAMPLE_QUESTIONS, []);
 
+  // include passage-group questions in the answers map
+  const allQuestionList = useMemo(
+    () => [...questions, ...PASSAGE_QUESTIONS],
+    [questions]
+  );
+
   const [answers, setAnswers] = useState<Record<string, string | null>>(() =>
-    Object.fromEntries(questions.map((q) => [q.id, null])),
+    Object.fromEntries(allQuestionList.map((q) => [q.id, null]))
   );
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -92,18 +129,35 @@ const ExamAttemptPage: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Refs for single questions and for passage-group questions (keeps order for jumping)
   const questionRefs = useRef<Array<HTMLDivElement | null>>([]);
+  const groupQuestionRefs = useRef<Array<HTMLDivElement | null>>([]);
 
-  const handleSelect = (choiceId: string, qIndex: number) => {
+  // helper: update answer for single / group
+  const handleSelectSingle = (choiceId: string, qIndex: number) => {
     const qId = questions[qIndex].id;
     setAnswers((prev) => ({ ...prev, [qId]: choiceId }));
   };
 
+  const handleSelectGroup = (questionId: string, choiceId: string) => {
+    setAnswers((prev) => ({ ...prev, [questionId]: choiceId }));
+  };
+
+  const totalQuestions = allQuestionList.length;
+
   const handleJump = (index: number) => {
     setCurrentIndex(index);
-    const el = questionRefs.current[index];
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "center" });
+    if (index < questions.length) {
+      const el = questionRefs.current[index];
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    } else {
+      const groupIndex = index - questions.length;
+      const el = groupQuestionRefs.current[groupIndex];
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
     }
   };
 
@@ -120,7 +174,7 @@ const ExamAttemptPage: React.FC = () => {
       <BreadcrumbNav courseTitle={`Thi - ${examId ?? "V-ACT"}`} />
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Left: all questions */}
+          {/* Left: all questions (single questions first, then passage group) */}
           <div className="lg:col-span-8 space-y-6">
             {questions.map((q, idx) => (
               <div
@@ -133,16 +187,30 @@ const ExamAttemptPage: React.FC = () => {
                   index={idx}
                   total={questions.length}
                   selectedChoiceId={answers[q.id] ?? null}
-                  onSelect={(choiceId: string) => handleSelect(choiceId, idx)}
+                  onSelect={(choiceId: string) => handleSelectSingle(choiceId, idx)}
                 />
               </div>
             ))}
+
+            {/* Passage question group (rendered as a two-column block) */}
+            <div className="rounded-md">
+              <PassageQuestionGroup
+                passageHtml={PASSAGE_HTML}
+                questions={PASSAGE_QUESTIONS}
+                startIndex={questions.length + 1} // numbering continues after single questions
+                answers={answers}
+                onSelect={handleSelectGroup}
+                registerRef={(localIndex, el) => {
+                  groupQuestionRefs.current[localIndex] = el;
+                }}
+              />
+            </div>
           </div>
 
           {/* Right: sidebar */}
           <div className="lg:col-span-4">
             <SidebarPanel
-              total={questions.length}
+              total={totalQuestions}
               currentIndex={currentIndex}
               answers={answers}
               onJump={handleJump}
