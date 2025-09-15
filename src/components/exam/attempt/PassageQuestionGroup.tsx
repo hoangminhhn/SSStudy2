@@ -30,16 +30,20 @@ const PassageQuestionGroup: React.FC<PassageQuestionGroupProps> = ({
   return (
     <div className="bg-white border border-gray-100 rounded-lg shadow-sm overflow-hidden">
       <div className="grid grid-cols-1 md:grid-cols-2">
-        {/* Left: Passage */}
-        <div className="p-6 border-r border-gray-100 max-h-[420px] overflow-y-auto bg-gray-50">
+        {/* Left: Passage - sticky on desktop so right column can continue scrolling */}
+        <div
+          className="p-6 border-b md:border-b-0 md:border-r border-gray-100 bg-gray-50
+                     md:sticky md:top-20 md:self-start md:max-h-[60vh] md:overflow-auto"
+          aria-hidden={false}
+        >
           <div
             className="prose prose-sm text-sm text-gray-800"
             dangerouslySetInnerHTML={{ __html: passageHtml }}
           />
         </div>
 
-        {/* Right: Questions */}
-        <div className="p-6 space-y-4 bg-white">
+        {/* Right: Questions - scrollable independently on desktop */}
+        <div className="p-6 space-y-4 bg-white md:max-h-[60vh] md:overflow-auto">
           {questions.map((q, idx) => {
             const globalNumber = startIndex + idx;
             return (
@@ -47,12 +51,16 @@ const PassageQuestionGroup: React.FC<PassageQuestionGroupProps> = ({
                 key={q.id}
                 ref={(el) => registerRef?.(idx, el)}
                 className="bg-white rounded-md p-3 border border-gray-100 shadow-sm"
+                role="group"
+                aria-labelledby={`q-${q.id}-label`}
               >
                 <div className="flex items-start justify-between mb-2">
                   <div>
-                    <div className="text-sm font-semibold text-gray-800">Câu {globalNumber} <span className="text-xs font-normal text-gray-500">(Trắc nghiệm)</span></div>
-                    <div className="text-sm text-gray-600 mt-1">{/* optional short instruction area */}</div>
+                    <div id={`q-${q.id}-label`} className="text-sm font-semibold text-gray-800">
+                      Câu {globalNumber} <span className="text-xs font-normal text-gray-500">(Trắc nghiệm)</span>
+                    </div>
                   </div>
+                  <div className="text-xs text-gray-500">Mã: {q.id}</div>
                 </div>
 
                 <div className="text-sm text-gray-800 mb-3" dangerouslySetInnerHTML={{ __html: q.text }} />

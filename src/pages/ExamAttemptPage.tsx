@@ -63,9 +63,9 @@ const SAMPLE_QUESTIONS: Question[] = [
   },
 ];
 
-// Define a passage group with two questions (like in the provided screenshot)
+// Define a passage group with four questions (expanded from 2 to 4)
 const PASSAGE_HTML = `
-  <p><strong>Đọc đoạn trích dưới đây và trả lời các câu hỏi 7 đến 8.</strong></p>
+  <p><strong>Đọc đoạn trích dưới đây và trả lời các câu hỏi tiếp theo.</strong></p>
   <p>“Định nghĩa về mỹ học như 'khoa học của cái đẹp' xuất phát từ Baumgarten. Ông sử dụng thuật ngữ 'khoa học đẹp' (belles sciences) để chỉ những nghiên cứu về 'tư duy đẹp' (belles pensées) đã gợi cảm hứng cho con người chiêm ngắm mỹ thuật. 'Mỹ học' và 'cái đẹp' có mối liên hệ bền bỉ cho đến ngày nay, đến độ các thuật ngữ này đôi khi được cho là đồng nghĩa. Cho rằng đối tượng có tính thẩm mỹ có nghĩa là ta thừa nhận ở nó có một thuộc tính khiến cho nó trở nên thú vị khi nhìn[...]”</p>
   <p style="font-size:12px;color:#6b7280"> (Trích đoạn ví dụ — Marc Jimenez, 50 câu hỏi mỹ học đương đại)</p>
 `;
@@ -83,12 +83,32 @@ const PASSAGE_QUESTIONS: Question[] = [
   },
   {
     id: "q-8",
-    text: "Theo lập luận của tác giả, mối quan hệ giữa 'mỹ học' và 'cái đẹp' theo lịch sử cụ thể thế nào?",
+    text: "Theo đoạn trích, từ 'mỹ học' bắt nguồn từ ý niệm nào?",
     choices: [
-      { id: "a", text: "Có mối quan hệ hoàn toàn đối lập" },
-      { id: "b", text: "Có mối liên hệ bất biến với nhau về nội dung" },
-      { id: "c", text: "Có tính kế thừa với nhau trong quá trình tồn tại" },
-      { id: "d", text: "Có liên hệ với nhau nhưng mang tính nhất thời" },
+      { id: "a", text: "Khoa học của cảm xúc" },
+      { id: "b", text: "Khoa học của cái đẹp" },
+      { id: "c", text: "Nghệ thuật ứng dụng" },
+      { id: "d", text: "Triết học thực tiễn" },
+    ],
+  },
+  {
+    id: "q-9",
+    text: "Tác giả cho rằng những thuật ngữ 'mỹ học' và 'cái đẹp' hiện nay thường được xem:",
+    choices: [
+      { id: "a", text: "Hoàn toàn đồng nghĩa" },
+      { id: "b", text: "Không liên quan" },
+      { id: "c", text: "Có mối liên hệ bền bỉ" },
+      { id: "d", text: "Là hai khái niệm trái ngược" },
+    ],
+  },
+  {
+    id: "q-10",
+    text: "Việc thừa nhận một đối tượng có tính thẩm mỹ tức là gì theo đoạn trích?",
+    choices: [
+      { id: "a", text: "Thừa nhận tính khoa học của nó" },
+      { id: "b", text: "Thừa nhận nó có thuộc tính khiến người ta thấy thú vị khi nhìn" },
+      { id: "c", text: "Thừa nhận nó là vật quý hiếm" },
+      { id: "d", text: "Thừa nhận tính lịch sử của nó" },
     ],
   },
 ];
