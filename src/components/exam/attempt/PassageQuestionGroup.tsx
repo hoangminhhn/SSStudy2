@@ -40,76 +40,81 @@ const PassageQuestionGroup: React.FC<PassageQuestionGroupProps> = ({
   const [headerHeight, setHeaderHeight] = useState<number>(0);
 
   useEffect(() => {
-    // Update the sticky top offset and maxHeight based on the header height.
-    const updateSticky = () => {
+    const updateHeader = () => {
       const headerEl = document.querySelector("header");
       const h = headerEl ? headerEl.getBoundingClientRect().height : 0;
       setHeaderHeight(h);
       if (leftRef.current) {
-        // Set top so the sticky element sits just below the header
         leftRef.current.style.top = `${h}px`;
-        // Limit max-height to viewport minus header so internal scroll appears if content is longer
         leftRef.current.style.maxHeight = `calc(100vh - ${h}px)`;
       }
     };
 
-    updateSticky();
-    window.addEventListener("resize", updateSticky);
-    window.addEventListener("load", updateSticky);
+    updateHeader();
+    window.addEventListener("resize", updateHeader);
+    window.addEventListener("load", updateHeader);
 
-    // Track mobile/desktop breakpoint changes
     const onResize = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener("resize", onResize);
 
     return () => {
-      window.removeEventListener("resize", updateSticky);
-      window.removeEventListener("load", updateSticky);
+      window.removeEventListener("resize", updateHeader);
+      window.removeEventListener("load", updateHeader);
       window.removeEventListener("resize", onResize);
     };
   }, []);
 
   useEffect(() => {
-    // Only observe visibility for mobile; on desktop we keep original behavior.
+    // If not mobile, always show the passage (no floating button)
     if (!isMobile) {
       setIsPassageVisible(true);
       return;
     }
 
-    const observedEl = leftRef.current;
-    if (!observedEl) return;
+    let rafId: number | null = null;
+    const EARLY_TRIGGER = 160; // larger px value => button appears earlier as passage starts to scroll up
 
-    // EARLY_TRIGGER controls how early the button appears (larger = appears sooner when passage scrolls up)
-    const EARLY_TRIGGER = 16; // px
+    const checkVisibility = () => {
+      if (!leftRef.current) return;
 
-    const obs = new IntersectionObserver(
-      (entries) => {
-        const entry = entries[0];
-        if (!entry) return;
+      const rect = leftRef.current.getBoundingClientRect();
+      const top = rect.top;
+      const height = rect.height;
+      const viewportH = window.innerHeight;
 
-        // Use element's bounding rect to detect when its top crosses the header threshold.
-        const top = entry.boundingClientRect.top;
+      // compute approximate intersection height
+      const visibleTop = Math.max(rect.top, 0);
+      const visibleBottom = Math.min(rect.bottom, viewportH);
+      const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+      const intersectRatio = height > 0 ? visibleHeight / height : 0;
 
-        // intersection check (kept but with a low threshold so it doesn't delay)
-        const isIntersecting = entry.isIntersecting && entry.intersectionRatio > 0.01;
+      // If the top of the passage is still sufficiently below the header (more than EARLY_TRIGGER),
+      // consider it visible. Otherwise, if it has crossed above header - show button (i.e., not visible).
+      // Also treat it as visible if intersection ratio is meaningful (> 5%).
+      const stillBelowHeader = top > headerHeight + EARLY_TRIGGER;
+      const isVisible = stillBelowHeader || intersectRatio > 0.05;
 
-        // If the top of the passage is above (<=) the header + EARLY_TRIGGER, we consider it "scrolled past"
-        // so we should show the button (i.e., set isPassageVisible = false).
-        const passedHeader = top <= headerHeight + EARLY_TRIGGER;
+      setIsPassageVisible(isVisible);
+    };
 
-        // Combine both checks: if it's still intersecting substantially OR hasn't passed the header threshold, treat as visible.
-        setIsPassageVisible(isIntersecting || !passedHeader);
-      },
-      {
-        root: null,
-        // small thresholds to react quickly
-        threshold: [0, 0.01, 0.05, 0.25, 0.5, 1],
-      },
-    );
+    const onScroll = () => {
+      if (rafId !== null) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        checkVisibility();
+        rafId = null;
+      });
+    };
 
-    obs.observe(observedEl);
+    // initial check
+    checkVisibility();
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
 
     return () => {
-      obs.disconnect();
+      if (rafId !== null) cancelAnimationFrame(rafId);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
     };
   }, [isMobile, headerHeight]);
 
