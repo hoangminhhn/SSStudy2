@@ -114,7 +114,7 @@ const PASSAGE_QUESTIONS: Question[] = [
 ];
 
 /**
- * NEW: second (longer) passage group for demo purposes
+ * NEW: second (longer) passage group for demo purposes (already present)
  */
 const LONG_PASSAGE_HTML = `
   <h4>Đề bài dài (ví dụ) — Nghiên cứu trường hợp: Tác động của biến đổi khí hậu tới hệ sinh thái ven biển</h4>
@@ -166,15 +166,85 @@ const LONG_PASSAGE_QUESTIONS: Question[] = [
   },
 ];
 
+/**
+ * NEW: third, EXTRA LONG passage group (much longer for demo)
+ * - This is the new, very long passage requested by the user.
+ */
+const EXTRA_LONG_PASSAGE_HTML = `
+  <h3>Đề bài rất dài (ví dụ demo) — Bài đọc phân tích: Hậu quả xã hội và kinh tế của tự động hóa trong ngành sản xuất</h3>
+
+  <p>Trong hơn một thế kỷ qua, tiến trình tự động hóa đã thay đổi căn bản cách mà các ngành sản xuất vận hành. Từ việc sử dụng các máy móc đơn giản hỗ trợ sức lao động đến việc triển khai hệ thống robot tự động và trí tuệ nhân tạo, năng suất lao động tăng nhanh đã đem lại cả lợi ích lẫn thách thức cho xã hội. Bài viết này sẽ phân tích sâu về các khía cạnh kinh tế, việc làm, và chính sách xã hội liên quan tới tự động hóa.</p>
+
+  <p><strong>1. Tác động kinh tế</strong></p>
+  <p>Tự động hóa làm giảm chi phí sản xuất trên mỗi đơn vị, tăng năng suất và có thể làm giảm giá thành cho người tiêu dùng. Tuy nhiên, việc áp dụng rộng rãi các công nghệ thay thế lao động con người có thể dẫn tới phân hóa thu nhập: lợi nhuận tập trung về phía chủ sở hữu vốn và doanh nghiệp có năng lực đầu tư, trong khi người lao động ít kỹ năng dễ bị mất việc làm hoặc phải chấp nhận công việc có thu nhập thấp hơn.</p>
+
+  <p><strong>2. Thay đổi cơ cấu việc làm</strong></p>
+  <p>Một số ngành nghề truyền thống suy giảm, trong khi các công việc liên quan tới thiết kế, vận hành và bảo trì hệ thống tự động gia tăng. Điều này đòi hỏi quá trình tái đào tạo (reskilling) và nâng cao kỹ năng liên tục để người lao động bắt kịp nhu cầu thị trường. Các chính sách giáo dục cần ưu tiên kỹ năng số, tư duy phân tích và khả năng sáng tạo.</p>
+
+  <p><strong>3. Hệ quả xã hội</strong></p>
+  <p>Sự mất việc tạm thời có thể khiến nhiều gia đình rơi vào khó khăn tài chính, làm tăng áp lực lên các quỹ an sinh xã hội. Để giảm thiểu rủi ro, một số quốc gia đã thử nghiệm các chương trình hỗ trợ thu nhập cơ bản, trợ cấp đào tạo, hoặc chính sách thuế nhằm phân phối lại lợi ích từ tự động hóa.</p>
+
+  <p><strong>4. Các ví dụ thực tiễn</strong></p>
+  <p>Ở một số khu vực, như vùng công nghiệp cao tự động hóa, người lao động đã chuyển sang các vị trí có giá trị gia tăng cao hơn: kiểm soát chất lượng bằng cảm biến thông minh, phân tích dữ liệu sản xuất và tối ưu hóa chuỗi cung ứng. Ngược lại, ở các vùng ít tiếp cận công nghệ, tự động hóa nhanh có thể dẫn tới thất nghiệp và rối loạn xã hội nếu không có chính sách kịp thời.</p>
+
+  <p><strong>5. Hướng đi chính sách</strong></p>
+  <p>Để đạt được chuyển đổi kinh tế bền vững, các nhà hoạch định chính sách nên cân nhắc kết hợp: (i) đầu tư vào giáo dục và đào tạo kỹ năng mới; (ii) triển khai các chương trình bảo hiểm việc làm tạm thời; (iii) khuyến khích doanh nghiệp chia sẻ lợi ích thông qua các chương trình lợi tức cho nhân viên; và (iv) thử nghiệm các cơ chế phân phối thu nhập như thuế thu nhập doanh nghiệp tiến bộ.</p>
+
+  <p><em>Ghi chú:</em> Đoạn bài đọc trên nhằm mục đích mô phỏng một bài đọc dài trong đề thi để kiểm tra hiển thị, cuộn và trải nghiệm người dùng khi đọc đề dài trong popup trên thiết bị di động.</p>
+`;
+
+const EXTRA_LONG_PASSAGE_QUESTIONS: Question[] = [
+  {
+    id: "q-21",
+    text: "Theo bài đọc, một trong những hệ quả kinh tế chính của tự động hóa là:",
+    choices: [
+      { id: "a", text: "Tăng giá thành sản phẩm" },
+      { id: "b", text: "Giảm chi phí sản xuất trên mỗi đơn vị" },
+      { id: "c", text: "Giảm lợi nhuận doanh nghiệp" },
+      { id: "d", text: "Giảm nhu cầu tiêu dùng" },
+    ],
+  },
+  {
+    id: "q-22",
+    text: "Bài đọc nhấn mạnh rằng người lao động cần ưu tiên phát triển kỹ năng nào để thích ứng?",
+    choices: [
+      { id: "a", text: "Kỹ năng số và tư duy phân tích" },
+      { id: "b", text: "Kỹ năng ngoại ngữ cổ điển" },
+      { id: "c", text: "Kỹ năng thủ công truyền thống" },
+      { id: "d", text: "Không cần kỹ năng mới" },
+    ],
+  },
+  {
+    id: "q-23",
+    text: "Một chính sách được đề xuất để giảm thiểu tác động xã hội tiêu cực là:",
+    choices: [
+      { id: "a", text: "Giảm đầu tư giáo dục" },
+      { id: "b", text: "Thử nghiệm chương trình hỗ trợ thu nhập cơ bản" },
+      { id: "c", text: "Khuyến khích sa thải hàng loạt" },
+      { id: "d", text: "Tăng giờ làm cho người lao động" },
+    ],
+  },
+  {
+    id: "q-24",
+    text: "Bài đọc đưa ra ví dụ rằng tự động hóa có thể dẫn đến:",
+    choices: [
+      { id: "a", text: "Tăng thất nghiệp ở mọi khu vực mà không có ngoại lệ" },
+      { id: "b", text: "Thay đổi cơ cấu việc làm: giảm một số nghề, tăng nghề kỹ thuật số" },
+      { id: "c", text: "Giảm năng suất lao động" },
+      { id: "d", text: "Loại bỏ nhu cầu đào tạo" },
+    ],
+  },
+];
+
 const ExamAttemptPage: React.FC = () => {
   const { examId } = useParams<{ examId: string }>();
   const navigate = useNavigate();
 
   const questions = useMemo(() => SAMPLE_QUESTIONS, []);
 
-  // include both passage-group questions in the answers map
+  // include all passage-group questions in the answers map (now includes the new extra-long group)
   const allQuestionList = useMemo(
-    () => [...questions, ...PASSAGE_QUESTIONS, ...LONG_PASSAGE_QUESTIONS],
+    () => [...questions, ...PASSAGE_QUESTIONS, ...LONG_PASSAGE_QUESTIONS, ...EXTRA_LONG_PASSAGE_QUESTIONS],
     [questions]
   );
 
@@ -280,7 +350,7 @@ const ExamAttemptPage: React.FC = () => {
               />
             </div>
 
-            {/* NEW: Long passage question group (second group) */}
+            {/* Long passage question group (second group) */}
             <div className="rounded-md">
               <PassageQuestionGroup
                 passageHtml={LONG_PASSAGE_HTML}
@@ -291,6 +361,22 @@ const ExamAttemptPage: React.FC = () => {
                 registerRef={(localIndex, el) => {
                   // second group's refs are appended after the first group's length
                   const offset = PASSAGE_QUESTIONS.length;
+                  groupQuestionRefs.current[offset + localIndex] = el;
+                }}
+              />
+            </div>
+
+            {/* EXTRA: Very long passage group (third group) */}
+            <div className="rounded-md">
+              <PassageQuestionGroup
+                passageHtml={EXTRA_LONG_PASSAGE_HTML}
+                questions={EXTRA_LONG_PASSAGE_QUESTIONS}
+                startIndex={questions.length + PASSAGE_QUESTIONS.length + LONG_PASSAGE_QUESTIONS.length + 1}
+                answers={answers}
+                onSelect={handleSelectGroup}
+                registerRef={(localIndex, el) => {
+                  // third group's refs appended after the first two groups
+                  const offset = PASSAGE_QUESTIONS.length + LONG_PASSAGE_QUESTIONS.length;
                   groupQuestionRefs.current[offset + localIndex] = el;
                 }}
               />
