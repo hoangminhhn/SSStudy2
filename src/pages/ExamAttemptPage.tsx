@@ -70,13 +70,13 @@ const ExamAttemptPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Decide full-exam view:
+  // Decide default full-exam view:
   // - if query contains full=1
   // - or if examId includes "v-act" (case-insensitive)
   const queryParams = new URLSearchParams(location.search);
   const isFullQuery = queryParams.get("full") === "1";
   const isVActExam = !!examId && examId.toLowerCase().includes("v-act");
-  const isFullView = isFullQuery || isVActExam;
+  const defaultFullView = isFullQuery || isVActExam;
 
   // For demo we use SAMPLE_QUESTIONS; in real app fetch by examId
   const questions = useMemo(() => SAMPLE_QUESTIONS, []);
@@ -86,6 +86,16 @@ const ExamAttemptPage: React.FC = () => {
     Object.fromEntries(questions.map((q) => [q.id, null])),
   );
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  // fullMode controls whether we render the stacked full view (all questions)
+  const [fullMode, setFullMode] = useState<boolean>(defaultFullView);
+
+  // keep fullMode in sync when route/query/examId changes
+  useEffect(() => {
+    setFullMode(defaultFullView);
+    // reset scroll position to top when toggling mode on route change
+    window.scrollTo(0, 0);
+  }, [location.pathname, location.search, defaultFullView]);
 
   // Timer (seconds) - demo set to 20 minutes (1200s). Adjust as needed.
   const initialSeconds = 90 * 60; // 90 minutes
@@ -122,7 +132,7 @@ const ExamAttemptPage: React.FC = () => {
 
   const handleJump = (index: number) => {
     setCurrentIndex(index);
-    if (isFullView) {
+    if (fullMode) {
       // scroll the question into view when full view is active
       const el = document.getElementById(questions[index].id);
       if (el) {
@@ -145,11 +155,36 @@ const ExamAttemptPage: React.FC = () => {
       <Header />
       <BreadcrumbNav courseTitle={`Thi - ${examId ?? "V-ACT"}`} />
       <main className="flex-grow container mx-auto px-4 py-8">
+        <div className="mb-4 flex items-center justify-between gap-4">
+          <div>
+            <h2 className="text-lg font-semibold text-gray-800">Bài thi: {examId ?? "V-ACT (demo)"}</h2>
+          </div>
+
+          {/* Toggle full mode control */}
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-gray-600">Chế độ:</span>
+            <Button
+              variant={fullMode ? "outline" : "ghost"}
+              className={`rounded-full px-3 py-1 text-sm ${fullMode ? "bg-gray-100" : ""}`}
+              onClick={() => setFullMode(true)}
+            >
+              Hiển thị tất cả câu hỏi
+            </Button>
+            <Button
+              variant={!fullMode ? "outline" : "ghost"}
+              className={`rounded-full px-3 py-1 text-sm ${!fullMode ? "bg-gray-100" : ""}`}
+              onClick={() => setFullMode(false)}
+            >
+              Chế độ từng câu
+            </Button>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Left: questions area */}
-          <div className={isFullView ? "lg:col-span-9" : "lg:col-span-8"}>
-            {isFullView ? (
-              // FULL EXAM VIEW: render all questions stacked
+          <div className={fullMode ? "lg:col-span-9" : "lg:col-span-8"}>
+            {fullMode ? (
+              // FULL EXAM VIEW: render all questions stacked and NO Prev/Next buttons
               <div className="space-y-6">
                 {questions.map((q, qi) => (
                   <Card key={q.id} id={q.id} className="p-4">
@@ -181,7 +216,7 @@ const ExamAttemptPage: React.FC = () => {
                 </div>
               </div>
             ) : (
-              // PAGINATED / SINGLE QUESTION VIEW (existing behavior)
+              // PAGINATED / SINGLE QUESTION VIEW (existing behavior with Prev/Next)
               <QuestionPanel
                 question={questions[currentIndex]}
                 index={currentIndex}
@@ -196,7 +231,7 @@ const ExamAttemptPage: React.FC = () => {
           </div>
 
           {/* Right: sidebar */}
-          <div className={isFullView ? "lg:col-span-3" : "lg:col-span-4"}>
+          <div className={fullMode ? "lg:col-span-3" : "lg:col-span-4"}>
             <SidebarPanel
               total={questions.length}
               currentIndex={currentIndex}
