@@ -1,7 +1,10 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import QuestionItem, { Choice } from "./QuestionItem";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { X } from "lucide-react";
 
 export interface Question {
   id: string;
@@ -28,6 +31,12 @@ const PassageQuestionGroup: React.FC<PassageQuestionGroupProps> = ({
   registerRef,
 }) => {
   const leftRef = useRef<HTMLDivElement | null>(null);
+  const [isPassageVisible, setIsPassageVisible] = useState<boolean>(true);
+  const [isMobile, setIsMobile] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return window.innerWidth < 768;
+  });
+  const [openDialog, setOpenDialog] = useState(false);
 
   useEffect(() => {
     // Update the sticky top offset and maxHeight based on the header height.
@@ -44,17 +53,53 @@ const PassageQuestionGroup: React.FC<PassageQuestionGroupProps> = ({
 
     updateSticky();
     window.addEventListener("resize", updateSticky);
-    // also update when fonts/images load
     window.addEventListener("load", updateSticky);
+
+    // Track mobile/desktop breakpoint changes
+    const onResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", onResize);
 
     return () => {
       window.removeEventListener("resize", updateSticky);
       window.removeEventListener("load", updateSticky);
+      window.removeEventListener("resize", onResize);
     };
   }, []);
 
+  useEffect(() => {
+    // Only observe visibility for mobile; on desktop we keep original behavior.
+    if (!isMobile) {
+      setIsPassageVisible(true);
+      return;
+    }
+
+    const observedEl = leftRef.current;
+    if (!observedEl) return;
+
+    const obs = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        // Consider visible if at least 5% of the element is visible
+        setIsPassageVisible(entry.isIntersecting && entry.intersectionRatio > 0.05);
+      },
+      {
+        root: null,
+        threshold: [0, 0.05, 0.25, 0.5, 1],
+      },
+    );
+
+    obs.observe(observedEl);
+
+    return () => {
+      obs.disconnect();
+    };
+  }, [isMobile]);
+
+  const numStart = startIndex;
+  const numEnd = startIndex + questions.length - 1;
+  const buttonLabel = `Đề bài câu ${numStart} - ${numEnd}`;
+
   return (
-    // NOTE: removed overflow-hidden here because it prevents position: sticky from working.
     <div className="bg-white border border-gray-100 rounded-lg shadow-sm">
       <div className="grid grid-cols-1 md:grid-cols-2 md:items-start">
         {/* Left: Passage - sticky on desktop and sized to viewport height.
@@ -110,6 +155,41 @@ const PassageQuestionGroup: React.FC<PassageQuestionGroupProps> = ({
           })}
         </div>
       </div>
+
+      {/* Mobile: show fixed button when passage is not visible */}
+      {isMobile && !isPassageVisible && (
+        <>
+          <button
+            onClick={() => setOpenDialog(true)}
+            aria-expanded={openDialog}
+            aria-controls="passage-dialog"
+            className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-blue-600 text-white px-4 py-3 rounded-full shadow-lg flex items-center gap-3"
+          >
+            <span className="text-sm font-medium">{buttonLabel}</span>
+          </button>
+
+          <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+            <DialogContent id="passage-dialog" className="max-w-lg w-[95vw] p-4">
+              <div className="flex items-start justify-between mb-4">
+                <h3 className="text-lg font-semibold">Đề bài (câu {numStart} - {numEnd})</h3>
+                <Button variant="ghost" size="icon" onClick={() => setOpenDialog(false)} aria-label="Đóng đề">
+                  <X />
+                </Button>
+              </div>
+
+              <div className="max-h-[70vh] overflow-auto prose prose-sm text-sm text-gray-800">
+                <div dangerouslySetInnerHTML={{ __html: passageHtml }} />
+              </div>
+
+              <div className="mt-4 flex justify-end">
+                <Button onClick={() => setOpenDialog(false)} className="rounded-full">
+                  Đóng
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </>
+      )}
     </div>
   );
 };
