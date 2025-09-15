@@ -78,20 +78,31 @@ const PassageQuestionGroup: React.FC<PassageQuestionGroupProps> = ({
     const observedEl = leftRef.current;
     if (!observedEl) return;
 
+    // EARLY_TRIGGER controls how early the button appears (larger = appears sooner when passage scrolls up)
+    const EARLY_TRIGGER = 16; // px
+
     const obs = new IntersectionObserver(
       (entries) => {
         const entry = entries[0];
-        // Consider visible if at least 5% of the element is visible
-        const visible = entry.isIntersecting && entry.intersectionRatio > 0.05;
-        // If the top of the passage is above the header, we consider it "scrolled past" and will show the button
+        if (!entry) return;
+
+        // Use element's bounding rect to detect when its top crosses the header threshold.
         const top = entry.boundingClientRect.top;
-        // show passage as visible if it's intersecting OR its top is below header (meaning it's below header)
-        const effectivelyVisible = visible || top > headerHeight + 4;
-        setIsPassageVisible(effectivelyVisible);
+
+        // intersection check (kept but with a low threshold so it doesn't delay)
+        const isIntersecting = entry.isIntersecting && entry.intersectionRatio > 0.01;
+
+        // If the top of the passage is above (<=) the header + EARLY_TRIGGER, we consider it "scrolled past"
+        // so we should show the button (i.e., set isPassageVisible = false).
+        const passedHeader = top <= headerHeight + EARLY_TRIGGER;
+
+        // Combine both checks: if it's still intersecting substantially OR hasn't passed the header threshold, treat as visible.
+        setIsPassageVisible(isIntersecting || !passedHeader);
       },
       {
         root: null,
-        threshold: [0, 0.05, 0.25, 0.5, 1],
+        // small thresholds to react quickly
+        threshold: [0, 0.01, 0.05, 0.25, 0.5, 1],
       },
     );
 
