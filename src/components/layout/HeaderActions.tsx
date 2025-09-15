@@ -4,6 +4,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Bell, ShoppingCart } from "lucide-react";
 import UserMenu from "./UserMenu";
+import { Link } from "react-router-dom";
 
 const HeaderActions: React.FC = () => {
   return (
@@ -18,9 +19,11 @@ const HeaderActions: React.FC = () => {
         <span className="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-500 ring-2 ring-white" />
       </Button>
 
-      <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-4 py-2 hidden sm:block">
-        Thi thử
-      </Button>
+      <Link to="/thi-thu">
+        <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-4 py-2 hidden sm:inline-flex">
+          Thi thử
+        </Button>
+      </Link>
 
       <Button className="bg-orange-500 hover:bg-orange-600 text-white rounded-full px-4 py-2 hidden sm:block">
         Mã kích hoạt

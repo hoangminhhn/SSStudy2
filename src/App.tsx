@@ -14,6 +14,7 @@ import CourseDetailPageV3 from "./pages/CourseDetailPageV3"; // Import the new V
 import NotFound from "./pages/NotFound";
 import About from "./pages/About"; // About page
 import AboutCeo from "./pages/AboutCeo"; // About CEO page
+import PracticePage from "@/pages/PracticePage"; // NEW: Practice (Thi thử) page
 
 const queryClient = new QueryClient();
 
@@ -36,6 +37,9 @@ const App = () => (
           {/* New About routes */}
           <Route path="/about" element={<About />} />
           <Route path="/about/ceo" element={<AboutCeo />} />
+
+          {/* NEW: Practice (Thi thử) page */}
+          <Route path="/thi-thu" element={<PracticePage />} />
 
           <Route path="*" element={<NotFound />} />
         </Routes>
