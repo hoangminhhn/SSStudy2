@@ -37,17 +37,19 @@ const PassageQuestionGroup: React.FC<PassageQuestionGroupProps> = ({
     return window.innerWidth < 768;
   });
   const [openDialog, setOpenDialog] = useState(false);
+  const [headerHeight, setHeaderHeight] = useState<number>(0);
 
   useEffect(() => {
     // Update the sticky top offset and maxHeight based on the header height.
     const updateSticky = () => {
       const headerEl = document.querySelector("header");
-      const headerHeight = headerEl ? headerEl.getBoundingClientRect().height : 0;
+      const h = headerEl ? headerEl.getBoundingClientRect().height : 0;
+      setHeaderHeight(h);
       if (leftRef.current) {
         // Set top so the sticky element sits just below the header
-        leftRef.current.style.top = `${headerHeight}px`;
+        leftRef.current.style.top = `${h}px`;
         // Limit max-height to viewport minus header so internal scroll appears if content is longer
-        leftRef.current.style.maxHeight = `calc(100vh - ${headerHeight}px)`;
+        leftRef.current.style.maxHeight = `calc(100vh - ${h}px)`;
       }
     };
 
@@ -80,7 +82,12 @@ const PassageQuestionGroup: React.FC<PassageQuestionGroupProps> = ({
       (entries) => {
         const entry = entries[0];
         // Consider visible if at least 5% of the element is visible
-        setIsPassageVisible(entry.isIntersecting && entry.intersectionRatio > 0.05);
+        const visible = entry.isIntersecting && entry.intersectionRatio > 0.05;
+        // If the top of the passage is above the header, we consider it "scrolled past" and will show the button
+        const top = entry.boundingClientRect.top;
+        // show passage as visible if it's intersecting OR its top is below header (meaning it's below header)
+        const effectivelyVisible = visible || top > headerHeight + 4;
+        setIsPassageVisible(effectivelyVisible);
       },
       {
         root: null,
@@ -93,7 +100,7 @@ const PassageQuestionGroup: React.FC<PassageQuestionGroupProps> = ({
     return () => {
       obs.disconnect();
     };
-  }, [isMobile]);
+  }, [isMobile, headerHeight]);
 
   const numStart = startIndex;
   const numEnd = startIndex + questions.length - 1;
@@ -156,14 +163,16 @@ const PassageQuestionGroup: React.FC<PassageQuestionGroupProps> = ({
         </div>
       </div>
 
-      {/* Mobile: show fixed button when passage is not visible */}
+      {/* Mobile: show fixed button near top (under header) when passage has been scrolled above header */}
       {isMobile && !isPassageVisible && (
         <>
           <button
             onClick={() => setOpenDialog(true)}
             aria-expanded={openDialog}
             aria-controls="passage-dialog"
-            className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-blue-600 text-white px-4 py-3 rounded-full shadow-lg flex items-center gap-3"
+            // fixed under header; headerHeight measured dynamically
+            style={{ top: headerHeight + 8 }}
+            className="fixed left-1/2 -translate-x-1/2 z-50 bg-blue-600 text-white px-4 py-3 rounded-full shadow-lg flex items-center gap-3"
           >
             <span className="text-sm font-medium">{buttonLabel}</span>
           </button>
