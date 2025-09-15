@@ -54,8 +54,9 @@ const PassageQuestionGroup: React.FC<PassageQuestionGroupProps> = ({
   }, []);
 
   return (
-    <div className="bg-white border border-gray-100 rounded-lg shadow-sm overflow-hidden">
-      <div className="grid grid-cols-1 md:grid-cols-2">
+    // NOTE: removed overflow-hidden here because it prevents position: sticky from working.
+    <div className="bg-white border border-gray-100 rounded-lg shadow-sm">
+      <div className="grid grid-cols-1 md:grid-cols-2 md:items-start">
         {/* Left: Passage - sticky on desktop and sized to viewport height.
             If passage content is longer than viewport, it will scroll internally. */}
         <div
