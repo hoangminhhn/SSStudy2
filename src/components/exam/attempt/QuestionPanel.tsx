@@ -41,6 +41,7 @@ const QuestionPanel: React.FC<QuestionPanelProps> = ({
       </div>
 
       <div className="bg-white border border-gray-100 rounded-lg p-4 shadow-sm">
+        <div className="text-sm font-medium text-gray-700 mb-2">Câu {index + 1}:</div>
         <div className="text-base text-gray-800 mb-4" dangerouslySetInnerHTML={{ __html: question.text }} />
         <div className="grid gap-3">
           {question.choices.map((c, i) => (
