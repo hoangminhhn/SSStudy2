@@ -30,11 +30,11 @@ const PassageQuestionGroup: React.FC<PassageQuestionGroupProps> = ({
   return (
     <div className="bg-white border border-gray-100 rounded-lg shadow-sm overflow-hidden">
       <div className="grid grid-cols-1 md:grid-cols-2">
-        {/* Left: Passage - sticky on desktop and sized to viewport height.
-            If passage content is longer than viewport, it will scroll internally. */}
+        {/* Left: Passage - sticky on desktop (below header). 
+            It occupies viewport height and will scroll internally if the passage is longer than viewport. */}
         <div
           className="p-6 border-b md:border-b-0 md:border-r border-gray-100 bg-gray-50
-                     md:sticky md:top-0 md:h-screen md:overflow-auto"
+                     md:sticky md:top-16 md:max-h-[calc(100vh-4rem)] md:overflow-auto"
           aria-hidden={false}
         >
           <div
@@ -43,7 +43,7 @@ const PassageQuestionGroup: React.FC<PassageQuestionGroupProps> = ({
           />
         </div>
 
-        {/* Right: Questions - follow page scroll (no independent scroll on desktop) */}
+        {/* Right: Questions - follow page scroll (no independent scrolling by default) */}
         <div className="p-6 space-y-4 bg-white">
           {questions.map((q, idx) => {
             const globalNumber = startIndex + idx;
