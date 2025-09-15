@@ -15,6 +15,7 @@ import NotFound from "./pages/NotFound";
 import About from "./pages/About"; // About page
 import AboutCeo from "./pages/AboutCeo"; // About CEO page
 import PracticePage from "@/pages/PracticePage"; // NEW: Practice (Thi thử) page
+import ExamStartPage from "@/pages/ExamStartPage"; // Exam start screen
 
 const queryClient = new QueryClient();
 
@@ -40,6 +41,8 @@ const App = () => (
 
           {/* NEW: Practice (Thi thử) page */}
           <Route path="/thi-thu" element={<PracticePage />} />
+          {/* Exam start screen */}
+          <Route path="/thi-thu/:examId/start" element={<ExamStartPage />} />
 
           <Route path="*" element={<NotFound />} />
         </Routes>

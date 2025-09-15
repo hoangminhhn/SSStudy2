@@ -6,6 +6,7 @@ import { Switch } from "@/components/ui/switch";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface Exam {
   id: string;
@@ -43,6 +44,7 @@ const useIsSmall = () => {
 const ExamList: React.FC = () => {
   const [onlyDone, setOnlyDone] = React.useState(false);
   const [page, setPage] = React.useState(1);
+  const navigate = useNavigate();
 
   const isSmall = useIsSmall();
   const perPage = isSmall ? 4 : 5;
@@ -96,7 +98,7 @@ const ExamList: React.FC = () => {
               title={e.title}
               tag={e.tag}
               status={e.status}
-              onStart={() => alert(`Bắt đầu: ${e.id}`)}
+              onStart={() => navigate(`/thi-thu/${e.id}/start`)}
               onRetry={() => alert(`Làm lại: ${e.id}`)}
               onViewResult={() => alert(`Xem kết quả: ${e.id}`)}
             />
