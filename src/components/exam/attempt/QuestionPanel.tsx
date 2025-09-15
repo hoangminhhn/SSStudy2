@@ -26,10 +26,7 @@ const QuestionPanel: React.FC<QuestionPanelProps> = ({
 }) => {
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h3 className="text-lg font-semibold text-gray-800 mt-1">Nội dung câu hỏi</h3>
-        </div>
+      <div className="flex justify-end">
         <div className="text-sm text-gray-500">Mã: {question.id}</div>
       </div>
 
