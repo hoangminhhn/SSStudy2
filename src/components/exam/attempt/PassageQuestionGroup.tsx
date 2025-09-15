@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import QuestionItem, { Choice } from "./QuestionItem";
 
 export interface Question {
@@ -27,14 +27,41 @@ const PassageQuestionGroup: React.FC<PassageQuestionGroupProps> = ({
   onSelect,
   registerRef,
 }) => {
+  const leftRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    // Update the sticky top offset and maxHeight based on the header height.
+    const updateSticky = () => {
+      const headerEl = document.querySelector("header");
+      const headerHeight = headerEl ? headerEl.getBoundingClientRect().height : 0;
+      if (leftRef.current) {
+        // Set top so the sticky element sits just below the header
+        leftRef.current.style.top = `${headerHeight}px`;
+        // Limit max-height to viewport minus header so internal scroll appears if content is longer
+        leftRef.current.style.maxHeight = `calc(100vh - ${headerHeight}px)`;
+      }
+    };
+
+    updateSticky();
+    window.addEventListener("resize", updateSticky);
+    // also update when fonts/images load
+    window.addEventListener("load", updateSticky);
+
+    return () => {
+      window.removeEventListener("resize", updateSticky);
+      window.removeEventListener("load", updateSticky);
+    };
+  }, []);
+
   return (
     <div className="bg-white border border-gray-100 rounded-lg shadow-sm overflow-hidden">
       <div className="grid grid-cols-1 md:grid-cols-2">
-        {/* Left: Passage - sticky on desktop (below header). 
-            It occupies viewport height and will scroll internally if the passage is longer than viewport. */}
+        {/* Left: Passage - sticky on desktop and sized to viewport height.
+            If passage content is longer than viewport, it will scroll internally. */}
         <div
-          className="p-6 border-b md:border-b-0 md:border-r border-gray-100 bg-gray-50
-                     md:sticky md:top-16 md:max-h-[calc(100vh-4rem)] md:overflow-auto"
+          ref={leftRef}
+          // keep sticky behavior via CSS class; top/maxHeight are set dynamically in effect above
+          className="p-6 border-b md:border-b-0 md:border-r border-gray-100 bg-gray-50 md:sticky md:overflow-auto"
           aria-hidden={false}
         >
           <div
