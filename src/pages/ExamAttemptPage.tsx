@@ -1,13 +1,16 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import BreadcrumbNav from "@/components/layout/BreadcrumbNav";
 import QuestionPanel, { Question } from "@/components/exam/attempt/QuestionPanel";
 import SidebarPanel from "@/components/exam/attempt/SidebarPanel";
 import { showSuccess } from "@/utils/toast";
+import QuestionItem from "@/components/exam/attempt/QuestionItem";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 const SAMPLE_QUESTIONS: Question[] = [
   {
@@ -65,6 +68,15 @@ const SAMPLE_QUESTIONS: Question[] = [
 const ExamAttemptPage: React.FC = () => {
   const { examId } = useParams<{ examId: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Decide full-exam view:
+  // - if query contains full=1
+  // - or if examId includes "v-act" (case-insensitive)
+  const queryParams = new URLSearchParams(location.search);
+  const isFullQuery = queryParams.get("full") === "1";
+  const isVActExam = !!examId && examId.toLowerCase().includes("v-act");
+  const isFullView = isFullQuery || isVActExam;
 
   // For demo we use SAMPLE_QUESTIONS; in real app fetch by examId
   const questions = useMemo(() => SAMPLE_QUESTIONS, []);
@@ -77,7 +89,7 @@ const ExamAttemptPage: React.FC = () => {
 
   // Timer (seconds) - demo set to 20 minutes (1200s). Adjust as needed.
   const initialSeconds = 90 * 60; // 90 minutes
-  const [remainingSeconds, setRemainingSeconds] = useState<number>(Math.min(5 * 60, initialSeconds)); // for demo we clamp to 5min to make testing faster
+  const [remainingSeconds, setRemainingSeconds] = useState<number>(Math.min(5 * 60, initialSeconds)); // demo clamp to 5m
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -94,9 +106,10 @@ const ExamAttemptPage: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleSelect = (choiceId: string) => {
-    const qId = questions[currentIndex].id;
-    setAnswers((prev) => ({ ...prev, [qId]: choiceId }));
+  const handleSelect = (choiceId: string, qId?: string) => {
+    // In single-question view, qId is undefined and currentIndex identifies the question.
+    const targetId = qId ?? questions[currentIndex].id;
+    setAnswers((prev) => ({ ...prev, [targetId]: choiceId }));
   };
 
   const handleNext = () => {
@@ -109,6 +122,13 @@ const ExamAttemptPage: React.FC = () => {
 
   const handleJump = (index: number) => {
     setCurrentIndex(index);
+    if (isFullView) {
+      // scroll the question into view when full view is active
+      const el = document.getElementById(questions[index].id);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }
   };
 
   const handleSubmit = () => {
@@ -126,20 +146,57 @@ const ExamAttemptPage: React.FC = () => {
       <BreadcrumbNav courseTitle={`Thi - ${examId ?? "V-ACT"}`} />
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <div className="lg:col-span-8">
-            <QuestionPanel
-              question={questions[currentIndex]}
-              index={currentIndex}
-              total={questions.length}
-              selectedChoiceId={answers[questions[currentIndex].id] ?? null}
-              onSelect={handleSelect}
-              onNext={handleNext}
-              onPrev={handlePrev}
-              onSubmit={handleSubmit}
-            />
+          {/* Left: questions area */}
+          <div className={isFullView ? "lg:col-span-9" : "lg:col-span-8"}>
+            {isFullView ? (
+              // FULL EXAM VIEW: render all questions stacked
+              <div className="space-y-6">
+                {questions.map((q, qi) => (
+                  <Card key={q.id} id={q.id} className="p-4">
+                    <div className="mb-2 flex items-center justify-between">
+                      <div className="text-sm font-medium text-gray-700">Câu {qi + 1}:</div>
+                      <div className="text-xs text-gray-500">Mã: {q.id}</div>
+                    </div>
+
+                    <div className="prose max-w-none text-gray-800 mb-4" dangerouslySetInnerHTML={{ __html: q.text }} />
+
+                    <div className="grid gap-3">
+                      {q.choices.map((c, i) => (
+                        <QuestionItem
+                          key={c.id}
+                          choice={c}
+                          index={i}
+                          checked={answers[q.id] === c.id}
+                          onChange={(choiceId) => handleSelect(choiceId, q.id)}
+                        />
+                      ))}
+                    </div>
+                  </Card>
+                ))}
+
+                <div className="flex justify-end">
+                  <Button className="bg-red-600 hover:bg-red-700 text-white rounded-full px-6 py-3" onClick={handleSubmit}>
+                    Nộp bài & Xem kết quả
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              // PAGINATED / SINGLE QUESTION VIEW (existing behavior)
+              <QuestionPanel
+                question={questions[currentIndex]}
+                index={currentIndex}
+                total={questions.length}
+                selectedChoiceId={answers[questions[currentIndex].id] ?? null}
+                onSelect={(choiceId) => handleSelect(choiceId)}
+                onNext={handleNext}
+                onPrev={handlePrev}
+                onSubmit={handleSubmit}
+              />
+            )}
           </div>
 
-          <div className="lg:col-span-4">
+          {/* Right: sidebar */}
+          <div className={isFullView ? "lg:col-span-3" : "lg:col-span-4"}>
             <SidebarPanel
               total={questions.length}
               currentIndex={currentIndex}
