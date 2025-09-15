@@ -35,7 +35,6 @@ const QuestionPanel: React.FC<QuestionPanelProps> = ({
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <div className="text-sm text-gray-500">Câu {index + 1} / {total}</div>
           <h3 className="text-lg font-semibold text-gray-800 mt-1">Nội dung câu hỏi</h3>
         </div>
         <div className="text-sm text-gray-500">Mã: {question.id}</div>
