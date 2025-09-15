@@ -3,7 +3,6 @@
 import React from "react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-import BreadcrumbNav from "@/components/layout/BreadcrumbNav";
 import ExamFilters from "@/components/exam/ExamFilters";
 import ExamList from "@/components/exam/ExamList";
 import { Button } from "@/components/ui/button";
@@ -13,7 +12,6 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
   SheetClose,
 } from "@/components/ui/sheet";
 
@@ -23,7 +21,7 @@ const PracticePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
-      <BreadcrumbNav courseTitle="Thi thử" />
+
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="mb-6 flex items-center justify-between gap-4">
           <div>
@@ -74,7 +72,6 @@ const PracticePage: React.FC = () => {
               <Button variant="outline" onClick={() => setIsFilterOpen(false)}>
                 Đóng
               </Button>
-              {/* The SheetClose/trigger is redundant here; keep explicit close */}
               <SheetClose asChild>
                 <Button onClick={() => setIsFilterOpen(false)}>Áp dụng</Button>
               </SheetClose>
