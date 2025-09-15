@@ -31,7 +31,9 @@ const PassageQuestionGroup: React.FC<PassageQuestionGroupProps> = ({
   registerRef,
 }) => {
   const leftRef = useRef<HTMLDivElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const [isPassageVisible, setIsPassageVisible] = useState<boolean>(true);
+  const [showFloatingButton, setShowFloatingButton] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(() => {
     if (typeof window === "undefined") return false;
     return window.innerWidth < 768;
@@ -68,33 +70,46 @@ const PassageQuestionGroup: React.FC<PassageQuestionGroupProps> = ({
     // If not mobile, always show the passage (no floating button)
     if (!isMobile) {
       setIsPassageVisible(true);
+      setShowFloatingButton(false);
       return;
     }
 
     let rafId: number | null = null;
-    const EARLY_TRIGGER = 160; // larger px value => button appears earlier as passage starts to scroll up
+
+    // Larger px value => button appears earlier as passage starts to scroll up
+    const EARLY_TRIGGER = 160;
+    // Small margin to consider the whole group "passed"
+    const GROUP_PASSED_MARGIN = 8;
 
     const checkVisibility = () => {
-      if (!leftRef.current) return;
+      if (!leftRef.current || !containerRef.current) return;
 
-      const rect = leftRef.current.getBoundingClientRect();
-      const top = rect.top;
-      const height = rect.height;
+      const passageRect = leftRef.current.getBoundingClientRect();
+      const containerRect = containerRef.current.getBoundingClientRect();
+
+      const top = passageRect.top;
+      const height = passageRect.height;
       const viewportH = window.innerHeight;
 
-      // compute approximate intersection height
-      const visibleTop = Math.max(rect.top, 0);
-      const visibleBottom = Math.min(rect.bottom, viewportH);
+      // compute approximate intersection height for passage
+      const visibleTop = Math.max(passageRect.top, 0);
+      const visibleBottom = Math.min(passageRect.bottom, viewportH);
       const visibleHeight = Math.max(0, visibleBottom - visibleTop);
       const intersectRatio = height > 0 ? visibleHeight / height : 0;
 
       // If the top of the passage is still sufficiently below the header (more than EARLY_TRIGGER),
-      // consider it visible. Otherwise, if it has crossed above header - show button (i.e., not visible).
-      // Also treat it as visible if intersection ratio is meaningful (> 5%).
+      // consider it visible. Otherwise, if it has crossed above header - consider it not visible.
       const stillBelowHeader = top > headerHeight + EARLY_TRIGGER;
-      const isVisible = stillBelowHeader || intersectRatio > 0.05;
+      const passageVisible = stillBelowHeader || intersectRatio > 0.05;
 
-      setIsPassageVisible(isVisible);
+      // Determine if the entire group (passage + questions) has been scrolled past the header
+      const groupPassed = containerRect.bottom <= headerHeight + GROUP_PASSED_MARGIN;
+
+      // Show floating button when passage is not visible (i.e., scrolled up) AND the group is NOT completely passed.
+      const shouldShowButton = !passageVisible && !groupPassed;
+
+      setIsPassageVisible(passageVisible);
+      setShowFloatingButton(shouldShowButton);
     };
 
     const onScroll = () => {
@@ -123,7 +138,7 @@ const PassageQuestionGroup: React.FC<PassageQuestionGroupProps> = ({
   const buttonLabel = `Đề bài câu ${numStart} - ${numEnd}`;
 
   return (
-    <div className="bg-white border border-gray-100 rounded-lg shadow-sm">
+    <div ref={containerRef} className="bg-white border border-gray-100 rounded-lg shadow-sm">
       <div className="grid grid-cols-1 md:grid-cols-2 md:items-start">
         {/* Left: Passage - sticky on desktop and sized to viewport height.
             If passage content is longer than viewport, it will scroll internally. */}
@@ -180,7 +195,7 @@ const PassageQuestionGroup: React.FC<PassageQuestionGroupProps> = ({
       </div>
 
       {/* Mobile: show fixed button near top (under header) when passage has been scrolled above header */}
-      {isMobile && !isPassageVisible && (
+      {isMobile && showFloatingButton && (
         <>
           <button
             onClick={() => setOpenDialog(true)}
