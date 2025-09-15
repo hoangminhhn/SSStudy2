@@ -23,12 +23,8 @@ const PracticePage: React.FC = () => {
       <Header />
 
       <main className="flex-grow container mx-auto px-4 py-8">
-        <div className="mb-6 flex items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-800">Danh sách đề thi</h1>
-            <p className="text-sm text-gray-500">Chọn đề phù hợp để luyện tập, làm quen cấu trúc đề và kiểm tra năng lực.</p>
-          </div>
-
+        {/* Top controls row: title removed as requested; keep filter button on the right for mobile */}
+        <div className="mb-6 flex items-center justify-end gap-4">
           {/* Mobile: Filter button opens Sheet */}
           <div className="md:hidden">
             <Button
