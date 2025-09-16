@@ -402,19 +402,8 @@ const ExamAttemptPage: React.FC = () => {
         aria-label="Exam actions"
       >
         <div className="max-w-7xl mx-auto flex items-center gap-3">
+          {/* Place the toggle at the left edge (user requested position) */}
           <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              onClick={() => navigate(-1)}
-              className="flex items-center gap-2 text-gray-700"
-              aria-label="Đóng"
-            >
-              <ChevronLeft />
-              Đóng
-            </Button>
-          </div>
-
-          <div className="flex-1 flex items-center justify-center">
             <Button
               variant="outline"
               onClick={() => setIsSidebarVisible((s) => !s)}
@@ -436,15 +425,8 @@ const ExamAttemptPage: React.FC = () => {
             </Button>
           </div>
 
-          <div className="flex items-center gap-2">
-            <Button
-              className="bg-red-600 hover:bg-red-700 text-white rounded-full px-4 py-2"
-              onClick={handleSubmit}
-              aria-label="Nộp bài"
-            >
-              Nộp bài
-            </Button>
-          </div>
+          {/* center spacer to keep button anchored left */}
+          <div className="flex-1" />
         </div>
       </nav>
     </div>
