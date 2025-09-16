@@ -116,7 +116,7 @@ const ExamFilters: React.FC = () => {
         {/* Tốt nghiệp (separate) */}
         <Collapsible title="Tốt nghiệp" defaultOpen={true} wrapperClassName="">
           <div>
-            {/* Đề thi thử box (search removed as requested) */}
+            {/* Đề thi thử box (search removed) */}
             <div className="mb-4">
               <h3 className="text-sm font-semibold text-gray-800 mb-2">Đề thi thử</h3>
               <div className="p-3 bg-gray-50 rounded-md border border-gray-100">
@@ -197,13 +197,6 @@ const ExamFilters: React.FC = () => {
                 </div>
               </div>
             )}
-
-            {/* Clear filters */}
-            <div className="mt-2">
-              <button type="button" onClick={clearFilters} className="text-sm text-blue-600 hover:underline">
-                Xoá bộ lọc
-              </button>
-            </div>
           </div>
         </Collapsible>
 
@@ -241,6 +234,18 @@ const ExamFilters: React.FC = () => {
             ) : (
               <div className="text-sm text-gray-500">Không có thành phố nào được chọn</div>
             )}
+          </div>
+
+          {/* Clear filters button moved here: independent, at the very bottom */}
+          <div className="mt-4">
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="w-full text-sm bg-red-50 text-red-600 border border-red-100 rounded-md px-3 py-2 hover:bg-red-100 transition"
+              aria-label="Xoá toàn bộ bộ lọc"
+            >
+              Xoá bộ lọc
+            </button>
           </div>
         </div>
       </div>
