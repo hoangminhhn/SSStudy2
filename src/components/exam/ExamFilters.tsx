@@ -89,6 +89,26 @@ const ExamFilters: React.FC = () => {
   const toggleMap = (mapSetter: React.Dispatch<React.SetStateAction<Record<string, boolean>>>, id: string) =>
     mapSetter((prev) => ({ ...prev, [id]: !prev[id] }));
 
+  // New handler: toggle a Bài kiểm tra pill. If turning on, clear all Đề thi thử selections
+  const handleToggleBaiKiemTra = (id: string) => {
+    setBaiKiemTraActive((prev) => {
+      const next = { ...prev, [id]: !prev[id] };
+      // If the result is turning this id on (true), then clear deThiThuActive
+      if (next[id]) {
+        setDeThiThuActive({});
+      }
+      return next;
+    });
+  };
+
+  // Keep a handler for deThi so logic is explicit (no automatic clearing of baiKiemTra)
+  const handleToggleDeThiThu = (id: string) => {
+    setDeThiThuActive((prev) => {
+      const next = { ...prev, [id]: !prev[id] };
+      return next;
+    });
+  };
+
   const clearFilters = () => {
     setSearch("");
     setSelected({});
@@ -134,9 +154,11 @@ const ExamFilters: React.FC = () => {
                 {samplePills.deThiThu.map((p) => (
                   <button
                     key={p.id}
-                    onClick={() => toggleMap(setDeThiThuActive, p.id)}
+                    onClick={() => handleToggleDeThiThu(p.id)}
                     className={`text-xs px-2 py-1 rounded-md border ${
-                      deThiThuActive[p.id] ? "bg-white text-gray-900 border-blue-600 shadow-sm" : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"
+                      deThiThuActive[p.id]
+                        ? "bg-white text-gray-900 border-blue-600 shadow-sm"
+                        : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"
                     }`}
                   >
                     {p.label}
@@ -154,9 +176,11 @@ const ExamFilters: React.FC = () => {
                 {samplePills.baiKiemTra.map((p) => (
                   <button
                     key={p.id}
-                    onClick={() => toggleMap(setBaiKiemTraActive, p.id)}
+                    onClick={() => handleToggleBaiKiemTra(p.id)}
                     className={`text-xs px-2 py-1 rounded-md border ${
-                      baiKiemTraActive[p.id] ? "bg-blue-600 text-white border-blue-600" : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"
+                      baiKiemTraActive[p.id]
+                        ? "bg-blue-600 text-white border-blue-600"
+                        : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"
                     }`}
                   >
                     {p.label}
