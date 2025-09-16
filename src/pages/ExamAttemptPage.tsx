@@ -3,12 +3,13 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
 import BreadcrumbNav from "@/components/layout/BreadcrumbNav";
 import QuestionPanel, { Question } from "@/components/exam/attempt/QuestionPanel";
 import SidebarPanel from "@/components/exam/attempt/SidebarPanel";
 import PassageQuestionGroup from "@/components/exam/attempt/PassageQuestionGroup";
 import { showSuccess } from "@/utils/toast";
+import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const SAMPLE_QUESTIONS: Question[] = [
   {
@@ -63,7 +64,7 @@ const SAMPLE_QUESTIONS: Question[] = [
   },
 ];
 
-// Define a passage group with four questions (expanded from 2 to 4)
+// Passage groups (three groups including the very long one)
 const PASSAGE_HTML = `
   <p><strong>Đọc đoạn trích dưới đây và trả lời các câu hỏi tiếp theo.</strong></p>
   <p>“Định nghĩa về mỹ học như 'khoa học của cái đẹp' xuất phát từ Baumgarten. Ông sử dụng thuật ngữ 'khoa học đẹp' (belles sciences) để chỉ những nghiên cứu về 'tư duy đẹp' (belles pensées) đã gợi cảm hứng cho con người chiêm ngắm mỹ thuật. 'Mỹ học' và 'cái đẹp' có mối liên hệ bền bỉ cho đến ngày nay, đến độ các thuật ngữ này đôi khi được cho là đồng nghĩa. Cho rằng đối tượng có tính thẩm mỹ có nghĩa là ta thừa nhận ở nó có một thuộc tính khiến cho nó trở nên thú vị khi nhìn[...]”</p>
@@ -113,9 +114,6 @@ const PASSAGE_QUESTIONS: Question[] = [
   },
 ];
 
-/**
- * NEW: second (longer) passage group for demo purposes (already present)
- */
 const LONG_PASSAGE_HTML = `
   <h4>Đề bài dài (ví dụ) — Nghiên cứu trường hợp: Tác động của biến đổi khí hậu tới hệ sinh thái ven biển</h4>
   <p>Trong vài thập kỷ gần đây, biến đổi khí hậu đã và đang gây ra nhiều ảnh hưởng nghiêm trọng tới các hệ sinh thái ven biển. Sự gia tăng mực nước biển, hiện tượng xâm nhập mặn, tần suất bão mạnh hơn và biến động nhiệt độ nước đều là những yếu tố khiến hệ sinh thái này thay đổi nhanh chóng. Các rạn san hô đang bị tẩy trắng khi nhiệt độ nước tăng cao; vùng đầm lầy bị thu hẹp do xâm nhập mặn; và nhiều loài sinh vật phải di cư hoặc đối mặt với nguy cơ tuyệt chủng.</p>
@@ -166,10 +164,6 @@ const LONG_PASSAGE_QUESTIONS: Question[] = [
   },
 ];
 
-/**
- * NEW: third, EXTRA LONG passage group (much longer for demo)
- * - This is the new, very long passage requested by the user.
- */
 const EXTRA_LONG_PASSAGE_HTML = `
   <h3>Đề bài rất dài (ví dụ demo) — Bài đọc phân tích: Hậu quả xã hội và kinh tế của tự động hóa trong ngành sản xuất</h3>
 
@@ -242,7 +236,7 @@ const ExamAttemptPage: React.FC = () => {
 
   const questions = useMemo(() => SAMPLE_QUESTIONS, []);
 
-  // include all passage-group questions in the answers map (now includes the new extra-long group)
+  // include all passage-group questions in the answers map
   const allQuestionList = useMemo(
     () => [...questions, ...PASSAGE_QUESTIONS, ...LONG_PASSAGE_QUESTIONS, ...EXTRA_LONG_PASSAGE_QUESTIONS],
     [questions]
@@ -252,6 +246,9 @@ const ExamAttemptPage: React.FC = () => {
     Object.fromEntries(allQuestionList.map((q) => [q.id, null]))
   );
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  // Sidebar visibility state: when false, main column becomes full width
+  const [isSidebarVisible, setIsSidebarVisible] = useState(true);
 
   // Timer (seconds) - demo set to 90 minutes but clamped for demo to 5 minutes max
   const initialSeconds = 90 * 60;
@@ -315,10 +312,10 @@ const ExamAttemptPage: React.FC = () => {
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
       <BreadcrumbNav courseTitle={`Thi - ${examId ?? "V-ACT"}`} />
-      <main className="flex-grow container mx-auto px-4 py-8">
+      <main className="flex-grow container mx-auto px-4 py-8 pb-24">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Left: all questions (single questions first, then passage groups) */}
-          <div className="lg:col-span-8 space-y-6">
+          <div className={isSidebarVisible ? "lg:col-span-8 space-y-6" : "lg:col-span-12 space-y-6"}>
             {questions.map((q, idx) => (
               <div
                 key={q.id}
@@ -383,20 +380,73 @@ const ExamAttemptPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Right: sidebar */}
-          <div className="lg:col-span-4">
-            <SidebarPanel
-              total={totalQuestions}
-              currentIndex={currentIndex}
-              answers={answers}
-              onJump={handleJump}
-              remainingSeconds={remainingSeconds}
-              onSubmit={handleSubmit}
-            />
-          </div>
+          {/* Right: sidebar (hidden when isSidebarVisible is false) */}
+          {isSidebarVisible && (
+            <div className="lg:col-span-4">
+              <SidebarPanel
+                total={totalQuestions}
+                currentIndex={currentIndex}
+                answers={answers}
+                onJump={handleJump}
+                remainingSeconds={remainingSeconds}
+                onSubmit={handleSubmit}
+              />
+            </div>
+          )}
         </div>
       </main>
-      <Footer />
+
+      {/* Fixed bottom navigation (no footer on the exam page) */}
+      <nav
+        className="fixed inset-x-0 bottom-0 z-50 bg-white border-t border-gray-200 py-3 px-4 safe-area-inset-bottom"
+        aria-label="Exam actions"
+      >
+        <div className="max-w-7xl mx-auto flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              onClick={() => navigate(-1)}
+              className="flex items-center gap-2 text-gray-700"
+              aria-label="Đóng"
+            >
+              <ChevronLeft />
+              Đóng
+            </Button>
+          </div>
+
+          <div className="flex-1 flex items-center justify-center">
+            <Button
+              variant="outline"
+              onClick={() => setIsSidebarVisible((s) => !s)}
+              className="rounded-full px-4 py-2 flex items-center gap-2"
+              aria-pressed={!isSidebarVisible}
+              aria-label={isSidebarVisible ? "Ẩn cột nộp bài" : "Hiện cột nộp bài"}
+            >
+              {isSidebarVisible ? (
+                <>
+                  Ẩn cột nộp bài
+                  <ChevronRight />
+                </>
+              ) : (
+                <>
+                  Hiện cột nộp bài
+                  <ChevronLeft />
+                </>
+              )}
+            </Button>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Button
+              className="bg-red-600 hover:bg-red-700 text-white rounded-full px-4 py-2"
+              onClick={handleSubmit}
+              aria-label="Nộp bài"
+            >
+              Nộp bài
+            </Button>
+          </div>
+        </div>
+      </nav>
     </div>
   );
 };
