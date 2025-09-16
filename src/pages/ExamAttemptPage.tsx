@@ -401,8 +401,11 @@ const ExamAttemptPage: React.FC = () => {
         className="fixed inset-x-0 bottom-0 z-50 bg-white border-t border-gray-200 py-3 px-4 safe-area-inset-bottom"
         aria-label="Exam actions"
       >
-        <div className="max-w-7xl mx-auto flex items-center gap-3">
-          {/* Place the toggle at the left edge (user requested position) */}
+        <div className="max-w-7xl mx-auto flex items-center">
+          {/* center spacer */}
+          <div className="flex-1" />
+
+          {/* Place the toggle at the right edge (user requested position) */}
           <div className="flex items-center gap-2">
             <Button
               variant="outline"
@@ -424,9 +427,6 @@ const ExamAttemptPage: React.FC = () => {
               )}
             </Button>
           </div>
-
-          {/* center spacer to keep button anchored left */}
-          <div className="flex-1" />
         </div>
       </nav>
     </div>
