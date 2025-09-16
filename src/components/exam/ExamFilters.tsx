@@ -1,122 +1,233 @@
 "use client";
 
-import React from "react";
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
+import React, { useState } from "react";
+import Input from "@/components/ui/input";
+import { ChevronDown, ChevronUp, X } from "lucide-react";
 
-const SubjectChip: React.FC<{ children: React.ReactNode; active?: boolean; onClick?: () => void }> = ({ children, active, onClick }) => {
+type Pill = {
+  id: string;
+  label: string;
+};
+
+const samplePills = {
+  deThiThu: [
+    { id: "3p", label: "Đủ 3 phần" },
+    { id: "1da", label: "1 đáp án" },
+    { id: "dungsai", label: "Đúng sai" },
+    { id: "traloingan", label: "Trả lời ngắn" },
+  ] as Pill[],
+  baiKiemTra: [
+    { id: "thi-giuaky1", label: "Thi giữa kỳ 1" },
+    { id: "thi-giuaky2", label: "Thi giữa kỳ 2" },
+    { id: "thi-cuoi-ky1", label: "Thi cuối kỳ 1" },
+    { id: "thi-cuoi-ky2", label: "Thi cuối kỳ 2" },
+  ] as Pill[],
+  mon: [
+    { id: "toan", label: "Toán" },
+    { id: "ly", label: "Lý" },
+    { id: "sinh", label: "Sinh" },
+    { id: "anh", label: "Anh" },
+    { id: "hoa", label: "Hóa" },
+    { id: "van", label: "Văn" },
+  ] as Pill[],
+  lop: [
+    { id: "lop10", label: "Lớp 10" },
+    { id: "lop11", label: "Lớp 11" },
+    { id: "lop12", label: "Lớp 12" },
+  ] as Pill[],
+};
+
+const PillButton: React.FC<{
+  pill: Pill;
+  active?: boolean;
+  onClick?: (id: string) => void;
+}> = ({ pill, active = false, onClick }) => {
   return (
     <button
-      onClick={onClick}
-      className={cn(
-        "px-3 py-1 rounded-md text-sm border",
-        active ? "bg-blue-600 text-white border-blue-600" : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
-      )}
+      type="button"
+      onClick={() => onClick?.(pill.id)}
+      className={`text-sm px-3 py-1 rounded-full border ${
+        active
+          ? "bg-blue-600 text-white border-blue-600"
+          : "bg-white text-gray-700 border-gray-200"
+      }`}
     >
-      {children}
+      {pill.label}
     </button>
   );
 };
 
-const LevelChip: React.FC<{ children: React.ReactNode; active?: boolean; onClick?: () => void }> = ({ children, active, onClick }) => {
+const Collapsible: React.FC<{
+  title: string;
+  children: React.ReactNode;
+  defaultOpen?: boolean;
+}> = ({ title, children, defaultOpen = false }) => {
+  const [open, setOpen] = useState(defaultOpen);
   return (
-    <button
-      onClick={onClick}
-      className={cn(
-        "px-3 py-1 rounded-md text-sm border",
-        active ? "bg-orange-500 text-white border-orange-500" : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
-      )}
-    >
-      {children}
-    </button>
+    <div className="mb-4">
+      <button
+        type="button"
+        onClick={() => setOpen((s) => !s)}
+        className="w-full flex items-center justify-between text-sm font-medium text-gray-700 px-1 py-2"
+      >
+        <span>{title}</span>
+        <span className="ml-2">{open ? <ChevronUp size={16} /> : <ChevronDown size={16} />}</span>
+      </button>
+      {open && <div className="mt-2">{children}</div>}
+    </div>
   );
 };
 
 const ExamFilters: React.FC = () => {
-  const [subject, setSubject] = React.useState<string | null>("Toán");
-  const [grade, setGrade] = React.useState<string | null>("Lớp 12");
-  const [search, setSearch] = React.useState("");
+  const [search, setSearch] = useState("");
+  const [selected, setSelected] = useState<Record<string, boolean>>({
+    toan: true, // example selected
+  });
+  const [selectedCity, setSelectedCity] = useState<string | null>("Hà Nội");
+  const [deThiThuActive, setDeThiThuActive] = useState<Record<string, boolean>>({});
+  const [baiKiemTraActive, setBaiKiemTraActive] = useState<Record<string, boolean>>({});
+  const [lopActive, setLopActive] = useState<Record<string, boolean>>({});
+
+  const toggleMap = (mapSetter: React.Dispatch<React.SetStateAction<Record<string, boolean>>>, id: string) =>
+    mapSetter((prev) => ({ ...prev, [id]: !prev[id] }));
+
+  const clearFilters = () => {
+    setSearch("");
+    setSelected({});
+    setSelectedCity(null);
+    setDeThiThuActive({});
+    setBaiKiemTraActive({});
+    setLopActive({});
+  };
 
   return (
     <aside className="w-full lg:w-80">
-      <div className="bg-white rounded-lg shadow-sm p-4 sticky top-20">
-        <div className="mb-4">
-          <h3 className="text-sm font-semibold text-gray-800 mb-2">Đề thi thử</h3>
-          <Input placeholder="Tìm đề theo tiêu đề..." value={search} onChange={(e) => setSearch(e.target.value)} />
+      <div className="bg-white rounded-lg shadow-sm p-0 sticky top-20 overflow-hidden">
+        {/* Blue header */}
+        <div className="bg-blue-600 text-white px-4 py-3 flex items-center justify-between">
+          <div className="text-sm font-semibold">Tốt nghiệp</div>
+          <button
+            aria-label="Mở/đóng nhóm Tốt nghiệp"
+            className="p-1 rounded-md hover:bg-white/10"
+            type="button"
+          >
+            <ChevronDown size={18} />
+          </button>
         </div>
 
-        <Accordion type="single" collapsible defaultValue="filter-1" className="mb-4">
-          <AccordionItem value="filter-1">
-            <AccordionTrigger className="px-0 py-2 text-sm font-semibold">Bộ lọc nhanh</AccordionTrigger>
-            <AccordionContent className="pt-3">
-              <div className="space-y-3">
-                <div>
-                  <div className="text-xs text-gray-500 mb-2">Môn</div>
-                  <div className="flex flex-wrap gap-2">
-                    {["Toán", "Vật lý", "Hóa", "Sinh", "Anh", "Văn"].map((s) => (
-                      <SubjectChip key={s} active={subject === s} onClick={() => setSubject(subject === s ? null : s)}>
-                        {s}
-                      </SubjectChip>
-                    ))}
-                  </div>
+        {/* Content area */}
+        <div className="p-4">
+          {/* Search */}
+          <div className="mb-4">
+            <h3 className="text-sm font-semibold text-gray-800 mb-2">Đề thi thử</h3>
+            <Input
+              placeholder="Tìm đề theo tiêu đề..."
+              value={search}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
+            />
+            <div className="mt-3 flex flex-wrap gap-2">
+              {samplePills.deThiThu.map((p) => (
+                <PillButton
+                  key={p.id}
+                  pill={p}
+                  active={!!deThiThuActive[p.id]}
+                  onClick={() => toggleMap(setDeThiThuActive, p.id)}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Bài kiểm tra */}
+          <div className="mb-4">
+            <h3 className="text-sm font-semibold text-gray-800 mb-2">Bài kiểm tra</h3>
+            <div className="flex flex-wrap gap-2">
+              {samplePills.baiKiemTra.map((p) => (
+                <PillButton
+                  key={p.id}
+                  pill={p}
+                  active={!!baiKiemTraActive[p.id]}
+                  onClick={() => toggleMap(setBaiKiemTraActive, p.id)}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Môn */}
+          <div className="mb-4">
+            <h3 className="text-sm font-semibold text-gray-800 mb-2">Môn</h3>
+            <div className="flex flex-wrap gap-2">
+              {samplePills.mon.map((p) => (
+                <PillButton
+                  key={p.id}
+                  pill={p}
+                  active={!!selected[p.id]}
+                  onClick={() => setSelected((s) => ({ ...s, [p.id]: !s[p.id] }))}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Lớp */}
+          <div className="mb-4">
+            <h3 className="text-sm font-semibold text-gray-800 mb-2">Lớp</h3>
+            <div className="flex flex-wrap gap-2">
+              {samplePills.lop.map((p) => (
+                <PillButton
+                  key={p.id}
+                  pill={p}
+                  active={!!lopActive[p.id]}
+                  onClick={() => toggleMap(setLopActive, p.id)}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Collapsible groups */}
+          <Collapsible title="APT" defaultOpen={false}>
+            <div className="text-sm text-gray-600">Các bộ đề APT (mô tả ngắn)</div>
+          </Collapsible>
+
+          <Collapsible title="TSA" defaultOpen={false}>
+            <div className="text-sm text-gray-600">Các bộ đề TSA (mô tả ngắn)</div>
+          </Collapsible>
+
+          <Collapsible title="HSA" defaultOpen={false}>
+            <div className="text-sm text-gray-600">Các bộ đề HSA (mô tả ngắn)</div>
+          </Collapsible>
+
+          {/* Thành phố */}
+          <div className="mb-4">
+            <h3 className="text-sm font-semibold text-gray-800 mb-2">Thành phố</h3>
+            <div className="flex items-center gap-2">
+              {selectedCity ? (
+                <div className="flex items-center bg-gray-100 text-gray-800 rounded-full px-3 py-1 text-sm gap-2">
+                  <span>{selectedCity}</span>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedCity(null)}
+                    className="p-1 rounded-full hover:bg-gray-200"
+                    aria-label="Xóa thành phố"
+                  >
+                    <X size={14} />
+                  </button>
                 </div>
+              ) : (
+                <div className="text-sm text-gray-500">Không có thành phố nào được chọn</div>
+              )}
+            </div>
+          </div>
 
-                <div>
-                  <div className="text-xs text-gray-500 mb-2">Lớp</div>
-                  <div className="flex gap-2">
-                    {["Lớp 10", "Lớp 11", "Lớp 12"].map((g) => (
-                      <LevelChip key={g} active={grade === g} onClick={() => setGrade(grade === g ? null : g)}>
-                        {g}
-                      </LevelChip>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <div className="text-xs text-gray-500 mb-2">Tags</div>
-                  <div className="flex flex-wrap gap-2">
-                    <Badge className="bg-blue-50 text-blue-700">Đề thi thử</Badge>
-                    <Badge className="bg-green-50 text-green-700">Livestream</Badge>
-                    <Badge className="bg-red-50 text-red-700">TSA</Badge>
-                    <Badge className="bg-violet-50 text-violet-700">APT</Badge>
-                  </div>
-                </div>
-
-                <div className="pt-2">
-                  <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">Áp dụng</Button>
-                </div>
-
-                <div className="pt-2 text-center">
-                  <button className="text-sm text-blue-600 hover:underline">Xóa bộ lọc</button>
-                </div>
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-
-          <AccordionItem value="filter-2">
-            <AccordionTrigger className="px-0 py-2 text-sm font-semibold">Khu vực / Thành phố</AccordionTrigger>
-            <AccordionContent className="pt-3">
-              <div className="space-y-2">
-                <div className="text-sm text-gray-700">Hà Nội</div>
-                <div className="text-sm text-gray-500">Hồ Chí Minh</div>
-                <div className="text-sm text-gray-500">Đà Nẵng</div>
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-
-          <AccordionItem value="filter-3">
-            <AccordionTrigger className="px-0 py-2 text-sm font-semibold">Khác</AccordionTrigger>
-            <AccordionContent className="pt-3">
-              <div className="space-y-2">
-                <div className="text-sm text-gray-700">Kiểu đề</div>
-                <div className="text-sm text-gray-500">Có đáp án</div>
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
+          {/* Clear filters */}
+          <div className="mt-2">
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="text-sm text-blue-600 hover:underline"
+            >
+              Xoá bộ lọc
+            </button>
+          </div>
+        </div>
       </div>
     </aside>
   );
