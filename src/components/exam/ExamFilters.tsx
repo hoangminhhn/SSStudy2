@@ -46,10 +46,10 @@ const PillButton: React.FC<{
     <button
       type="button"
       onClick={() => onClick?.(pill.id)}
-      className={`text-sm px-3 py-1 rounded-full border ${
+      className={`text-sm px-3 py-1 rounded-md border transition-colors ${
         active
           ? "bg-blue-600 text-white border-blue-600"
-          : "bg-white text-gray-700 border-gray-200"
+          : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
       }`}
     >
       {pill.label}
@@ -80,9 +80,7 @@ const Collapsible: React.FC<{
 
 const ExamFilters: React.FC = () => {
   const [search, setSearch] = useState("");
-  const [selected, setSelected] = useState<Record<string, boolean>>({
-    toan: true, // example selected
-  });
+  const [selected, setSelected] = useState<Record<string, boolean>>({});
   const [selectedCity, setSelectedCity] = useState<string | null>("Hà Nội");
   const [deThiThuActive, setDeThiThuActive] = useState<Record<string, boolean>>({});
   const [baiKiemTraActive, setBaiKiemTraActive] = useState<Record<string, boolean>>({});
@@ -99,6 +97,9 @@ const ExamFilters: React.FC = () => {
     setBaiKiemTraActive({});
     setLopActive({});
   };
+
+  // Show "Lớp" only when any Bài kiểm tra pill is active
+  const showLop = Object.values(baiKiemTraActive).some(Boolean);
 
   return (
     <aside className="w-full lg:w-80">
@@ -117,70 +118,91 @@ const ExamFilters: React.FC = () => {
 
         {/* Content area */}
         <div className="p-4">
-          {/* Search */}
+          {/* Đề thi thử box */}
           <div className="mb-4">
             <h3 className="text-sm font-semibold text-gray-800 mb-2">Đề thi thử</h3>
-            <Input
-              placeholder="Tìm đề theo tiêu đề..."
-              value={search}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
-            />
-            <div className="mt-3 flex flex-wrap gap-2">
-              {samplePills.deThiThu.map((p) => (
-                <PillButton
-                  key={p.id}
-                  pill={p}
-                  active={!!deThiThuActive[p.id]}
-                  onClick={() => toggleMap(setDeThiThuActive, p.id)}
+            <div className="p-3 bg-gray-50 rounded-md border border-gray-100">
+              <div className="mb-3">
+                <Input
+                  placeholder="Tìm đề theo tiêu đề..."
+                  value={search}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
                 />
-              ))}
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                {samplePills.deThiThu.map((p) => (
+                  <button
+                    key={p.id}
+                    onClick={() => toggleMap(setDeThiThuActive, p.id)}
+                    className={`text-xs px-2 py-1 rounded-md border ${
+                      deThiThuActive[p.id] ? "bg-white text-gray-900 border-blue-600 shadow-sm" : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"
+                    }`}
+                  >
+                    {p.label}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
-          {/* Bài kiểm tra */}
+          {/* Bài kiểm tra box */}
           <div className="mb-4">
             <h3 className="text-sm font-semibold text-gray-800 mb-2">Bài kiểm tra</h3>
-            <div className="flex flex-wrap gap-2">
-              {samplePills.baiKiemTra.map((p) => (
-                <PillButton
-                  key={p.id}
-                  pill={p}
-                  active={!!baiKiemTraActive[p.id]}
-                  onClick={() => toggleMap(setBaiKiemTraActive, p.id)}
-                />
-              ))}
+            <div className="p-3 bg-gray-50 rounded-md border border-gray-100">
+              <div className="flex flex-wrap gap-2">
+                {samplePills.baiKiemTra.map((p) => (
+                  <button
+                    key={p.id}
+                    onClick={() => toggleMap(setBaiKiemTraActive, p.id)}
+                    className={`text-xs px-2 py-1 rounded-md border ${
+                      baiKiemTraActive[p.id] ? "bg-blue-600 text-white border-blue-600" : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"
+                    }`}
+                  >
+                    {p.label}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
-          {/* Môn */}
+          {/* Môn (always visible) */}
           <div className="mb-4">
             <h3 className="text-sm font-semibold text-gray-800 mb-2">Môn</h3>
             <div className="flex flex-wrap gap-2">
               {samplePills.mon.map((p) => (
-                <PillButton
+                <button
                   key={p.id}
-                  pill={p}
-                  active={!!selected[p.id]}
                   onClick={() => setSelected((s) => ({ ...s, [p.id]: !s[p.id] }))}
-                />
+                  className={`text-sm px-3 py-1 rounded-md border ${
+                    selected[p.id] ? "bg-blue-600 text-white border-blue-600" : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
+                  }`}
+                >
+                  {p.label}
+                </button>
               ))}
             </div>
           </div>
 
-          {/* Lớp */}
-          <div className="mb-4">
-            <h3 className="text-sm font-semibold text-gray-800 mb-2">Lớp</h3>
-            <div className="flex flex-wrap gap-2">
-              {samplePills.lop.map((p) => (
-                <PillButton
-                  key={p.id}
-                  pill={p}
-                  active={!!lopActive[p.id]}
-                  onClick={() => toggleMap(setLopActive, p.id)}
-                />
-              ))}
+          {/* Lớp (ONLY when a Bài kiểm tra option selected) */}
+          {showLop && (
+            <div className="mb-4">
+              <h3 className="text-sm font-semibold text-gray-800 mb-2">Lớp</h3>
+              <div className="flex flex-wrap gap-2">
+                {samplePills.lop.map((p) => (
+                  <button
+                    key={p.id}
+                    onClick={() => toggleMap(setLopActive, p.id)}
+                    className={`text-sm px-3 py-1 rounded-md border ${
+                      lopActive[p.id] ? "bg-white text-gray-900 border-blue-600 shadow-sm" : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
+                    }`}
+                  >
+                    {p.label}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Collapsible groups */}
           <Collapsible title="APT" defaultOpen={false}>
