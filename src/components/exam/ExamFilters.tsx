@@ -79,7 +79,7 @@ const ExamFilters: React.FC = () => {
   const toggleMap = (mapSetter: React.Dispatch<React.SetStateAction<Record<string, boolean>>>, id: string) =>
     mapSetter((prev) => ({ ...prev, [id]: !prev[id] }));
 
-  // When a Bài kiểm tra pill is toggled on, clear Đề thi thử selections (reciprocal behavior kept)
+  // When a Bài kiểm tra pill is toggled on, clear Đề thi thử selections
   const handleToggleBaiKiemTra = (id: string) => {
     setBaiKiemTraActive((prev) => {
       const next = { ...prev, [id]: !prev[id] };
@@ -115,11 +115,10 @@ const ExamFilters: React.FC = () => {
 
   return (
     <aside className="w-full lg:w-80">
-      <div className="rounded-lg shadow-sm overflow-hidden sticky top-20">
-        {/* Main Collapsible: Tốt nghiệp (header turns blue when open) */}
-        <Collapsible title="Tốt nghiệp" defaultOpen={true} wrapperClassName="bg-white p-4">
-          {/* Content area: inner box (kept white for clarity) */}
-          <div className="bg-white">
+      <div className="rounded-lg shadow-sm overflow-hidden sticky top-20 p-4 bg-white">
+        {/* Tốt nghiệp (separate) */}
+        <Collapsible title="Tốt nghiệp" defaultOpen={true} wrapperClassName="">
+          <div>
             {/* Đề thi thử box */}
             <div className="mb-4">
               <h3 className="text-sm font-semibold text-gray-800 mb-2">Đề thi thử</h3>
@@ -172,7 +171,7 @@ const ExamFilters: React.FC = () => {
               </div>
             </div>
 
-            {/* Môn (always visible) */}
+            {/* Môn */}
             <div className="mb-4">
               <h3 className="text-sm font-semibold text-gray-800 mb-2">Môn</h3>
               <div className="flex flex-wrap gap-2">
@@ -210,19 +209,6 @@ const ExamFilters: React.FC = () => {
               </div>
             )}
 
-            {/* Collapsible groups (each header highlights blue when opened) */}
-            <Collapsible title="APT" defaultOpen={false}>
-              <div className="text-sm text-gray-600">Các bộ đề APT (mô tả ngắn)</div>
-            </Collapsible>
-
-            <Collapsible title="TSA" defaultOpen={false}>
-              <div className="text-sm text-gray-600">Các bộ đề TSA (mô tả ngắn)</div>
-            </Collapsible>
-
-            <Collapsible title="HSA" defaultOpen={false}>
-              <div className="text-sm text-gray-600">Các bộ đề HSA (mô tả ngắn)</div>
-            </Collapsible>
-
             {/* Thành phố */}
             <div className="mb-4">
               <h3 className="text-sm font-semibold text-gray-800 mb-2">Thành phố</h3>
@@ -253,6 +239,21 @@ const ExamFilters: React.FC = () => {
             </div>
           </div>
         </Collapsible>
+
+        {/* Separate category collapsibles (not nested under Tốt nghiệp) */}
+        <div className="mt-4">
+          <Collapsible title="APT" defaultOpen={false}>
+            <div className="text-sm text-gray-600">Các bộ đề APT (mô tả ngắn). Nội dung độc lập, không bị ẩn khi Tốt nghiệp đóng.</div>
+          </Collapsible>
+
+          <Collapsible title="TSA" defaultOpen={false}>
+            <div className="text-sm text-gray-600">Các bộ đề TSA (mô tả ngắn). Nội dung độc lập, không bị ẩn khi Tốt nghiệp đóng.</div>
+          </Collapsible>
+
+          <Collapsible title="HSA" defaultOpen={false}>
+            <div className="text-sm text-gray-600">Các bộ đề HSA (mô tả ngắn). Nội dung độc lập, không bị ẩn khi Tốt nghiệp đóng.</div>
+          </Collapsible>
+        </div>
       </div>
     </aside>
   );
