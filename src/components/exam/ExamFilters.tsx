@@ -89,11 +89,10 @@ const ExamFilters: React.FC = () => {
   const toggleMap = (mapSetter: React.Dispatch<React.SetStateAction<Record<string, boolean>>>, id: string) =>
     mapSetter((prev) => ({ ...prev, [id]: !prev[id] }));
 
-  // New handler: toggle a Bài kiểm tra pill. If turning on, clear all Đề thi thử selections
+  // When a Bài kiểm tra pill is toggled on, clear Đề thi thử selections
   const handleToggleBaiKiemTra = (id: string) => {
     setBaiKiemTraActive((prev) => {
       const next = { ...prev, [id]: !prev[id] };
-      // If the result is turning this id on (true), then clear deThiThuActive
       if (next[id]) {
         setDeThiThuActive({});
       }
@@ -101,10 +100,13 @@ const ExamFilters: React.FC = () => {
     });
   };
 
-  // Keep a handler for deThi so logic is explicit (no automatic clearing of baiKiemTra)
+  // When a Đề thi thử pill is toggled on, clear Bài kiểm tra selections
   const handleToggleDeThiThu = (id: string) => {
     setDeThiThuActive((prev) => {
       const next = { ...prev, [id]: !prev[id] };
+      if (next[id]) {
+        setBaiKiemTraActive({});
+      }
       return next;
     });
   };
