@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { Input } from "@/components/ui/input";
 import { ChevronDown, ChevronUp, X } from "lucide-react";
 
 type Pill = {
@@ -69,7 +68,6 @@ const Collapsible: React.FC<{
 };
 
 const ExamFilters: React.FC = () => {
-  const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<Record<string, boolean>>({});
   const [selectedCity, setSelectedCity] = useState<string | null>("Hà Nội");
   const [deThiThuActive, setDeThiThuActive] = useState<Record<string, boolean>>({});
@@ -102,7 +100,6 @@ const ExamFilters: React.FC = () => {
   };
 
   const clearFilters = () => {
-    setSearch("");
     setSelected({});
     setSelectedCity(null);
     setDeThiThuActive({});
@@ -119,18 +116,10 @@ const ExamFilters: React.FC = () => {
         {/* Tốt nghiệp (separate) */}
         <Collapsible title="Tốt nghiệp" defaultOpen={true} wrapperClassName="">
           <div>
-            {/* Đề thi thử box */}
+            {/* Đề thi thử box (search removed as requested) */}
             <div className="mb-4">
               <h3 className="text-sm font-semibold text-gray-800 mb-2">Đề thi thử</h3>
               <div className="p-3 bg-gray-50 rounded-md border border-gray-100">
-                <div className="mb-3">
-                  <Input
-                    placeholder="Tìm đề theo tiêu đề..."
-                    value={search}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
-                  />
-                </div>
-
                 <div className="flex flex-wrap gap-2">
                   {samplePills.deThiThu.map((p) => (
                     <button
