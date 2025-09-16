@@ -209,28 +209,6 @@ const ExamFilters: React.FC = () => {
               </div>
             )}
 
-            {/* Thành phố */}
-            <div className="mb-4">
-              <h3 className="text-sm font-semibold text-gray-800 mb-2">Thành phố</h3>
-              <div className="flex items-center gap-2">
-                {selectedCity ? (
-                  <div className="flex items-center bg-gray-100 text-gray-800 rounded-full px-3 py-1 text-sm gap-2">
-                    <span>{selectedCity}</span>
-                    <button
-                      type="button"
-                      onClick={() => setSelectedCity(null)}
-                      className="p-1 rounded-full hover:bg-gray-200"
-                      aria-label="Xóa thành phố"
-                    >
-                      <X size={14} />
-                    </button>
-                  </div>
-                ) : (
-                  <div className="text-sm text-gray-500">Không có thành phố nào được chọn</div>
-                )}
-              </div>
-            </div>
-
             {/* Clear filters */}
             <div className="mt-2">
               <button type="button" onClick={clearFilters} className="text-sm text-blue-600 hover:underline">
@@ -253,6 +231,28 @@ const ExamFilters: React.FC = () => {
           <Collapsible title="HSA" defaultOpen={false}>
             <div className="text-sm text-gray-600">Các bộ đề HSA (mô tả ngắn). Nội dung độc lập, không bị ẩn khi Tốt nghiệp đóng.</div>
           </Collapsible>
+        </div>
+
+        {/* Thành phố: separate, always-visible at the very end for global search */}
+        <div className="mt-4 pt-4 border-t border-gray-100">
+          <h3 className="text-sm font-semibold text-gray-800 mb-2">Thành phố</h3>
+          <div className="flex items-center gap-2">
+            {selectedCity ? (
+              <div className="flex items-center bg-gray-100 text-gray-800 rounded-full px-3 py-1 text-sm gap-2">
+                <span>{selectedCity}</span>
+                <button
+                  type="button"
+                  onClick={() => setSelectedCity(null)}
+                  className="p-1 rounded-full hover:bg-gray-200"
+                  aria-label="Xóa thành phố"
+                >
+                  <X size={14} />
+                </button>
+              </div>
+            ) : (
+              <div className="text-sm text-gray-500">Không có thành phố nào được chọn</div>
+            )}
+          </div>
         </div>
       </div>
     </aside>
