@@ -37,43 +37,33 @@ const samplePills = {
   ] as Pill[],
 };
 
-const PillButton: React.FC<{
-  pill: Pill;
-  active?: boolean;
-  onClick?: (id: string) => void;
-}> = ({ pill, active = false, onClick }) => {
-  return (
-    <button
-      type="button"
-      onClick={() => onClick?.(pill.id)}
-      className={`text-sm px-3 py-1 rounded-md border transition-colors ${
-        active
-          ? "bg-blue-600 text-white border-blue-600"
-          : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
-      }`}
-    >
-      {pill.label}
-    </button>
-  );
-};
-
+/**
+ * Collapsible: renders a header that changes to blue when open.
+ * The header is clickable to toggle the content.
+ */
 const Collapsible: React.FC<{
   title: string;
-  children: React.ReactNode;
   defaultOpen?: boolean;
-}> = ({ title, children, defaultOpen = false }) => {
-  const [open, setOpen] = useState(defaultOpen);
+  children?: React.ReactNode;
+  // optional class for internal wrapper
+  wrapperClassName?: string;
+}> = ({ title, defaultOpen = false, children, wrapperClassName = "" }) => {
+  const [open, setOpen] = useState<boolean>(defaultOpen);
+
   return (
-    <div className="mb-4">
+    <div className={`mb-4 ${wrapperClassName}`}>
       <button
-        type="button"
         onClick={() => setOpen((s) => !s)}
-        className="w-full flex items-center justify-between text-sm font-medium text-gray-700 px-1 py-2"
+        aria-expanded={open}
+        className={`w-full flex items-center justify-between px-4 py-3 rounded-md transition-colors focus:outline-none ${
+          open ? "bg-blue-600 text-white" : "bg-white text-gray-800 hover:bg-gray-50"
+        }`}
       >
-        <span>{title}</span>
+        <span className="text-sm font-semibold">{title}</span>
         <span className="ml-2">{open ? <ChevronUp size={16} /> : <ChevronDown size={16} />}</span>
       </button>
-      {open && <div className="mt-2">{children}</div>}
+
+      {open && <div className="mt-3">{children}</div>}
     </div>
   );
 };
@@ -89,7 +79,7 @@ const ExamFilters: React.FC = () => {
   const toggleMap = (mapSetter: React.Dispatch<React.SetStateAction<Record<string, boolean>>>, id: string) =>
     mapSetter((prev) => ({ ...prev, [id]: !prev[id] }));
 
-  // When a Bài kiểm tra pill is toggled on, clear Đề thi thử selections
+  // When a Bài kiểm tra pill is toggled on, clear Đề thi thử selections (reciprocal behavior kept)
   const handleToggleBaiKiemTra = (id: string) => {
     setBaiKiemTraActive((prev) => {
       const next = { ...prev, [id]: !prev[id] };
@@ -100,7 +90,7 @@ const ExamFilters: React.FC = () => {
     });
   };
 
-  // When a Đề thi thử pill is toggled on, clear Bài kiểm tra selections
+  // When a Đề thi thử pill is toggled on, clear all Bài kiểm tra selections
   const handleToggleDeThiThu = (id: string) => {
     setDeThiThuActive((prev) => {
       const next = { ...prev, [id]: !prev[id] };
@@ -125,102 +115,73 @@ const ExamFilters: React.FC = () => {
 
   return (
     <aside className="w-full lg:w-80">
-      <div className="bg-white rounded-lg shadow-sm p-0 sticky top-20 overflow-hidden">
-        {/* Blue header */}
-        <div className="bg-blue-600 text-white px-4 py-3 flex items-center justify-between">
-          <div className="text-sm font-semibold">Tốt nghiệp</div>
-          <button
-            aria-label="Mở/đóng nhóm Tốt nghiệp"
-            className="p-1 rounded-md hover:bg-white/10"
-            type="button"
-          >
-            <ChevronDown size={18} />
-          </button>
-        </div>
-
-        {/* Content area */}
-        <div className="p-4">
-          {/* Đề thi thử box */}
-          <div className="mb-4">
-            <h3 className="text-sm font-semibold text-gray-800 mb-2">Đề thi thử</h3>
-            <div className="p-3 bg-gray-50 rounded-md border border-gray-100">
-              <div className="mb-3">
-                <Input
-                  placeholder="Tìm đề theo tiêu đề..."
-                  value={search}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
-                />
-              </div>
-
-              <div className="flex flex-wrap gap-2">
-                {samplePills.deThiThu.map((p) => (
-                  <button
-                    key={p.id}
-                    onClick={() => handleToggleDeThiThu(p.id)}
-                    className={`text-xs px-2 py-1 rounded-md border ${
-                      deThiThuActive[p.id]
-                        ? "bg-white text-gray-900 border-blue-600 shadow-sm"
-                        : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"
-                    }`}
-                  >
-                    {p.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Bài kiểm tra box */}
-          <div className="mb-4">
-            <h3 className="text-sm font-semibold text-gray-800 mb-2">Bài kiểm tra</h3>
-            <div className="p-3 bg-gray-50 rounded-md border border-gray-100">
-              <div className="flex flex-wrap gap-2">
-                {samplePills.baiKiemTra.map((p) => (
-                  <button
-                    key={p.id}
-                    onClick={() => handleToggleBaiKiemTra(p.id)}
-                    className={`text-xs px-2 py-1 rounded-md border ${
-                      baiKiemTraActive[p.id]
-                        ? "bg-blue-600 text-white border-blue-600"
-                        : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"
-                    }`}
-                  >
-                    {p.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Môn (always visible) */}
-          <div className="mb-4">
-            <h3 className="text-sm font-semibold text-gray-800 mb-2">Môn</h3>
-            <div className="flex flex-wrap gap-2">
-              {samplePills.mon.map((p) => (
-                <button
-                  key={p.id}
-                  onClick={() => setSelected((s) => ({ ...s, [p.id]: !s[p.id] }))}
-                  className={`text-sm px-3 py-1 rounded-md border ${
-                    selected[p.id] ? "bg-blue-600 text-white border-blue-600" : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
-                  }`}
-                >
-                  {p.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Lớp (ONLY when a Bài kiểm tra option selected) */}
-          {showLop && (
+      <div className="rounded-lg shadow-sm overflow-hidden sticky top-20">
+        {/* Main Collapsible: Tốt nghiệp (header turns blue when open) */}
+        <Collapsible title="Tốt nghiệp" defaultOpen={true} wrapperClassName="bg-white p-4">
+          {/* Content area: inner box (kept white for clarity) */}
+          <div className="bg-white">
+            {/* Đề thi thử box */}
             <div className="mb-4">
-              <h3 className="text-sm font-semibold text-gray-800 mb-2">Lớp</h3>
+              <h3 className="text-sm font-semibold text-gray-800 mb-2">Đề thi thử</h3>
+              <div className="p-3 bg-gray-50 rounded-md border border-gray-100">
+                <div className="mb-3">
+                  <Input
+                    placeholder="Tìm đề theo tiêu đề..."
+                    value={search}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
+                  />
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                  {samplePills.deThiThu.map((p) => (
+                    <button
+                      key={p.id}
+                      onClick={() => handleToggleDeThiThu(p.id)}
+                      className={`text-xs px-2 py-1 rounded-md border transition-colors ${
+                        deThiThuActive[p.id]
+                          ? "bg-white text-gray-900 border-blue-600 shadow-sm"
+                          : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"
+                      }`}
+                    >
+                      {p.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Bài kiểm tra box */}
+            <div className="mb-4">
+              <h3 className="text-sm font-semibold text-gray-800 mb-2">Bài kiểm tra</h3>
+              <div className="p-3 bg-gray-50 rounded-md border border-gray-100">
+                <div className="flex flex-wrap gap-2">
+                  {samplePills.baiKiemTra.map((p) => (
+                    <button
+                      key={p.id}
+                      onClick={() => handleToggleBaiKiemTra(p.id)}
+                      className={`text-xs px-2 py-1 rounded-md border transition-colors ${
+                        baiKiemTraActive[p.id]
+                          ? "bg-blue-600 text-white border-blue-600"
+                          : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"
+                      }`}
+                    >
+                      {p.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Môn (always visible) */}
+            <div className="mb-4">
+              <h3 className="text-sm font-semibold text-gray-800 mb-2">Môn</h3>
               <div className="flex flex-wrap gap-2">
-                {samplePills.lop.map((p) => (
+                {samplePills.mon.map((p) => (
                   <button
                     key={p.id}
-                    onClick={() => toggleMap(setLopActive, p.id)}
-                    className={`text-sm px-3 py-1 rounded-md border ${
-                      lopActive[p.id] ? "bg-white text-gray-900 border-blue-600 shadow-sm" : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
+                    onClick={() => setSelected((s) => ({ ...s, [p.id]: !s[p.id] }))}
+                    className={`text-sm px-3 py-1 rounded-md border transition-colors ${
+                      selected[p.id] ? "bg-blue-600 text-white border-blue-600" : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
                     }`}
                   >
                     {p.label}
@@ -228,54 +189,70 @@ const ExamFilters: React.FC = () => {
                 ))}
               </div>
             </div>
-          )}
 
-          {/* Collapsible groups */}
-          <Collapsible title="APT" defaultOpen={false}>
-            <div className="text-sm text-gray-600">Các bộ đề APT (mô tả ngắn)</div>
-          </Collapsible>
-
-          <Collapsible title="TSA" defaultOpen={false}>
-            <div className="text-sm text-gray-600">Các bộ đề TSA (mô tả ngắn)</div>
-          </Collapsible>
-
-          <Collapsible title="HSA" defaultOpen={false}>
-            <div className="text-sm text-gray-600">Các bộ đề HSA (mô tả ngắn)</div>
-          </Collapsible>
-
-          {/* Thành phố */}
-          <div className="mb-4">
-            <h3 className="text-sm font-semibold text-gray-800 mb-2">Thành phố</h3>
-            <div className="flex items-center gap-2">
-              {selectedCity ? (
-                <div className="flex items-center bg-gray-100 text-gray-800 rounded-full px-3 py-1 text-sm gap-2">
-                  <span>{selectedCity}</span>
-                  <button
-                    type="button"
-                    onClick={() => setSelectedCity(null)}
-                    className="p-1 rounded-full hover:bg-gray-200"
-                    aria-label="Xóa thành phố"
-                  >
-                    <X size={14} />
-                  </button>
+            {/* Lớp (ONLY when a Bài kiểm tra option selected) */}
+            {showLop && (
+              <div className="mb-4">
+                <h3 className="text-sm font-semibold text-gray-800 mb-2">Lớp</h3>
+                <div className="flex flex-wrap gap-2">
+                  {samplePills.lop.map((p) => (
+                    <button
+                      key={p.id}
+                      onClick={() => toggleMap(setLopActive, p.id)}
+                      className={`text-sm px-3 py-1 rounded-md border transition-colors ${
+                        lopActive[p.id] ? "bg-white text-gray-900 border-blue-600 shadow-sm" : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
+                      }`}
+                    >
+                      {p.label}
+                    </button>
+                  ))}
                 </div>
-              ) : (
-                <div className="text-sm text-gray-500">Không có thành phố nào được chọn</div>
-              )}
+              </div>
+            )}
+
+            {/* Collapsible groups (each header highlights blue when opened) */}
+            <Collapsible title="APT" defaultOpen={false}>
+              <div className="text-sm text-gray-600">Các bộ đề APT (mô tả ngắn)</div>
+            </Collapsible>
+
+            <Collapsible title="TSA" defaultOpen={false}>
+              <div className="text-sm text-gray-600">Các bộ đề TSA (mô tả ngắn)</div>
+            </Collapsible>
+
+            <Collapsible title="HSA" defaultOpen={false}>
+              <div className="text-sm text-gray-600">Các bộ đề HSA (mô tả ngắn)</div>
+            </Collapsible>
+
+            {/* Thành phố */}
+            <div className="mb-4">
+              <h3 className="text-sm font-semibold text-gray-800 mb-2">Thành phố</h3>
+              <div className="flex items-center gap-2">
+                {selectedCity ? (
+                  <div className="flex items-center bg-gray-100 text-gray-800 rounded-full px-3 py-1 text-sm gap-2">
+                    <span>{selectedCity}</span>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedCity(null)}
+                      className="p-1 rounded-full hover:bg-gray-200"
+                      aria-label="Xóa thành phố"
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="text-sm text-gray-500">Không có thành phố nào được chọn</div>
+                )}
+              </div>
+            </div>
+
+            {/* Clear filters */}
+            <div className="mt-2">
+              <button type="button" onClick={clearFilters} className="text-sm text-blue-600 hover:underline">
+                Xoá bộ lọc
+              </button>
             </div>
           </div>
-
-          {/* Clear filters */}
-          <div className="mt-2">
-            <button
-              type="button"
-              onClick={clearFilters}
-              className="text-sm text-blue-600 hover:underline"
-            >
-              Xoá bộ lọc
-            </button>
-          </div>
-        </div>
+        </Collapsible>
       </div>
     </aside>
   );
