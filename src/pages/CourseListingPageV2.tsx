@@ -101,7 +101,7 @@ const COURSES: Course[] = [
 const categories = [
   {
     id: "cat-dgnl",
-    title: "Luyện thi ĐGNL - ĐGTD",
+    title: "Luyện thi DGNL - DGTD",
     items: ["HSA", "APT", "TSA"],
   },
   {
@@ -128,23 +128,71 @@ const categories = [
 
 const Sidebar: React.FC = () => {
   const [activeItem, setActiveItem] = React.useState<string | null>("HSA");
-  // Keep accordion single so it behaves like the image (one open at a time)
+  // We'll keep an Accordion open by default for first category
+  const [openValue, setOpenValue] = React.useState<string | null>("cat-dgnl");
+
+  // Refs to measure item positions
+  const containerRef = React.useRef<HTMLDivElement | null>(null);
+  const itemRefs = React.useRef<Record<string, HTMLButtonElement | null>>({});
+
+  const [indicatorStyle, setIndicatorStyle] = React.useState<{ top: number; height: number } | null>(null);
+
+  // Update indicator position when activeItem or layout changes
+  React.useEffect(() => {
+    const update = () => {
+      const container = containerRef.current;
+      const el = activeItem ? itemRefs.current[activeItem] : null;
+      if (!container || !el) {
+        setIndicatorStyle(null);
+        return;
+      }
+
+      // offsetTop relative to the nearest positioned ancestor (containerRef will be relative)
+      const relativeTop = (el.offsetTop ?? 0) + (el.offsetHeight ?? 0) / 2 - 20; // center the pill (~40px height)
+      const height = Math.max(32, Math.min(48, el.offsetHeight ?? 36));
+
+      setIndicatorStyle({ top: relativeTop, height });
+    };
+
+    // measure after paint
+    requestAnimationFrame(update);
+    // also re-measure on resize/scroll within container
+    const ro = new ResizeObserver(() => update());
+    if (containerRef.current) ro.observe(containerRef.current);
+    window.addEventListener("resize", update);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", update);
+    };
+  }, [activeItem, openValue]);
+
   return (
     <aside className="hidden lg:block w-full max-w-[260px]">
-      <div className="bg-white rounded-lg shadow-sm p-3">
-        <Accordion type="single" collapsible defaultValue="cat-dgnl">
+      <div
+        ref={containerRef}
+        className="relative bg-white rounded-lg shadow-sm p-3 sticky top-20 h-[calc(100vh-5rem)] overflow-auto"
+        aria-label="Sidebar danh mục khóa học"
+      >
+        {/* Blue left indicator: absolutely positioned inside the container */}
+        {indicatorStyle && (
+          <div
+            aria-hidden
+            className="absolute -left-2 w-2 rounded-l-full bg-blue-600 transition-all duration-200"
+            style={{
+              top: indicatorStyle.top,
+              height: indicatorStyle.height,
+            }}
+          />
+        )}
+
+        <Accordion type="single" collapsible value={openValue ?? undefined} onValueChange={(v) => setOpenValue(v ?? null)}>
           {categories.map((cat) => (
             <AccordionItem key={cat.id} value={cat.id} className="border-b last:border-b-0">
               <AccordionTrigger className="px-2 py-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
-                    {/* If the category contains the active item, visually show the left blue indicator */}
-                    <div
-                      className={cn(
-                        "mr-2 w-2 h-8 rounded-l-full",
-                        cat.items.includes(activeItem || "") ? "bg-blue-600" : "bg-transparent"
-                      )}
-                    />
+                    {/* Keep a small visual left area (used only for spacing) */}
+                    <div className={cn("mr-2 w-2 h-8 rounded-l-full", cat.items.includes(activeItem || "") ? "bg-blue-600" : "bg-transparent")} />
                     <div
                       className={cn(
                         "text-sm font-medium",
@@ -165,16 +213,20 @@ const Sidebar: React.FC = () => {
                     return (
                       <li key={item}>
                         <button
-                          onClick={() => setActiveItem(item)}
+                          ref={(el) => (itemRefs.current[item] = el)}
+                          onClick={() => {
+                            setActiveItem(item);
+                            setOpenValue(cat.id);
+                          }}
                           className={cn(
                             "w-full text-left px-3 py-2 rounded-md transition-colors flex items-center justify-between",
                             selected
                               ? "bg-blue-600 text-white"
                               : "hover:bg-gray-50 text-gray-700"
                           )}
+                          aria-current={selected ? "true" : undefined}
                         >
                           <span className={cn("truncate", selected ? "font-semibold" : "")}>{item}</span>
-                          {/* optional small indicator on the right for selected item */}
                           {selected && <span className="ml-2 text-xs opacity-80">✓</span>}
                         </button>
                       </li>
