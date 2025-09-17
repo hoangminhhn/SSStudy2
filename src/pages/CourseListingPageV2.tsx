@@ -6,7 +6,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import BreadcrumbNav from "@/components/layout/BreadcrumbNav";
 import { Card, CardContent } from "@/components/ui/card";
-import { BookOpen, User, ChevronDown } from "lucide-react";
+import { BookOpen, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   Accordion,
@@ -189,18 +189,22 @@ const Sidebar: React.FC = () => {
             const isOpen = openValue === cat.id;
             return (
               <AccordionItem key={cat.id} value={cat.id} className="border-b last:border-b-0">
-                {/* Render trigger directly (avoid asChild to prevent Children.only issues) */}
-                <AccordionTrigger className={cn(
-                  "group w-full text-left px-2 py-3 rounded-md transition-colors flex items-center justify-between",
-                  isOpen ? "bg-blue-600 text-white shadow-sm" : "bg-white text-gray-800 hover:bg-blue-50 hover:text-gray-900"
-                )}>
+                {/* Render trigger content directly and do NOT add a manual chevron icon (avoids duplicate arrows) */}
+                <AccordionTrigger
+                  className={cn(
+                    "group w-full text-left px-2 py-3 rounded-md transition-colors flex items-center justify-between",
+                    isOpen ? "bg-blue-600 text-white shadow-sm" : "bg-white text-gray-800 hover:bg-blue-50 hover:text-gray-900"
+                  )}
+                >
                   <div className="flex items-center">
                     <div className="mr-2 w-2 h-8 rounded-l-full bg-transparent" />
                     <div className={cn("text-sm font-medium", isOpen ? "text-white" : "text-gray-800")}>
                       {cat.title}
                     </div>
                   </div>
-                  <ChevronDown className={cn("h-4 w-4", isOpen ? "text-white" : "text-gray-400")} />
+
+                  {/* No explicit icon here — the AccordionTrigger component/stylesheet will render the single chevron */}
+                  <span aria-hidden />
                 </AccordionTrigger>
 
                 <AccordionContent className="px-2 pb-3 pt-0">
