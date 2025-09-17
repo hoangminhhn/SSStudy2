@@ -178,14 +178,20 @@ const Sidebar: React.FC<SidebarProps> = ({ forceOpenAll = false }) => {
     };
   }, [activeItem, openValue]);
 
+  // If forceOpenAll is true (mobile sheet), show the aside even on small screens.
+  const asideClass = forceOpenAll ? "w-full" : "hidden lg:block w-full max-w-[260px]";
+
   return (
-    <aside className="hidden lg:block w-full max-w-[260px]">
+    <aside className={asideClass}>
       <div
         ref={containerRef}
-        className="relative bg-white rounded-lg shadow-sm p-3 sticky top-20 h-[calc(100vh-5rem)] overflow-auto"
+        className={cn(
+          "relative bg-white rounded-lg shadow-sm p-3",
+          forceOpenAll ? "h-auto overflow-auto" : "sticky top-20 h-[calc(100vh-5rem)] overflow-auto"
+        )}
         aria-label="Sidebar danh mục khóa học"
       >
-        {indicatorStyle && (
+        {indicatorStyle && !forceOpenAll && (
           <div
             aria-hidden
             className="absolute -left-2 w-2 rounded-l-full bg-blue-600 transition-all duration-200"
