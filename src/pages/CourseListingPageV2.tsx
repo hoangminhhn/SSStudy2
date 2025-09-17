@@ -127,7 +127,6 @@ const categories = [
 
 const Sidebar: React.FC = () => {
   const [activeItem, setActiveItem] = React.useState<string | null>("HSA");
-  // Keep an Accordion open by default for first category
   const [openValue, setOpenValue] = React.useState<string | null>("cat-dgnl");
 
   // Refs to measure item positions
@@ -136,7 +135,6 @@ const Sidebar: React.FC = () => {
 
   const [indicatorStyle, setIndicatorStyle] = React.useState<{ top: number; height: number } | null>(null);
 
-  // Update indicator position when activeItem or layout changes
   React.useEffect(() => {
     const update = () => {
       const container = containerRef.current;
@@ -146,24 +144,19 @@ const Sidebar: React.FC = () => {
         return;
       }
 
-      // Compute top relative to container
       const containerRect = container.getBoundingClientRect();
       const elRect = el.getBoundingClientRect();
       const top = elRect.top - containerRect.top + container.scrollTop;
       const height = Math.max(32, Math.min(48, el.offsetHeight ?? 36));
-      // center the indicator vertically to the item
       const centeredTop = top + (el.offsetHeight / 2) - height / 2;
 
       setIndicatorStyle({ top: centeredTop, height });
     };
 
-    // measure after paint
     requestAnimationFrame(update);
-    // also re-measure on resize/scroll within container
     const ro = new ResizeObserver(() => update());
     if (containerRef.current) ro.observe(containerRef.current);
     window.addEventListener("resize", update);
-    // update when container scrolls (so indicator follows)
     const onScroll = () => update();
     containerRef.current?.addEventListener("scroll", onScroll);
     return () => {
@@ -180,7 +173,6 @@ const Sidebar: React.FC = () => {
         className="relative bg-white rounded-lg shadow-sm p-3 sticky top-20 h-[calc(100vh-5rem)] overflow-auto"
         aria-label="Sidebar danh mục khóa học"
       >
-        {/* Blue left indicator: absolutely positioned inside the container */}
         {indicatorStyle && (
           <div
             aria-hidden
@@ -197,27 +189,18 @@ const Sidebar: React.FC = () => {
             const isOpen = openValue === cat.id;
             return (
               <AccordionItem key={cat.id} value={cat.id} className="border-b last:border-b-0">
-                {/* Parent header: show as blue pill when open or hovered */}
-                <AccordionTrigger asChild>
-                  <button
-                    className={cn(
-                      "group w-full text-left px-2 py-3 rounded-md transition-colors flex items-center justify-between",
-                      isOpen
-                        ? "bg-blue-600 text-white shadow-sm"
-                        : "bg-white text-gray-800 hover:bg-blue-50 hover:text-gray-900"
-                    )}
-                    onClick={() => setOpenValue(isOpen ? null : cat.id)}
-                    aria-expanded={isOpen}
-                  >
-                    <div className="flex items-center">
-                      {/* small left spacer to align with indicator visually */}
-                      <div className="mr-2 w-2 h-8 rounded-l-full bg-transparent" />
-                      <div className={cn("text-sm font-medium", isOpen ? "text-white" : "text-gray-800")}>
-                        {cat.title}
-                      </div>
+                {/* Render trigger directly (avoid asChild to prevent Children.only issues) */}
+                <AccordionTrigger className={cn(
+                  "group w-full text-left px-2 py-3 rounded-md transition-colors flex items-center justify-between",
+                  isOpen ? "bg-blue-600 text-white shadow-sm" : "bg-white text-gray-800 hover:bg-blue-50 hover:text-gray-900"
+                )}>
+                  <div className="flex items-center">
+                    <div className="mr-2 w-2 h-8 rounded-l-full bg-transparent" />
+                    <div className={cn("text-sm font-medium", isOpen ? "text-white" : "text-gray-800")}>
+                      {cat.title}
                     </div>
-                    <ChevronDown className={cn("h-4 w-4", isOpen ? "text-white" : "text-gray-400")} />
-                  </button>
+                  </div>
+                  <ChevronDown className={cn("h-4 w-4", isOpen ? "text-white" : "text-gray-400")} />
                 </AccordionTrigger>
 
                 <AccordionContent className="px-2 pb-3 pt-0">
@@ -234,9 +217,7 @@ const Sidebar: React.FC = () => {
                             }}
                             className={cn(
                               "w-full text-left px-3 py-2 rounded-md transition-colors flex items-center justify-between",
-                              selected
-                                ? "text-blue-600 font-semibold"
-                                : "text-gray-700 hover:text-blue-600"
+                              selected ? "text-blue-600 font-semibold" : "text-gray-700 hover:text-blue-600"
                             )}
                             aria-current={selected ? "true" : undefined}
                           >
@@ -292,17 +273,13 @@ const CourseCard: React.FC<{ course: Course }> = ({ course }) => {
 };
 
 const CourseListingPageV2: React.FC = () => {
-  // pagination stub
   const [page, setPage] = React.useState(1);
   const perPage = 6;
   const total = COURSES.length;
   const totalPages = Math.max(1, Math.ceil(total / perPage));
 
   const displayed = COURSES.slice((page - 1) * perPage, page * perPage);
-
-  // Prepare teacher list from courses (unique)
   const teacherList = Array.from(new Set(COURSES.map((c) => c.teacher)));
-
   const [selectedTeacher, setSelectedTeacher] = React.useState<string | null>(null);
 
   return (
@@ -311,14 +288,11 @@ const CourseListingPageV2: React.FC = () => {
       <BreadcrumbNav courseTitle="Khóa học" bgColor="white" variant="v2" />
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Sidebar */}
           <div className="lg:col-span-3">
             <Sidebar />
           </div>
 
-          {/* Main content */}
           <div className="lg:col-span-9">
-            {/* Filters row */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-3">
               <h1 className="text-xl font-semibold text-gray-800">Các Khóa Học (Phiên bản V2)</h1>
               <div className="flex items-center space-x-3">
@@ -334,7 +308,6 @@ const CourseListingPageV2: React.FC = () => {
               </div>
             </div>
 
-            {/* Cards grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {displayed
                 .filter((c) => (selectedTeacher ? c.teacher === selectedTeacher : true))
@@ -343,7 +316,6 @@ const CourseListingPageV2: React.FC = () => {
                 ))}
             </div>
 
-            {/* Pagination */}
             <div className="mt-8 flex items-center justify-center space-x-2">
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
