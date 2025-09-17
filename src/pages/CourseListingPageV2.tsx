@@ -285,6 +285,10 @@ const CourseListingPageV2: React.FC = () => {
   const teacherList = Array.from(new Set(COURSES.map((c) => c.teacher)));
   const [selectedTeacher, setSelectedTeacher] = React.useState<string | null>(null);
 
+  // New filter states
+  const [selectedClass, setSelectedClass] = React.useState<string | null>(null); // "Lớp 1" ... "Lớp 12"
+  const [selectedCategory, setSelectedCategory] = React.useState<string | null>(null); // phân loại
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
@@ -299,15 +303,50 @@ const CourseListingPageV2: React.FC = () => {
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-3">
               <h1 className="text-xl font-semibold text-gray-800">Các Khóa Học (Phiên bản V2)</h1>
               <div className="flex items-center space-x-3">
+                {/* Teacher filter */}
                 <TeacherFilter
                   teachers={teacherList}
                   onSelect={(t) => setSelectedTeacher(t)}
                 />
+
+                {/* Class filter placed to the right of TeacherFilter (select Lớp 1..12) */}
+                <div>
+                  <label className="sr-only" htmlFor="class-select">Lớp</label>
+                  <select
+                    id="class-select"
+                    value={selectedClass ?? ""}
+                    onChange={(e) => setSelectedClass(e.target.value || null)}
+                    className="border border-gray-200 rounded-md px-3 py-2 bg-white text-sm"
+                  >
+                    <option value="">Lớp</option>
+                    {Array.from({ length: 12 }).map((_, i) => (
+                      <option key={i} value={`Lớp ${i + 1}`}>Lớp {i + 1}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Price select */}
                 <select className="border border-gray-200 rounded-md px-3 py-2 bg-white text-sm">
                   <option>Giá tiền</option>
                   <option>0 - 500k</option>
                   <option>500k - 2 triệu</option>
                 </select>
+
+                {/* Category filter placed to the right of Price */}
+                <div>
+                  <label className="sr-only" htmlFor="category-select">Phân loại</label>
+                  <select
+                    id="category-select"
+                    value={selectedCategory ?? ""}
+                    onChange={(e) => setSelectedCategory(e.target.value || null)}
+                    className="border border-gray-200 rounded-md px-3 py-2 bg-white text-sm"
+                  >
+                    <option value="">Phân loại</option>
+                    <option value="khuyen-mai">Đang khuyến mại</option>
+                    <option value="nhieu-hoc-vien">Nhiều học viên nhất</option>
+                    <option value="khoa-hoc-hot">Khóa học hot</option>
+                  </select>
+                </div>
               </div>
             </div>
 
