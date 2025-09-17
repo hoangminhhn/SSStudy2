@@ -133,7 +133,11 @@ const categories = [
   },
 ];
 
-const Sidebar: React.FC = () => {
+interface SidebarProps {
+  forceOpenAll?: boolean;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ forceOpenAll = false }) => {
   const [activeItem, setActiveItem] = React.useState<string | null>("HSA");
   const [openValue, setOpenValue] = React.useState<string | null>("cat-dgnl");
 
@@ -192,24 +196,17 @@ const Sidebar: React.FC = () => {
           />
         )}
 
-        <Accordion type="single" collapsible value={openValue ?? undefined} onValueChange={(v) => setOpenValue(v ?? null)}>
-          {categories.map((cat) => {
-            const isOpen = openValue === cat.id;
-            return (
+        {/* If forceOpenAll is true (mobile 'Danh mục'), show multiple Accordion with all categories expanded by default.
+            Otherwise keep the original single/collapsible behavior for desktop. */}
+        {forceOpenAll ? (
+          <Accordion type="multiple" defaultValue={categories.map((c) => c.id)}>
+            {categories.map((cat) => (
               <AccordionItem key={cat.id} value={cat.id} className="border-b last:border-b-0">
-                <AccordionTrigger
-                  className={cn(
-                    "group w-full text-left px-2 py-3 rounded-md transition-colors flex items-center justify-between",
-                    isOpen ? "bg-blue-600 text-white shadow-sm" : "bg-white text-gray-800 hover:bg-blue-50 hover:text-gray-900"
-                  )}
-                >
+                <AccordionTrigger className="group w-full text-left px-2 py-3 rounded-md transition-colors flex items-center justify-between bg-white text-gray-800">
                   <div className="flex items-center">
                     <div className="mr-2 w-2 h-8 rounded-l-full bg-transparent" />
-                    <div className={cn("text-sm font-medium", isOpen ? "text-white" : "text-gray-800")}>
-                      {cat.title}
-                    </div>
+                    <div className="text-sm font-medium text-gray-800">{cat.title}</div>
                   </div>
-
                   <span aria-hidden />
                 </AccordionTrigger>
 
@@ -223,7 +220,6 @@ const Sidebar: React.FC = () => {
                             ref={(el) => (itemRefs.current[item] = el)}
                             onClick={() => {
                               setActiveItem(item);
-                              setOpenValue(cat.id);
                             }}
                             className={cn(
                               "w-full text-left px-3 py-2 rounded-md transition-colors flex items-center justify-between",
@@ -239,9 +235,60 @@ const Sidebar: React.FC = () => {
                   </ul>
                 </AccordionContent>
               </AccordionItem>
-            );
-          })}
-        </Accordion>
+            ))}
+          </Accordion>
+        ) : (
+          <Accordion type="single" collapsible value={openValue ?? undefined} onValueChange={(v) => setOpenValue(v ?? null)}>
+            {categories.map((cat) => {
+              const isOpen = openValue === cat.id;
+              return (
+                <AccordionItem key={cat.id} value={cat.id} className="border-b last:border-b-0">
+                  <AccordionTrigger
+                    className={cn(
+                      "group w-full text-left px-2 py-3 rounded-md transition-colors flex items-center justify-between",
+                      isOpen ? "bg-blue-600 text-white shadow-sm" : "bg-white text-gray-800 hover:bg-blue-50 hover:text-gray-900"
+                    )}
+                  >
+                    <div className="flex items-center">
+                      <div className="mr-2 w-2 h-8 rounded-l-full bg-transparent" />
+                      <div className={cn("text-sm font-medium", isOpen ? "text-white" : "text-gray-800")}>
+                        {cat.title}
+                      </div>
+                    </div>
+
+                    <span aria-hidden />
+                  </AccordionTrigger>
+
+                  <AccordionContent className="px-2 pb-3 pt-0">
+                    <ul className="text-sm text-gray-600 space-y-2">
+                      {cat.items.map((item) => {
+                        const selected = item === activeItem;
+                        return (
+                          <li key={item}>
+                            <button
+                              ref={(el) => (itemRefs.current[item] = el)}
+                              onClick={() => {
+                                setActiveItem(item);
+                                setOpenValue(cat.id);
+                              }}
+                              className={cn(
+                                "w-full text-left px-3 py-2 rounded-md transition-colors flex items-center justify-between",
+                                selected ? "text-blue-600 font-semibold" : "text-gray-700 hover:text-blue-600"
+                              )}
+                              aria-current={selected ? "true" : undefined}
+                            >
+                              <span className="truncate">{item}</span>
+                            </button>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </AccordionContent>
+                </AccordionItem>
+              );
+            })}
+          </Accordion>
+        )}
       </div>
     </aside>
   );
@@ -526,7 +573,7 @@ const CourseListingPageV2: React.FC = () => {
 
       {/* Mobile Sheet for categories (left side) */}
       <Sheet open={isCategoryOpen} onOpenChange={setIsCategoryOpen}>
-        {/* Make the left sheet occupy 2/3 of viewport width on mobile */}
+        {/* Make the left sheet occupy 2/3 of viewport width on mobile and force open all categories */}
         <SheetContent side="left" className="w-[66.6667%] sm:max-w-sm">
           <SheetHeader>
             <div className="flex items-center justify-between">
@@ -540,8 +587,8 @@ const CourseListingPageV2: React.FC = () => {
           </SheetHeader>
 
           <div className="p-4">
-            {/* Reuse Sidebar content inside the Sheet for mobile */}
-            <Sidebar />
+            {/* Reuse Sidebar content inside the Sheet for mobile, but force it to open all categories */}
+            <Sidebar forceOpenAll />
           </div>
         </SheetContent>
       </Sheet>
