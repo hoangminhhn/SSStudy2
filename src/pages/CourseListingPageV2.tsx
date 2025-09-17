@@ -6,7 +6,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import BreadcrumbNav from "@/components/layout/BreadcrumbNav";
 import { Card, CardContent } from "@/components/ui/card";
-import { BookOpen, User } from "lucide-react";
+import { BookOpen, User, Filter as FilterIcon, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   Accordion,
@@ -15,6 +15,14 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import TeacherFilter from "@/components/filters/TeacherFilter";
+import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetClose,
+} from "@/components/ui/sheet";
 
 interface Course {
   id: string;
@@ -189,7 +197,6 @@ const Sidebar: React.FC = () => {
             const isOpen = openValue === cat.id;
             return (
               <AccordionItem key={cat.id} value={cat.id} className="border-b last:border-b-0">
-                {/* Render trigger content directly and do NOT add a manual chevron icon (avoids duplicate arrows) */}
                 <AccordionTrigger
                   className={cn(
                     "group w-full text-left px-2 py-3 rounded-md transition-colors flex items-center justify-between",
@@ -203,7 +210,6 @@ const Sidebar: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* No explicit icon here — the AccordionTrigger component/stylesheet will render the single chevron */}
                   <span aria-hidden />
                 </AccordionTrigger>
 
@@ -289,64 +295,103 @@ const CourseListingPageV2: React.FC = () => {
   const [selectedClass, setSelectedClass] = React.useState<string | null>(null); // "Lớp 1" ... "Lớp 12"
   const [selectedCategory, setSelectedCategory] = React.useState<string | null>(null); // phân loại
 
+  // Mobile sheet state
+  const [isFilterOpen, setIsFilterOpen] = React.useState(false);
+
+  const clearFilters = () => {
+    setSelectedTeacher(null);
+    setSelectedClass(null);
+    setSelectedCategory(null);
+  };
+
+  // Render short summary tags for mobile to show active filters
+  const ActiveFilterTags: React.FC = () => {
+    const tags: string[] = [];
+    if (selectedTeacher) tags.push(selectedTeacher);
+    if (selectedClass) tags.push(selectedClass);
+    if (selectedCategory) {
+      if (selectedCategory === "khuyen-mai") tags.push("Đang khuyến mại");
+      if (selectedCategory === "nhieu-hoc-vien") tags.push("Nhiều học viên nhất");
+      if (selectedCategory === "khoa-hoc-hot") tags.push("Khóa học hot");
+    }
+    if (tags.length === 0) {
+      return <div className="text-sm text-gray-500">Không có bộ lọc</div>;
+    }
+    return (
+      <div className="flex items-center gap-2 overflow-auto">
+        {tags.map((t) => (
+          <div key={t} className="text-xs bg-gray-100 text-gray-800 px-2 py-1 rounded-full whitespace-nowrap">
+            {t}
+          </div>
+        ))}
+        <button onClick={clearFilters} className="ml-2 text-xs text-red-600 underline">
+          Xoá
+        </button>
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
       <BreadcrumbNav courseTitle="Khóa học" bgColor="white" variant="v2" />
-      <main className="flex-grow container mx-auto px-4 py-8">
+      <main className="flex-grow container mx-auto px-4 py-6">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <div className="lg:col-span-3">
             <Sidebar />
           </div>
 
           <div className="lg:col-span-9">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-3">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-3">
               <h1 className="text-xl font-semibold text-gray-800">Các Khóa Học (Phiên bản V2)</h1>
-              <div className="flex items-center space-x-3">
-                {/* Teacher filter */}
-                <TeacherFilter
-                  teachers={teacherList}
-                  onSelect={(t) => setSelectedTeacher(t)}
-                />
 
-                {/* Class filter placed to the right of TeacherFilter (select Lớp 1..12) */}
-                <div>
-                  <label className="sr-only" htmlFor="class-select">Lớp</label>
-                  <select
-                    id="class-select"
-                    value={selectedClass ?? ""}
-                    onChange={(e) => setSelectedClass(e.target.value || null)}
-                    className="border border-gray-200 rounded-md px-3 py-2 bg-white text-sm"
-                  >
-                    <option value="">Lớp</option>
-                    {Array.from({ length: 12 }).map((_, i) => (
-                      <option key={i} value={`Lớp ${i + 1}`}>Lớp {i + 1}</option>
-                    ))}
-                  </select>
-                </div>
+              {/* Desktop controls */}
+              <div className="hidden md:flex items-center space-x-3">
+                <TeacherFilter teachers={teacherList} onSelect={(t) => setSelectedTeacher(t)} />
 
-                {/* Price select */}
+                <select
+                  id="class-select"
+                  value={selectedClass ?? ""}
+                  onChange={(e) => setSelectedClass(e.target.value || null)}
+                  className="border border-gray-200 rounded-md px-3 py-2 bg-white text-sm"
+                >
+                  <option value="">Lớp</option>
+                  {Array.from({ length: 12 }).map((_, i) => (
+                    <option key={i} value={`Lớp ${i + 1}`}>Lớp {i + 1}</option>
+                  ))}
+                </select>
+
                 <select className="border border-gray-200 rounded-md px-3 py-2 bg-white text-sm">
                   <option>Giá tiền</option>
                   <option>0 - 500k</option>
                   <option>500k - 2 triệu</option>
                 </select>
 
-                {/* Category filter placed to the right of Price */}
-                <div>
-                  <label className="sr-only" htmlFor="category-select">Phân loại</label>
-                  <select
-                    id="category-select"
-                    value={selectedCategory ?? ""}
-                    onChange={(e) => setSelectedCategory(e.target.value || null)}
-                    className="border border-gray-200 rounded-md px-3 py-2 bg-white text-sm"
-                  >
-                    <option value="">Phân loại</option>
-                    <option value="khuyen-mai">Đang khuyến mại</option>
-                    <option value="nhieu-hoc-vien">Nhiều học viên nhất</option>
-                    <option value="khoa-hoc-hot">Khóa học hot</option>
-                  </select>
+                <select
+                  id="category-select"
+                  value={selectedCategory ?? ""}
+                  onChange={(e) => setSelectedCategory(e.target.value || null)}
+                  className="border border-gray-200 rounded-md px-3 py-2 bg-white text-sm"
+                >
+                  <option value="">Phân loại</option>
+                  <option value="khuyen-mai">Đang khuyến mại</option>
+                  <option value="nhieu-hoc-vien">Nhiều học viên nhất</option>
+                  <option value="khoa-hoc-hot">Khóa học hot</option>
+                </select>
+              </div>
+
+              {/* Mobile: filter button + active tags */}
+              <div className="flex items-center gap-2 w-full md:hidden">
+                <div className="flex-1">
+                  <ActiveFilterTags />
                 </div>
+                <Button
+                  onClick={() => setIsFilterOpen(true)}
+                  className="flex items-center gap-2 rounded-full px-3 py-2"
+                >
+                  <FilterIcon size={16} />
+                  Bộ lọc
+                </Button>
               </div>
             </div>
 
@@ -358,7 +403,7 @@ const CourseListingPageV2: React.FC = () => {
                 ))}
             </div>
 
-            <div className="mt-8 flex items-center justify-center space-x-2">
+            <div className="mt-6 flex items-center justify-center space-x-2">
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 className={cn("px-3 py-1 rounded-md border", page === 1 ? "bg-white text-gray-400 border-gray-200" : "bg-white text-gray-700 border-gray-300")}
@@ -392,7 +437,79 @@ const CourseListingPageV2: React.FC = () => {
           </div>
         </div>
       </main>
+
       <Footer />
+
+      {/* Mobile Sheet for filters */}
+      <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+        <SheetContent side="right" className="w-full sm:max-w-sm">
+          <SheetHeader>
+            <div className="flex items-center justify-between">
+              <SheetTitle>Bộ lọc</SheetTitle>
+              <SheetClose asChild>
+                <button aria-label="Đóng bộ lọc" className="text-gray-600 hover:text-gray-800">
+                  <X />
+                </button>
+              </SheetClose>
+            </div>
+          </SheetHeader>
+
+          <div className="p-4 space-y-4">
+            <div>
+              <div className="text-sm font-medium text-gray-700 mb-2">Giảng viên</div>
+              <TeacherFilter teachers={teacherList} onSelect={(t) => setSelectedTeacher(t)} />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-gray-700 mb-2 block">Lớp</label>
+              <select
+                id="mobile-class-select"
+                value={selectedClass ?? ""}
+                onChange={(e) => setSelectedClass(e.target.value || null)}
+                className="w-full border border-gray-200 rounded-md px-3 py-2 bg-white text-sm"
+              >
+                <option value="">Lớp</option>
+                {Array.from({ length: 12 }).map((_, i) => (
+                  <option key={i} value={`Lớp ${i + 1}`}>Lớp {i + 1}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-gray-700 mb-2 block">Giá tiền</label>
+              <select className="w-full border border-gray-200 rounded-md px-3 py-2 bg-white text-sm">
+                <option>Giá tiền</option>
+                <option>0 - 500k</option>
+                <option>500k - 2 triệu</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-gray-700 mb-2 block">Phân loại</label>
+              <select
+                id="mobile-category-select"
+                value={selectedCategory ?? ""}
+                onChange={(e) => setSelectedCategory(e.target.value || null)}
+                className="w-full border border-gray-200 rounded-md px-3 py-2 bg-white text-sm"
+              >
+                <option value="">Phân loại</option>
+                <option value="khuyen-mai">Đang khuyến mại</option>
+                <option value="nhieu-hoc-vien">Nhiều học viên nhất</option>
+                <option value="khoa-hoc-hot">Khóa học hot</option>
+              </select>
+            </div>
+
+            <div className="flex items-center gap-3 mt-2">
+              <Button variant="outline" className="flex-1" onClick={clearFilters}>
+                Xoá
+              </Button>
+              <SheetClose asChild>
+                <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white">Áp dụng</Button>
+              </SheetClose>
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 };
