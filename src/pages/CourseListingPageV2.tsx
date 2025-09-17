@@ -226,7 +226,6 @@ const Sidebar: React.FC = () => {
                             aria-current={selected ? "true" : undefined}
                           >
                             <span className="truncate">{item}</span>
-                            {selected && <span className="ml-2 text-xs opacity-80">✓</span>}
                           </button>
                         </li>
                       );
