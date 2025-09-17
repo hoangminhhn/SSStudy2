@@ -133,11 +133,15 @@ const categories = [
   },
 ];
 
-const Sidebar: React.FC = () => {
+/**
+ * Sidebar component (kept, but no longer rendered as a fixed left column).
+ * It will be used inside the 'Danh mục' Sheet (left drawer).
+ */
+const Sidebar: React.FC<{ onSelect?: (item: string) => void }> = ({ onSelect }) => {
   const [activeItem, setActiveItem] = React.useState<string | null>("HSA");
   const [openValue, setOpenValue] = React.useState<string | null>("cat-dgnl");
 
-  // Refs to measure item positions
+  // Refs to measure item positions (kept for visual indicator)
   const containerRef = React.useRef<HTMLDivElement | null>(null);
   const itemRefs = React.useRef<Record<string, HTMLButtonElement | null>>({});
 
@@ -175,75 +179,74 @@ const Sidebar: React.FC = () => {
   }, [activeItem, openValue]);
 
   return (
-    <aside className="hidden lg:block w-full max-w-[260px]">
-      <div
-        ref={containerRef}
-        className="relative bg-white rounded-lg shadow-sm p-3 sticky top-20 h-[calc(100vh-5rem)] overflow-auto"
-        aria-label="Sidebar danh mục khóa học"
-      >
-        {indicatorStyle && (
-          <div
-            aria-hidden
-            className="absolute -left-2 w-2 rounded-l-full bg-blue-600 transition-all duration-200"
-            style={{
-              top: indicatorStyle.top,
-              height: indicatorStyle.height,
-            }}
-          />
-        )}
+    <div
+      ref={containerRef}
+      className="relative bg-white rounded-lg shadow-sm p-3 h-[70vh] overflow-auto"
+      aria-label="Sidebar danh mục khóa học"
+    >
+      {indicatorStyle && (
+        <div
+          aria-hidden
+          className="absolute -left-2 w-2 rounded-l-full bg-blue-600 transition-all duration-200"
+          style={{
+            top: indicatorStyle.top,
+            height: indicatorStyle.height,
+          }}
+        />
+      )}
 
-        <Accordion type="single" collapsible value={openValue ?? undefined} onValueChange={(v) => setOpenValue(v ?? null)}>
-          {categories.map((cat) => {
-            const isOpen = openValue === cat.id;
-            return (
-              <AccordionItem key={cat.id} value={cat.id} className="border-b last:border-b-0">
-                <AccordionTrigger
-                  className={cn(
-                    "group w-full text-left px-2 py-3 rounded-md transition-colors flex items-center justify-between",
-                    isOpen ? "bg-blue-600 text-white shadow-sm" : "bg-white text-gray-800 hover:bg-blue-50 hover:text-gray-900"
-                  )}
-                >
-                  <div className="flex items-center">
-                    <div className="mr-2 w-2 h-8 rounded-l-full bg-transparent" />
-                    <div className={cn("text-sm font-medium", isOpen ? "text-white" : "text-gray-800")}>
-                      {cat.title}
-                    </div>
+      <Accordion type="single" collapsible value={openValue ?? undefined} onValueChange={(v) => setOpenValue(v ?? null)}>
+        {categories.map((cat) => {
+          const isOpen = openValue === cat.id;
+          return (
+            <AccordionItem key={cat.id} value={cat.id} className="border-b last:border-b-0">
+              <AccordionTrigger
+                className={cn(
+                  "group w-full text-left px-2 py-3 rounded-md transition-colors flex items-center justify-between",
+                  isOpen ? "bg-blue-600 text-white shadow-sm" : "bg-white text-gray-800 hover:bg-blue-50 hover:text-gray-900"
+                )}
+              >
+                <div className="flex items-center">
+                  <div className="mr-2 w-2 h-8 rounded-l-full bg-transparent" />
+                  <div className={cn("text-sm font-medium", isOpen ? "text-white" : "text-gray-800")}>
+                    {cat.title}
                   </div>
+                </div>
 
-                  <span aria-hidden />
-                </AccordionTrigger>
+                <span aria-hidden />
+              </AccordionTrigger>
 
-                <AccordionContent className="px-2 pb-3 pt-0">
-                  <ul className="text-sm text-gray-600 space-y-2">
-                    {cat.items.map((item) => {
-                      const selected = item === activeItem;
-                      return (
-                        <li key={item}>
-                          <button
-                            ref={(el) => (itemRefs.current[item] = el)}
-                            onClick={() => {
-                              setActiveItem(item);
-                              setOpenValue(cat.id);
-                            }}
-                            className={cn(
-                              "w-full text-left px-3 py-2 rounded-md transition-colors flex items-center justify-between",
-                              selected ? "text-blue-600 font-semibold" : "text-gray-700 hover:text-blue-600"
-                            )}
-                            aria-current={selected ? "true" : undefined}
-                          >
-                            <span className="truncate">{item}</span>
-                          </button>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </AccordionContent>
-              </AccordionItem>
-            );
-          })}
-        </Accordion>
-      </div>
-    </aside>
+              <AccordionContent className="px-2 pb-3 pt-0">
+                <ul className="text-sm text-gray-600 space-y-2">
+                  {cat.items.map((item) => {
+                    const selected = item === activeItem;
+                    return (
+                      <li key={item}>
+                        <button
+                          ref={(el) => (itemRefs.current[item] = el)}
+                          onClick={() => {
+                            setActiveItem(item);
+                            setOpenValue(cat.id);
+                            onSelect?.(item);
+                          }}
+                          className={cn(
+                            "w-full text-left px-3 py-2 rounded-md transition-colors flex items-center justify-between",
+                            selected ? "text-blue-600 font-semibold" : "text-gray-700 hover:text-blue-600"
+                          )}
+                          aria-current={selected ? "true" : undefined}
+                        >
+                          <span className="truncate">{item}</span>
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </AccordionContent>
+            </AccordionItem>
+          );
+        })}
+      </Accordion>
+    </div>
   );
 };
 
@@ -295,7 +298,7 @@ const CourseListingPageV2: React.FC = () => {
   const [selectedClass, setSelectedClass] = React.useState<string | null>(null); // "Lớp 1" ... "Lớp 12"
   const [selectedCategory, setSelectedCategory] = React.useState<string | null>(null); // phân loại
 
-  // Mobile sheet states
+  // Mobile & desktop sheet states
   const [isFilterOpen, setIsFilterOpen] = React.useState(false);
   const [isCategoryOpen, setIsCategoryOpen] = React.useState(false);
 
@@ -348,55 +351,58 @@ const CourseListingPageV2: React.FC = () => {
       <Header />
       <BreadcrumbNav courseTitle="Khóa học" bgColor="white" variant="v2" />
       <main className="flex-grow container mx-auto px-4 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <div className="lg:col-span-3">
-            <Sidebar />
-          </div>
+        {/* Removed the fixed left Sidebar column — Sidebar is now inside the 'Danh mục' sheet */}
+        <div className="mb-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <h1 className="text-xl font-semibold text-gray-800">Các Khóa Học (Phiên bản V2)</h1>
 
-          <div className="lg:col-span-9">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-3">
-              <h1 className="text-xl font-semibold text-gray-800">Các Khóa Học (Phiên bản V2)</h1>
-
-              {/* Desktop controls */}
-              <div className="hidden md:flex items-center space-x-3">
+            {/* Controls row: TeacherFilter, Class select, Price, Category select, Danh mục button */}
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="hidden md:block">
                 <TeacherFilter teachers={teacherList} onSelect={(t) => setSelectedTeacher(t)} />
-
-                <select
-                  id="class-select"
-                  value={selectedClass ?? ""}
-                  onChange={(e) => setSelectedClass(e.target.value || null)}
-                  className="border border-gray-200 rounded-md px-3 py-2 bg-white text-sm"
-                >
-                  <option value="">Lớp</option>
-                  {Array.from({ length: 12 }).map((_, i) => (
-                    <option key={i} value={`Lớp ${i + 1}`}>Lớp {i + 1}</option>
-                  ))}
-                </select>
-
-                <select className="border border-gray-200 rounded-md px-3 py-2 bg-white text-sm">
-                  <option>Giá tiền</option>
-                  <option>0 - 500k</option>
-                  <option>500k - 2 triệu</option>
-                </select>
-
-                <select
-                  id="category-select"
-                  value={selectedCategory ?? ""}
-                  onChange={(e) => setSelectedCategory(e.target.value || null)}
-                  className="border border-gray-200 rounded-md px-3 py-2 bg-white text-sm"
-                >
-                  <option value="">Phân loại</option>
-                  <option value="khuyen-mai">Đang khuyến mại</option>
-                  <option value="nhieu-hoc-vien">Nhiều học viên nhất</option>
-                  <option value="khoa-hoc-hot">Khóa học hot</option>
-                </select>
               </div>
 
-              {/* Mobile: filter button + active tags */}
-              <div className="flex items-center gap-2 w-full md:hidden">
-                <div className="flex-1">
-                  <ActiveFilterTags />
-                </div>
+              <select
+                id="class-select"
+                value={selectedClass ?? ""}
+                onChange={(e) => setSelectedClass(e.target.value || null)}
+                className="border border-gray-200 rounded-md px-3 py-2 bg-white text-sm"
+              >
+                <option value="">Lớp</option>
+                {Array.from({ length: 12 }).map((_, i) => (
+                  <option key={i} value={`Lớp ${i + 1}`}>Lớp {i + 1}</option>
+                ))}
+              </select>
+
+              <select className="border border-gray-200 rounded-md px-3 py-2 bg-white text-sm">
+                <option>Giá tiền</option>
+                <option>0 - 500k</option>
+                <option>500k - 2 triệu</option>
+              </select>
+
+              <select
+                id="category-select"
+                value={selectedCategory ?? ""}
+                onChange={(e) => setSelectedCategory(e.target.value || null)}
+                className="border border-gray-200 rounded-md px-3 py-2 bg-white text-sm"
+              >
+                <option value="">Phân loại</option>
+                <option value="khuyen-mai">Đang khuyến mại</option>
+                <option value="nhieu-hoc-vien">Nhiều học viên nhất</option>
+                <option value="khoa-hoc-hot">Khóa học hot</option>
+              </select>
+
+              {/* Danh mục button (opens left sheet containing Sidebar). Visible on all sizes so users can open it when needed. */}
+              <Button
+                variant="outline"
+                className="flex items-center gap-2"
+                onClick={() => setIsCategoryOpen(true)}
+              >
+                Danh mục
+              </Button>
+
+              {/* Mobile: Filter button opens right sheet with quick filters */}
+              <div className="md:hidden ml-auto">
                 <Button
                   onClick={() => setIsFilterOpen(true)}
                   className="flex items-center gap-2 rounded-full px-3 py-2"
@@ -406,53 +412,59 @@ const CourseListingPageV2: React.FC = () => {
                 </Button>
               </div>
             </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {displayed
-                .filter((c) => (selectedTeacher ? c.teacher === selectedTeacher : true))
-                .map((c) => (
-                  <CourseCard key={c.id} course={c} />
-                ))}
-            </div>
-
-            <div className="mt-6 flex items-center justify-center space-x-2">
-              <button
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                className={cn("px-3 py-1 rounded-md border", page === 1 ? "bg-white text-gray-400 border-gray-200" : "bg-white text-gray-700 border-gray-300")}
-                disabled={page === 1}
-              >
-                Prev
-              </button>
-              {Array.from({ length: totalPages }).map((_, i) => {
-                const n = i + 1;
-                return (
-                  <button
-                    key={n}
-                    onClick={() => setPage(n)}
-                    className={cn(
-                      "px-3 py-1 rounded-md border",
-                      page === n ? "bg-blue-600 text-white border-blue-600" : "bg-white text-gray-700 border-gray-300"
-                    )}
-                  >
-                    {n}
-                  </button>
-                );
-              })}
-              <button
-                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                className={cn("px-3 py-1 rounded-md border", page === totalPages ? "bg-white text-gray-400 border-gray-200" : "bg-white text-gray-700 border-gray-300")}
-                disabled={page === totalPages}
-              >
-                Next
-              </button>
-            </div>
           </div>
+
+          {/* On small screens show active tags or Danh mục in place of the above (kept for backward compatibility) */}
+          <div className="mt-3 md:hidden">
+            <ActiveFilterTags />
+          </div>
+        </div>
+
+        {/* Product grid — now full width because sidebar was removed */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {displayed
+            .filter((c) => (selectedTeacher ? c.teacher === selectedTeacher : true))
+            .map((c) => (
+              <CourseCard key={c.id} course={c} />
+            ))}
+        </div>
+
+        <div className="mt-6 flex items-center justify-center space-x-2">
+          <button
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            className={cn("px-3 py-1 rounded-md border", page === 1 ? "bg-white text-gray-400 border-gray-200" : "bg-white text-gray-700 border-gray-300")}
+            disabled={page === 1}
+          >
+            Prev
+          </button>
+          {Array.from({ length: totalPages }).map((_, i) => {
+            const n = i + 1;
+            return (
+              <button
+                key={n}
+                onClick={() => setPage(n)}
+                className={cn(
+                  "px-3 py-1 rounded-md border",
+                  page === n ? "bg-blue-600 text-white border-blue-600" : "bg-white text-gray-700 border-gray-300"
+                )}
+              >
+                {n}
+              </button>
+            );
+          })}
+          <button
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            className={cn("px-3 py-1 rounded-md border", page === totalPages ? "bg-white text-gray-400 border-gray-200" : "bg-white text-gray-700 border-gray-300")}
+            disabled={page === totalPages}
+          >
+            Next
+          </button>
         </div>
       </main>
 
       <Footer />
 
-      {/* Mobile Sheet for filters */}
+      {/* Right Sheet for quick filters (mobile) */}
       <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
         <SheetContent side="right" className="w-full sm:max-w-sm">
           <SheetHeader>
@@ -523,7 +535,7 @@ const CourseListingPageV2: React.FC = () => {
         </SheetContent>
       </Sheet>
 
-      {/* Mobile Sheet for categories (left side) */}
+      {/* Left Sheet for 'Danh mục' — contains the Sidebar (previous desktop left column) */}
       <Sheet open={isCategoryOpen} onOpenChange={setIsCategoryOpen}>
         <SheetContent side="left" className="w-full sm:max-w-sm">
           <SheetHeader>
@@ -538,8 +550,12 @@ const CourseListingPageV2: React.FC = () => {
           </SheetHeader>
 
           <div className="p-4">
-            {/* Reuse Sidebar content inside the Sheet for mobile */}
-            <Sidebar />
+            <Sidebar onSelect={(item) => {
+              // when user selects a category item from the Sidebar, we can optionally apply it
+              // e.g., set selectedCategory or selectedTeacher depending on mapping (kept simple here)
+              setSelectedCategory(item);
+              setIsCategoryOpen(false);
+            }} />
           </div>
         </SheetContent>
       </Sheet>
