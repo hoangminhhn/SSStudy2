@@ -295,8 +295,9 @@ const CourseListingPageV2: React.FC = () => {
   const [selectedClass, setSelectedClass] = React.useState<string | null>(null); // "Lớp 1" ... "Lớp 12"
   const [selectedCategory, setSelectedCategory] = React.useState<string | null>(null); // phân loại
 
-  // Mobile sheet state
+  // Mobile sheet states
   const [isFilterOpen, setIsFilterOpen] = React.useState(false);
+  const [isCategoryOpen, setIsCategoryOpen] = React.useState(false);
 
   const clearFilters = () => {
     setSelectedTeacher(null);
@@ -315,7 +316,18 @@ const CourseListingPageV2: React.FC = () => {
       if (selectedCategory === "khoa-hoc-hot") tags.push("Khóa học hot");
     }
     if (tags.length === 0) {
-      return <div className="text-sm text-gray-500">Không có bộ lọc</div>;
+      // When no filter active, show button to open categories (sidebar)
+      return (
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setIsCategoryOpen(true)}
+            className="text-sm bg-white border border-gray-200 rounded-md px-3 py-2 hover:bg-gray-50 flex items-center gap-2"
+            aria-label="Mở danh mục"
+          >
+            Danh mục
+          </button>
+        </div>
+      );
     }
     return (
       <div className="flex items-center gap-2 overflow-auto">
@@ -507,6 +519,27 @@ const CourseListingPageV2: React.FC = () => {
                 <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white">Áp dụng</Button>
               </SheetClose>
             </div>
+          </div>
+        </SheetContent>
+      </Sheet>
+
+      {/* Mobile Sheet for categories (left side) */}
+      <Sheet open={isCategoryOpen} onOpenChange={setIsCategoryOpen}>
+        <SheetContent side="left" className="w-full sm:max-w-sm">
+          <SheetHeader>
+            <div className="flex items-center justify-between">
+              <SheetTitle>Danh mục</SheetTitle>
+              <SheetClose asChild>
+                <button aria-label="Đóng danh mục" className="text-gray-600 hover:text-gray-800">
+                  <X />
+                </button>
+              </SheetClose>
+            </div>
+          </SheetHeader>
+
+          <div className="p-4">
+            {/* Reuse Sidebar content inside the Sheet for mobile */}
+            <Sidebar />
           </div>
         </SheetContent>
       </Sheet>
