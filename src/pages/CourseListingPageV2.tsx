@@ -208,10 +208,11 @@ const Sidebar: React.FC<SidebarProps> = ({ forceOpenAll = false }) => {
           <Accordion type="multiple" defaultValue={categories.map((c) => c.id)}>
             {categories.map((cat) => (
               <AccordionItem key={cat.id} value={cat.id} className="border-b last:border-b-0">
+                {/* prevent heading wrap */}
                 <AccordionTrigger className="group w-full text-left px-2 py-3 rounded-md transition-colors flex items-center justify-between bg-white text-gray-800">
-                  <div className="flex items-center">
+                  <div className="flex items-center whitespace-nowrap">
                     <div className="mr-2 w-2 h-8 rounded-l-full bg-transparent" />
-                    <div className="text-sm font-medium text-gray-800">{cat.title}</div>
+                    <div className="text-sm font-medium text-gray-800 whitespace-nowrap">{cat.title}</div>
                   </div>
                   <span aria-hidden />
                 </AccordionTrigger>
@@ -233,7 +234,7 @@ const Sidebar: React.FC<SidebarProps> = ({ forceOpenAll = false }) => {
                             )}
                             aria-current={selected ? "true" : undefined}
                           >
-                            <span className="truncate">{item}</span>
+                            <span className="whitespace-nowrap">{item}</span>
                           </button>
                         </li>
                       );
@@ -255,9 +256,9 @@ const Sidebar: React.FC<SidebarProps> = ({ forceOpenAll = false }) => {
                       isOpen ? "bg-blue-600 text-white shadow-sm" : "bg-white text-gray-800 hover:bg-blue-50 hover:text-gray-900"
                     )}
                   >
-                    <div className="flex items-center">
+                    <div className="flex items-center whitespace-nowrap">
                       <div className="mr-2 w-2 h-8 rounded-l-full bg-transparent" />
-                      <div className={cn("text-sm font-medium", isOpen ? "text-white" : "text-gray-800")}>
+                      <div className={cn("text-sm font-medium whitespace-nowrap", isOpen ? "text-white" : "text-gray-800")}>
                         {cat.title}
                       </div>
                     </div>
@@ -283,7 +284,7 @@ const Sidebar: React.FC<SidebarProps> = ({ forceOpenAll = false }) => {
                               )}
                               aria-current={selected ? "true" : undefined}
                             >
-                              <span className="truncate">{item}</span>
+                              <span className="whitespace-nowrap">{item}</span>
                             </button>
                           </li>
                         );
@@ -579,8 +580,8 @@ const CourseListingPageV2: React.FC = () => {
 
       {/* Mobile Sheet for categories (left side) */}
       <Sheet open={isCategoryOpen} onOpenChange={setIsCategoryOpen}>
-        {/* Make the left sheet occupy 2/3 of viewport width on mobile and force open all categories */}
-        <SheetContent side="left" className="w-[66.6667%] sm:max-w-sm">
+        {/* Widened left sheet to 85% and larger sm max width to reduce wrapping of long titles */}
+        <SheetContent side="left" className="w-[85%] sm:max-w-md">
           <SheetHeader>
             <div className="flex items-center justify-between">
               <SheetTitle>Danh mục</SheetTitle>
