@@ -5,8 +5,7 @@ import { Link } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import BreadcrumbNav from "@/components/layout/BreadcrumbNav";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { BookOpen, User, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -128,7 +127,7 @@ const categories = [
 
 const Sidebar: React.FC = () => {
   const [activeItem, setActiveItem] = React.useState<string | null>("HSA");
-  // We'll keep an Accordion open by default for first category
+  // Keep an Accordion open by default for first category
   const [openValue, setOpenValue] = React.useState<string | null>("cat-dgnl");
 
   // Refs to measure item positions
@@ -147,11 +146,15 @@ const Sidebar: React.FC = () => {
         return;
       }
 
-      // offsetTop relative to the nearest positioned ancestor (containerRef will be relative)
-      const relativeTop = (el.offsetTop ?? 0) + (el.offsetHeight ?? 0) / 2 - 20; // center the pill (~40px height)
+      // Compute top relative to container
+      const containerRect = container.getBoundingClientRect();
+      const elRect = el.getBoundingClientRect();
+      const top = elRect.top - containerRect.top + container.scrollTop;
       const height = Math.max(32, Math.min(48, el.offsetHeight ?? 36));
+      // center the indicator vertically to the item
+      const centeredTop = top + (el.offsetHeight / 2) - height / 2;
 
-      setIndicatorStyle({ top: relativeTop, height });
+      setIndicatorStyle({ top: centeredTop, height });
     };
 
     // measure after paint
@@ -160,9 +163,13 @@ const Sidebar: React.FC = () => {
     const ro = new ResizeObserver(() => update());
     if (containerRef.current) ro.observe(containerRef.current);
     window.addEventListener("resize", update);
+    // update when container scrolls (so indicator follows)
+    const onScroll = () => update();
+    containerRef.current?.addEventListener("scroll", onScroll);
     return () => {
       ro.disconnect();
       window.removeEventListener("resize", update);
+      containerRef.current?.removeEventListener("scroll", onScroll);
     };
   }, [activeItem, openValue]);
 
@@ -186,56 +193,64 @@ const Sidebar: React.FC = () => {
         )}
 
         <Accordion type="single" collapsible value={openValue ?? undefined} onValueChange={(v) => setOpenValue(v ?? null)}>
-          {categories.map((cat) => (
-            <AccordionItem key={cat.id} value={cat.id} className="border-b last:border-b-0">
-              <AccordionTrigger className="px-2 py-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    {/* Keep a small visual left area (used only for spacing) */}
-                    <div className={cn("mr-2 w-2 h-8 rounded-l-full", cat.items.includes(activeItem || "") ? "bg-blue-600" : "bg-transparent")} />
-                    <div
-                      className={cn(
-                        "text-sm font-medium",
-                        cat.items.includes(activeItem || "") ? "text-blue-700" : "text-gray-800"
-                      )}
-                    >
-                      {cat.title}
+          {categories.map((cat) => {
+            const isOpen = openValue === cat.id;
+            return (
+              <AccordionItem key={cat.id} value={cat.id} className="border-b last:border-b-0">
+                {/* Parent header: show as blue pill when open or hovered */}
+                <AccordionTrigger asChild>
+                  <button
+                    className={cn(
+                      "group w-full text-left px-2 py-3 rounded-md transition-colors flex items-center justify-between",
+                      isOpen
+                        ? "bg-blue-600 text-white shadow-sm"
+                        : "bg-white text-gray-800 hover:bg-blue-50 hover:text-gray-900"
+                    )}
+                    onClick={() => setOpenValue(isOpen ? null : cat.id)}
+                    aria-expanded={isOpen}
+                  >
+                    <div className="flex items-center">
+                      {/* small left spacer to align with indicator visually */}
+                      <div className="mr-2 w-2 h-8 rounded-l-full bg-transparent" />
+                      <div className={cn("text-sm font-medium", isOpen ? "text-white" : "text-gray-800")}>
+                        {cat.title}
+                      </div>
                     </div>
-                  </div>
-                  <ChevronDown className="h-4 w-4 text-gray-400" />
-                </div>
-              </AccordionTrigger>
+                    <ChevronDown className={cn("h-4 w-4", isOpen ? "text-white" : "text-gray-400")} />
+                  </button>
+                </AccordionTrigger>
 
-              <AccordionContent className="px-2 pb-3 pt-0">
-                <ul className="text-sm text-gray-600 space-y-2">
-                  {cat.items.map((item) => {
-                    const selected = item === activeItem;
-                    return (
-                      <li key={item}>
-                        <button
-                          ref={(el) => (itemRefs.current[item] = el)}
-                          onClick={() => {
-                            setActiveItem(item);
-                            setOpenValue(cat.id);
-                          }}
-                          className={cn(
-                            "w-full text-left px-3 py-2 rounded-md transition-colors flex items-center justify-between",
-                            selected
-                              ? "bg-blue-600 text-white"
-                              : "hover:bg-gray-50 text-gray-700"
-                          )}
-                          aria-current={selected ? "true" : undefined}
-                        >
-                          <span className={cn("truncate", selected ? "font-semibold" : "")}>{item}</span>
-                          {selected && <span className="ml-2 text-xs opacity-80">✓</span>}
-                        </button>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </AccordionContent>
-            </AccordionItem>
-          ))}
+                <AccordionContent className="px-2 pb-3 pt-0">
+                  <ul className="text-sm text-gray-600 space-y-2">
+                    {cat.items.map((item) => {
+                      const selected = item === activeItem;
+                      return (
+                        <li key={item}>
+                          <button
+                            ref={(el) => (itemRefs.current[item] = el)}
+                            onClick={() => {
+                              setActiveItem(item);
+                              setOpenValue(cat.id);
+                            }}
+                            className={cn(
+                              "w-full text-left px-3 py-2 rounded-md transition-colors flex items-center justify-between",
+                              selected
+                                ? "text-blue-600 font-semibold"
+                                : "text-gray-700 hover:text-blue-600"
+                            )}
+                            aria-current={selected ? "true" : undefined}
+                          >
+                            <span className="truncate">{item}</span>
+                            {selected && <span className="ml-2 text-xs opacity-80">✓</span>}
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </AccordionContent>
+              </AccordionItem>
+            );
+          })}
         </Accordion>
       </div>
     </aside>
