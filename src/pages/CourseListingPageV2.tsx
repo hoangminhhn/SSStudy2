@@ -525,7 +525,8 @@ const CourseListingPageV2: React.FC = () => {
 
       {/* Mobile Sheet for categories (left side) */}
       <Sheet open={isCategoryOpen} onOpenChange={setIsCategoryOpen}>
-        <SheetContent side="left" className="w-full sm:max-w-sm">
+        {/* Make the left sheet occupy 2/3 of viewport width on mobile */}
+        <SheetContent side="left" className="w-[66.6667%] sm:max-w-sm">
           <SheetHeader>
             <div className="flex items-center justify-between">
               <SheetTitle>Danh mục</SheetTitle>
