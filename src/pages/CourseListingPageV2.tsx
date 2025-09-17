@@ -454,7 +454,8 @@ const CourseListingPageV2: React.FC = () => {
 
       {/* Mobile Sheet for filters */}
       <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
-        <SheetContent side="right" className="w-full sm:max-w-sm">
+        {/* Make the right sheet occupy 2/3 of viewport width on mobile */}
+        <SheetContent side="right" className="w-[66.6667%] sm:max-w-sm">
           <SheetHeader>
             <div className="flex items-center justify-between">
               <SheetTitle>Bộ lọc</SheetTitle>
