@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import BreadcrumbNav from "@/components/layout/BreadcrumbNav";
@@ -10,6 +10,13 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { showSuccess } from "@/utils/toast";
 import { Star, Download, BookOpen } from "lucide-react";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetClose,
+} from "@/components/ui/sheet";
 
 type Doc = {
   id: string;
@@ -19,8 +26,8 @@ type Doc = {
   summary?: string;
   free: boolean;
   url?: string;
-  category?: string; // danh mục tài liệu (ví dụ: Tổng hợp, Luyện đề, Tham khảo)
-  grade?: string; // cấp học (Ví dụ: Lớp 10, Lớp 11, Lớp 12)
+  category?: string;
+  grade?: string;
 };
 
 const FREE_DOCS: Doc[] = [
@@ -58,7 +65,6 @@ const FREE_DOCS: Doc[] = [
 
 const ALL_DOCS: Doc[] = [
   ...FREE_DOCS,
-  // course-specific docs (require purchase)
   {
     id: "c-math-1",
     title: "Bộ đề chuyên đề Toán - Buổi 1",
@@ -104,18 +110,20 @@ export default function DocumentsPage() {
   const [subjectFilter, setSubjectFilter] = useState<string>("all");
   const [courseFilter, setCourseFilter] = useState<string>("all");
   const [onlyRecent, setOnlyRecent] = useState(false);
-  const [categoryFilter, setCategoryFilter] = useState<string>("all"); // NEW
-  const [gradeFilter, setGradeFilter] = useState<string>("all"); // NEW
+  const [categoryFilter, setCategoryFilter] = useState<string>("all");
+  const [gradeFilter, setGradeFilter] = useState<string>("all");
 
-  // Simulated auth state
+  // Simulated auth
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userCourses] = useState(DEMO_USER_COURSES);
 
-  // Favorites persisted
+  // persistent states
   const [favorites, setFavorites] = useState<Record<string, boolean>>({});
-
-  // Recent accessed (simple list of doc ids)
   const [recent, setRecent] = useState<string[]>([]);
+
+  // UI helpers
+  const purchasedRef = useRef<HTMLDivElement | null>(null);
+  const [isMyDocsOpen, setIsMyDocsOpen] = useState(false); // mobile sheet
 
   useEffect(() => {
     const rawFav = localStorage.getItem("docs_favorites");
@@ -144,51 +152,14 @@ export default function DocumentsPage() {
     localStorage.setItem("docs_recent", JSON.stringify(recent.slice(0, 20)));
   }, [recent]);
 
-  const subjects = useMemo(() => {
-    const s = Array.from(new Set(ALL_DOCS.map((d) => d.subject)));
-    return ["all", ...s];
-  }, []);
+  const subjects = useMemo(() => ["all", ...Array.from(new Set(ALL_DOCS.map((d) => d.subject)))], []);
+  const categories = useMemo(() => ["all", ...Array.from(new Set(ALL_DOCS.map((d) => d.category).filter(Boolean) as string[]))], []);
+  const grades = useMemo(() => ["all", ...Array.from(new Set(ALL_DOCS.map((d) => d.grade).filter(Boolean) as string[]))], []);
+  const courses = useMemo(() => ["all", ...Array.from(new Set(ALL_DOCS.map((d) => d.course).filter(Boolean) as string[]))], []);
 
-  const categories = useMemo(() => {
-    const c = Array.from(new Set(ALL_DOCS.map((d) => d.category).filter(Boolean) as string[]));
-    return ["all", ...c];
-  }, []);
-
-  const grades = useMemo(() => {
-    const g = Array.from(new Set(ALL_DOCS.map((d) => d.grade).filter(Boolean) as string[]));
-    return ["all", ...g];
-  }, []);
-
-  const courses = useMemo(() => {
-    const c = Array.from(new Set(ALL_DOCS.map((d) => d.course).filter(Boolean) as string[]));
-    return ["all", ...c];
-  }, []);
-
-  const handleToggleFav = (id: string) => {
-    setFavorites((prev) => {
-      const next = { ...prev, [id]: !prev[id] };
-      showSuccess(next[id] ? "Đã thêm vào yêu thích" : "Đã gỡ yêu thích");
-      return next;
-    });
-  };
-
-  const handleView = (doc: Doc) => {
-    // record recent
-    setRecent((prev) => [doc.id, ...prev.filter((x) => x !== doc.id)].slice(0, 20));
-    showSuccess("Mở tài liệu (mô phỏng)");
-    // In a real app we'd open doc.url; for demo, open in new tab if url present
-    if (doc.url) {
-      window.open(doc.url, "_blank");
-    }
-  };
-
-  const freeDocs = useMemo(() => {
-    return ALL_DOCS.filter((d) => d.free);
-  }, []);
-
+  const freeDocs = useMemo(() => ALL_DOCS.filter((d) => d.free), []);
   const purchasedDocs = useMemo(() => {
     if (!isLoggedIn) return [];
-    // docs where course is in userCourses
     const myCourseTitles = userCourses.map((c) => c.title);
     return ALL_DOCS.filter((d) => d.course && myCourseTitles.includes(d.course));
   }, [isLoggedIn, userCourses]);
@@ -210,85 +181,96 @@ export default function DocumentsPage() {
   const filteredFree = useMemo(() => applyFilters(freeDocs), [freeDocs, query, subjectFilter, courseFilter, onlyRecent, categoryFilter, gradeFilter, recent]);
   const filteredPurchased = useMemo(() => applyFilters(purchasedDocs), [purchasedDocs, query, subjectFilter, courseFilter, onlyRecent, categoryFilter, gradeFilter, recent]);
 
+  const handleToggleFav = (id: string) => {
+    setFavorites((prev) => {
+      const next = { ...prev, [id]: !prev[id] };
+      showSuccess(next[id] ? "Đã thêm vào yêu thích" : "Đã gỡ yêu thích");
+      return next;
+    });
+  };
+
+  const handleView = (doc: Doc) => {
+    setRecent((prev) => [doc.id, ...prev.filter((x) => x !== doc.id)].slice(0, 20));
+    showSuccess("Mở tài liệu (mô phỏng)");
+    if (doc.url) {
+      window.open(doc.url, "_blank");
+    }
+  };
+
+  const jumpToMyDocs = () => {
+    // On desktop we scroll, on mobile we open sheet; we decide via media query
+    if (typeof window === "undefined") return;
+    if (window.innerWidth >= 768) {
+      purchasedRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    } else {
+      setIsMyDocsOpen(true);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
       <BreadcrumbNav courseTitle="Tài liệu" />
       <main className="flex-grow container mx-auto px-4 py-8">
+        <div className="flex items-center justify-between mb-4 gap-4">
+          <div className="flex-1">
+            <Input
+              placeholder="Tìm tài liệu theo tên, chủ đề, khóa..."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              className="w-full"
+            />
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Button onClick={jumpToMyDocs} className="hidden md:inline-flex">
+              Tài liệu của tôi
+            </Button>
+
+            {/* Mobile: floating quick access button (visible on small screens) */}
+            <button
+              onClick={() => setIsMyDocsOpen(true)}
+              className="md:hidden inline-flex items-center gap-2 bg-blue-600 text-white px-3 py-2 rounded-full shadow"
+              aria-label="Tài liệu của tôi"
+              title="Tài liệu của tôi"
+            >
+              Tài liệu của tôi
+            </button>
+          </div>
+        </div>
+
+        {/* Filters row */}
+        <div className="flex flex-wrap gap-2 mb-6">
+          <select value={subjectFilter} onChange={(e) => setSubjectFilter(e.target.value)} className="border px-3 py-2 rounded bg-white text-sm">
+            {subjects.map((s) => (<option key={s} value={s}>{s === "all" ? "Tất cả môn" : s}</option>))}
+          </select>
+
+          <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} className="border px-3 py-2 rounded bg-white text-sm">
+            {categories.map((c) => (<option key={c} value={c}>{c === "all" ? "Tất cả danh mục" : c}</option>))}
+          </select>
+
+          <select value={gradeFilter} onChange={(e) => setGradeFilter(e.target.value)} className="border px-3 py-2 rounded bg-white text-sm">
+            {grades.map((g) => (<option key={g} value={g}>{g === "all" ? "Tất cả cấp học" : g}</option>))}
+          </select>
+
+          <select value={courseFilter} onChange={(e) => setCourseFilter(e.target.value)} className="border px-3 py-2 rounded bg-white text-sm">
+            {courses.map((c) => (<option key={c} value={c}>{c === "all" ? "Tất cả khóa" : c}</option>))}
+          </select>
+
+          <label className="inline-flex items-center gap-2 text-sm ml-2">
+            <input type="checkbox" checked={onlyRecent} onChange={(e) => setOnlyRecent(e.target.checked)} />
+            Gần đây
+          </label>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Left: main */}
+          {/* Main content */}
           <div className="lg:col-span-3 space-y-6">
-            <div className="flex flex-col gap-3 md:flex-row md:items-center md:gap-4">
-              <div className="flex-1">
-                <Input
-                  placeholder="Tìm tài liệu theo tên, chủ đề, khóa..."
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  className="w-full"
-                />
-              </div>
-
-              <div className="flex gap-2 flex-wrap">
-                <select
-                  value={subjectFilter}
-                  onChange={(e) => setSubjectFilter(e.target.value)}
-                  className="border border-gray-200 rounded-md px-3 py-2 bg-white text-sm"
-                >
-                  {subjects.map((s) => (
-                    <option value={s} key={s}>
-                      {s === "all" ? "Tất cả môn" : s}
-                    </option>
-                  ))}
-                </select>
-
-                <select
-                  value={categoryFilter}
-                  onChange={(e) => setCategoryFilter(e.target.value)}
-                  className="border border-gray-200 rounded-md px-3 py-2 bg-white text-sm"
-                >
-                  {categories.map((c) => (
-                    <option value={c} key={c}>
-                      {c === "all" ? "Tất cả danh mục" : c}
-                    </option>
-                  ))}
-                </select>
-
-                <select
-                  value={gradeFilter}
-                  onChange={(e) => setGradeFilter(e.target.value)}
-                  className="border border-gray-200 rounded-md px-3 py-2 bg-white text-sm"
-                >
-                  {grades.map((g) => (
-                    <option value={g} key={g}>
-                      {g === "all" ? "Tất cả cấp học" : g}
-                    </option>
-                  ))}
-                </select>
-
-                <select
-                  value={courseFilter}
-                  onChange={(e) => setCourseFilter(e.target.value)}
-                  className="border border-gray-200 rounded-md px-3 py-2 bg-white text-sm"
-                >
-                  {courses.map((c) => (
-                    <option value={c} key={c}>
-                      {c === "all" ? "Tất cả khóa" : c}
-                    </option>
-                  ))}
-                </select>
-
-                <label className="inline-flex items-center gap-2 text-sm ml-2">
-                  <input type="checkbox" checked={onlyRecent} onChange={(e) => setOnlyRecent(e.target.checked)} />
-                  Gần đây
-                </label>
-              </div>
-            </div>
-
-            {/* Suggested / Free documents */}
+            {/* Free docs */}
             <section>
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold">Tài liệu miễn phí</h2>
-                <div className="text-sm text-gray-500">Có thể truy cập công khai</div>
+                <div className="text-sm text-gray-500">Truy cập ngay</div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -310,23 +292,16 @@ export default function DocumentsPage() {
                               </div>
                             </div>
                             <div className="flex flex-col items-end gap-2">
-                              <button
-                                aria-label="Yêu thích"
-                                onClick={() => handleToggleFav(doc.id)}
-                                className="text-yellow-500 hover:text-yellow-600"
-                              >
+                              <button aria-label="Yêu thích" onClick={() => handleToggleFav(doc.id)} className="text-yellow-500 hover:text-yellow-600">
                                 <Star className={favorites[doc.id] ? "text-yellow-400" : "text-gray-300"} />
                               </button>
-                              <span className="text-xs text-gray-400">{favorites[doc.id] ? "Đã yêu thích" : ""}</span>
                             </div>
                           </div>
 
                           <p className="mt-3 text-sm text-gray-600 line-clamp-2">{doc.summary}</p>
 
                           <div className="mt-4 flex items-center gap-3">
-                            <Button size="sm" onClick={() => handleView(doc)}>
-                              Xem <Download size={14} className="ml-2" />
-                            </Button>
+                            <Button size="sm" onClick={() => handleView(doc)}>Xem <Download size={14} className="ml-2" /></Button>
                             <Badge variant="secondary" className="bg-green-50 text-green-700">{doc.free ? "Miễn phí" : "Khóa"}</Badge>
                           </div>
                         </div>
@@ -337,11 +312,11 @@ export default function DocumentsPage() {
               </div>
             </section>
 
-            {/* User-specific docs */}
-            <section>
+            {/* Purchased docs (anchor) */}
+            <section ref={purchasedRef}>
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold">Tài liệu cho học viên</h2>
-                <div className="text-sm text-gray-500">Tài liệu theo khóa bạn đã học</div>
+                <div className="text-sm text-gray-500">Tài liệu theo khóa bạn đã mua</div>
               </div>
 
               {!isLoggedIn ? (
@@ -349,7 +324,7 @@ export default function DocumentsPage() {
                   <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                     <div className="flex-1">
                       <p className="text-gray-700 mb-2">Đăng nhập để xem tài liệu thuộc các khóa bạn đã mua.</p>
-                      <p className="text-sm text-gray-500">Nếu chưa có tài khoản, bạn có thể đăng ký hoặc sử dụng nút mô phỏng để xem demo.</p>
+                      <p className="text-sm text-gray-500">Dùng nút mô phỏng để thử trải nghiệm.</p>
                     </div>
                     <div className="flex items-center gap-2">
                       <Button onClick={() => setIsLoggedIn(true)}>Mô phỏng đăng nhập</Button>
@@ -360,9 +335,7 @@ export default function DocumentsPage() {
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
                     {userCourses.map((c) => (
-                      <Badge key={c.id} className="bg-blue-50 text-blue-700" variant="secondary">
-                        {c.title}
-                      </Badge>
+                      <Badge key={c.id} className="bg-blue-50 text-blue-700" variant="secondary">{c.title}</Badge>
                     ))}
                     <div className="ml-auto text-sm text-gray-500">Bạn có {purchasedDocs.length} tài liệu</div>
                   </div>
@@ -395,9 +368,7 @@ export default function DocumentsPage() {
                               <p className="mt-3 text-sm text-gray-600 line-clamp-2">{doc.summary}</p>
 
                               <div className="mt-4 flex items-center gap-3">
-                                <Button size="sm" onClick={() => handleView(doc)}>
-                                  Mở tài liệu <Download size={14} className="ml-2" />
-                                </Button>
+                                <Button size="sm" onClick={() => handleView(doc)}>Mở tài liệu <Download size={14} className="ml-2" /></Button>
                                 <Badge className="bg-violet-50 text-violet-700">Khóa của bạn</Badge>
                               </div>
                             </div>
@@ -411,28 +382,60 @@ export default function DocumentsPage() {
             </section>
           </div>
 
-          {/* Right: sidebar / utilities */}
+          {/* Right column - sticky quick panel + utilities */}
           <aside className="space-y-6">
+            {/* Quick my-docs panel - sticky on desktop */}
+            <div className="hidden lg:block sticky top-24">
+              <Card className="p-4">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h4 className="font-semibold">Tài liệu của tôi</h4>
+                    <p className="text-xs text-gray-500 mt-1">Truy cập nhanh tài liệu thuộc khóa bạn đã mua</p>
+                  </div>
+                  <div className="text-sm text-gray-500">{isLoggedIn ? `${purchasedDocs.length}` : "0"}</div>
+                </div>
+
+                <div className="mt-3 space-y-2">
+                  {!isLoggedIn ? (
+                    <div className="text-sm text-gray-600">Đăng nhập để xem khóa và tài liệu.</div>
+                  ) : (
+                    userCourses.map((c) => {
+                      const docsForCourse = ALL_DOCS.filter((d) => d.course === c.title);
+                      return (
+                        <div key={c.id} className="border rounded p-2 bg-white">
+                          <div className="flex items-center justify-between">
+                            <div className="text-sm font-medium">{c.title}</div>
+                            <div className="text-xs text-gray-500">{docsForCourse.length}</div>
+                          </div>
+                          <div className="mt-2 flex gap-2 flex-wrap">
+                            {docsForCourse.slice(0, 3).map((d) => (
+                              <button key={d.id} onClick={() => handleView(d)} className="text-xs bg-gray-100 px-2 py-1 rounded">
+                                {d.title.length > 24 ? d.title.slice(0, 24) + "…" : d.title}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+
+                <div className="mt-3 flex justify-end">
+                  <Button onClick={jumpToMyDocs} variant="outline">Xem tất cả</Button>
+                </div>
+              </Card>
+            </div>
+
+            {/* Utilities */}
             <Card className="p-4">
               <h4 className="font-semibold mb-2">Tiện ích</h4>
               <div className="text-sm text-gray-600 space-y-2">
-                <div>
-                  <strong>Yêu thích:</strong> {Object.keys(favorites).filter((k) => favorites[k]).length}
-                </div>
+                <div><strong>Yêu thích:</strong> {Object.keys(favorites).filter((k) => favorites[k]).length}</div>
                 <div>
                   <strong>Gợi ý theo môn:</strong>
                   <div className="mt-2 flex flex-wrap gap-2">
                     {["Toán", "Lý", "Anh"].map((s) => (
-                      <button
-                        key={s}
-                        className="text-xs bg-gray-100 px-2 py-1 rounded-md"
-                        onClick={() => {
-                          setSubjectFilter(s);
-                          showSuccess(`Hiển thị gợi ý môn ${s}`);
-                        }}
-                      >
-                        {s}
-                      </button>
+                      <button key={s} className="text-xs bg-gray-100 px-2 py-1 rounded-md" onClick={() => { setSubjectFilter(s); showSuccess(`Hiển thị ${s}`); }}>{s}</button>
                     ))}
                   </div>
                 </div>
@@ -440,15 +443,14 @@ export default function DocumentsPage() {
                   <strong>Lọc nhanh theo khóa:</strong>
                   <div className="mt-2 flex flex-wrap gap-2">
                     {courses.filter((c) => c !== "all").slice(0, 4).map((c) => (
-                      <button key={c} className="text-xs bg-gray-100 px-2 py-1 rounded-md" onClick={() => setCourseFilter(c)}>
-                        {c}
-                      </button>
+                      <button key={c} className="text-xs bg-gray-100 px-2 py-1 rounded-md" onClick={() => setCourseFilter(c)}>{c}</button>
                     ))}
                   </div>
                 </div>
               </div>
             </Card>
 
+            {/* Recent */}
             <Card className="p-4">
               <h4 className="font-semibold mb-3">Gần đây truy cập</h4>
               {recent.length === 0 ? (
@@ -461,9 +463,7 @@ export default function DocumentsPage() {
                     return (
                       <li key={id} className="flex items-center justify-between">
                         <div className="truncate">{doc.title}</div>
-                        <Button variant="ghost" size="sm" onClick={() => handleView(doc)}>
-                          Mở
-                        </Button>
+                        <Button variant="ghost" size="sm" onClick={() => handleView(doc)}>Mở</Button>
                       </li>
                     );
                   })}
@@ -473,7 +473,53 @@ export default function DocumentsPage() {
           </aside>
         </div>
       </main>
+
       <Footer />
+
+      {/* Mobile Sheet: My Documents quick access */}
+      <Sheet open={isMyDocsOpen} onOpenChange={setIsMyDocsOpen}>
+        <SheetContent side="right" className="w-full sm:max-w-sm">
+          <SheetHeader>
+            <div className="flex items-center justify-between">
+              <SheetTitle>Tài liệu của tôi</SheetTitle>
+              <SheetClose asChild>
+                <button aria-label="Đóng" className="text-gray-600 hover:text-gray-800">Đóng</button>
+              </SheetClose>
+            </div>
+          </SheetHeader>
+
+          <div className="p-4 space-y-4">
+            {!isLoggedIn ? (
+              <div>
+                <div className="text-sm text-gray-700 mb-3">Bạn chưa đăng nhập</div>
+                <Button onClick={() => { setIsLoggedIn(true); setIsMyDocsOpen(false); }}>Mô phỏng đăng nhập</Button>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {userCourses.map((c) => {
+                  const docsForCourse = ALL_DOCS.filter((d) => d.course === c.title);
+                  return (
+                    <div key={c.id} className="border rounded p-3">
+                      <div className="flex items-center justify-between">
+                        <div className="font-medium">{c.title}</div>
+                        <div className="text-xs text-gray-500">{docsForCourse.length} tài liệu</div>
+                      </div>
+                      <div className="mt-2 space-y-2">
+                        {docsForCourse.map((d) => (
+                          <div key={d.id} className="flex items-center justify-between">
+                            <div className="text-sm truncate">{d.title}</div>
+                            <button onClick={() => { handleView(d); setIsMyDocsOpen(false); }} className="text-sm text-blue-600">Mở</button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }
