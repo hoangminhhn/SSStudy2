@@ -72,10 +72,6 @@ const NavLinks: React.FC = () => {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <Link to="/tai-lieu" className="text-gray-700 hover:text-blue-600 font-medium">
-          Tài liệu
-        </Link>
-
         <Link to="#" className="text-gray-700 hover:text-blue-600 font-medium">
           Sách
         </Link>

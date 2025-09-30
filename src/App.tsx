@@ -7,8 +7,8 @@ import Index from "./pages/Index"; // This is now the Home Page
 import CourseListingPage from "./pages/CourseListingPage"; // New Course Listing Page
 import CourseListingPageV2 from "./pages/CourseListingPageV2"; // V2 Course Listing Page
 import CourseDetailPage from "./pages/CourseDetailPage"; // Course Detail Page
-import LessonDetailPage from "@/pages/LessonDetailPage";
-import LessonDetailPageV2 from "@/pages/LessonDetailPageV2";
+import LessonDetailPage from "./pages/LessonDetailPage";
+import LessonDetailPageV2 from "./pages/LessonDetailPageV2";
 import CourseDetailPageV2 from "./pages/CourseDetailPageV2"; // Import the new V2 page
 import CourseDetailPageV3 from "./pages/CourseDetailPageV3"; // Import the new V3 page
 import NotFound from "./pages/NotFound";
@@ -17,7 +17,6 @@ import AboutCeo from "./pages/AboutCeo"; // About CEO page
 import PracticePage from "@/pages/PracticePage"; // NEW: Practice (Thi thử) page
 import ExamStartPage from "@/pages/ExamStartPage"; // Exam start screen
 import ExamAttemptPage from "@/pages/ExamAttemptPage"; // Exam attempt screen
-import DocumentsPage from "@/pages/DocumentsPage"; // New Documents page
 
 const queryClient = new QueryClient();
 
@@ -47,9 +46,6 @@ const App = () => (
           <Route path="/thi-thu/:examId/start" element={<ExamStartPage />} />
           {/* Exam attempt screen */}
           <Route path="/thi-thu/:examId/attempt" element={<ExamAttemptPage />} />
-
-          {/* Documents page */}
-          <Route path="/tai-lieu" element={<DocumentsPage />} />
 
           <Route path="*" element={<NotFound />} />
         </Routes>
