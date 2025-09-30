@@ -19,6 +19,8 @@ type Doc = {
   summary?: string;
   free: boolean;
   url?: string;
+  category?: string; // danh mục tài liệu (ví dụ: Tổng hợp, Luyện đề, Tham khảo)
+  grade?: string; // cấp học (Ví dụ: Lớp 10, Lớp 11, Lớp 12)
 };
 
 const FREE_DOCS: Doc[] = [
@@ -29,6 +31,8 @@ const FREE_DOCS: Doc[] = [
     summary: "Tóm tắt các công thức lượng giác thường gặp, dạng bài và mẹo giải.",
     free: true,
     url: "/docs/tong-hop-luong-giac.pdf",
+    category: "Tổng hợp",
+    grade: "Lớp 12",
   },
   {
     id: "f-2",
@@ -37,6 +41,8 @@ const FREE_DOCS: Doc[] = [
     summary: "Các công thức nguyên hàm, đạo hàm cơ bản dùng cho luyện thi.",
     free: true,
     url: "/docs/bang-cong-thuc-deriv.pdf",
+    category: "Tổng hợp",
+    grade: "Lớp 11",
   },
   {
     id: "f-3",
@@ -45,6 +51,8 @@ const FREE_DOCS: Doc[] = [
     summary: "Tập hợp các phrasal verbs phổ biến trong phần đọc và viết.",
     free: true,
     url: "/docs/phrasal-verbs.pdf",
+    category: "Tham khảo",
+    grade: "Lớp 12",
   },
 ];
 
@@ -59,6 +67,8 @@ const ALL_DOCS: Doc[] = [
     summary: "Bộ đề buổi 1 kèm lời giải chi tiết.",
     free: false,
     url: "/docs/master-hsa-buoi-1.pdf",
+    category: "Luyện đề",
+    grade: "Lớp 12",
   },
   {
     id: "c-math-2",
@@ -68,6 +78,8 @@ const ALL_DOCS: Doc[] = [
     summary: "Bài tập luyện tập và hướng dẫn nhanh.",
     free: false,
     url: "/docs/pt-bpt.pdf",
+    category: "Tổng hợp",
+    grade: "Lớp 12",
   },
   {
     id: "c-physics-1",
@@ -77,6 +89,8 @@ const ALL_DOCS: Doc[] = [
     summary: "Bài tập theo chủ đề và đáp án chi tiết.",
     free: false,
     url: "/docs/dien-xoay-chieu.pdf",
+    category: "Luyện đề",
+    grade: "Lớp 12",
   },
 ];
 
@@ -90,6 +104,8 @@ export default function DocumentsPage() {
   const [subjectFilter, setSubjectFilter] = useState<string>("all");
   const [courseFilter, setCourseFilter] = useState<string>("all");
   const [onlyRecent, setOnlyRecent] = useState(false);
+  const [categoryFilter, setCategoryFilter] = useState<string>("all"); // NEW
+  const [gradeFilter, setGradeFilter] = useState<string>("all"); // NEW
 
   // Simulated auth state
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -133,6 +149,16 @@ export default function DocumentsPage() {
     return ["all", ...s];
   }, []);
 
+  const categories = useMemo(() => {
+    const c = Array.from(new Set(ALL_DOCS.map((d) => d.category).filter(Boolean) as string[]));
+    return ["all", ...c];
+  }, []);
+
+  const grades = useMemo(() => {
+    const g = Array.from(new Set(ALL_DOCS.map((d) => d.grade).filter(Boolean) as string[]));
+    return ["all", ...g];
+  }, []);
+
   const courses = useMemo(() => {
     const c = Array.from(new Set(ALL_DOCS.map((d) => d.course).filter(Boolean) as string[]));
     return ["all", ...c];
@@ -152,7 +178,6 @@ export default function DocumentsPage() {
     showSuccess("Mở tài liệu (mô phỏng)");
     // In a real app we'd open doc.url; for demo, open in new tab if url present
     if (doc.url) {
-      // For demo, navigate to the url if present (it might be an internal path)
       window.open(doc.url, "_blank");
     }
   };
@@ -168,29 +193,22 @@ export default function DocumentsPage() {
     return ALL_DOCS.filter((d) => d.course && myCourseTitles.includes(d.course));
   }, [isLoggedIn, userCourses]);
 
-  const filteredFree = useMemo(() => {
-    let list = freeDocs;
+  const applyFilters = (list: Doc[]) => {
+    let result = list;
     if (query.trim()) {
       const q = query.toLowerCase();
-      list = list.filter((d) => (d.title + " " + (d.summary ?? "") + " " + (d.course ?? "")).toLowerCase().includes(q));
+      result = result.filter((d) => (d.title + " " + (d.summary ?? "") + " " + (d.course ?? "")).toLowerCase().includes(q));
     }
-    if (subjectFilter !== "all") list = list.filter((d) => d.subject === subjectFilter);
-    if (courseFilter !== "all") list = list.filter((d) => d.course === courseFilter);
-    if (onlyRecent) list = list.filter((d) => recent.includes(d.id));
-    return list;
-  }, [freeDocs, query, subjectFilter, courseFilter, onlyRecent, recent]);
+    if (subjectFilter !== "all") result = result.filter((d) => d.subject === subjectFilter);
+    if (courseFilter !== "all") result = result.filter((d) => d.course === courseFilter);
+    if (onlyRecent) result = result.filter((d) => recent.includes(d.id));
+    if (categoryFilter !== "all") result = result.filter((d) => d.category === categoryFilter);
+    if (gradeFilter !== "all") result = result.filter((d) => d.grade === gradeFilter);
+    return result;
+  };
 
-  const filteredPurchased = useMemo(() => {
-    let list = purchasedDocs;
-    if (query.trim()) {
-      const q = query.toLowerCase();
-      list = list.filter((d) => (d.title + " " + (d.summary ?? "") + " " + (d.course ?? "")).toLowerCase().includes(q));
-    }
-    if (subjectFilter !== "all") list = list.filter((d) => d.subject === subjectFilter);
-    if (courseFilter !== "all") list = list.filter((d) => d.course === courseFilter);
-    if (onlyRecent) list = list.filter((d) => recent.includes(d.id));
-    return list;
-  }, [purchasedDocs, query, subjectFilter, courseFilter, onlyRecent, recent]);
+  const filteredFree = useMemo(() => applyFilters(freeDocs), [freeDocs, query, subjectFilter, courseFilter, onlyRecent, categoryFilter, gradeFilter, recent]);
+  const filteredPurchased = useMemo(() => applyFilters(purchasedDocs), [purchasedDocs, query, subjectFilter, courseFilter, onlyRecent, categoryFilter, gradeFilter, recent]);
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -200,7 +218,7 @@ export default function DocumentsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Left: main */}
           <div className="lg:col-span-3 space-y-6">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:gap-4">
               <div className="flex-1">
                 <Input
                   placeholder="Tìm tài liệu theo tên, chủ đề, khóa..."
@@ -210,7 +228,7 @@ export default function DocumentsPage() {
                 />
               </div>
 
-              <div className="flex items-center space-x-2">
+              <div className="flex gap-2 flex-wrap">
                 <select
                   value={subjectFilter}
                   onChange={(e) => setSubjectFilter(e.target.value)}
@@ -219,6 +237,30 @@ export default function DocumentsPage() {
                   {subjects.map((s) => (
                     <option value={s} key={s}>
                       {s === "all" ? "Tất cả môn" : s}
+                    </option>
+                  ))}
+                </select>
+
+                <select
+                  value={categoryFilter}
+                  onChange={(e) => setCategoryFilter(e.target.value)}
+                  className="border border-gray-200 rounded-md px-3 py-2 bg-white text-sm"
+                >
+                  {categories.map((c) => (
+                    <option value={c} key={c}>
+                      {c === "all" ? "Tất cả danh mục" : c}
+                    </option>
+                  ))}
+                </select>
+
+                <select
+                  value={gradeFilter}
+                  onChange={(e) => setGradeFilter(e.target.value)}
+                  className="border border-gray-200 rounded-md px-3 py-2 bg-white text-sm"
+                >
+                  {grades.map((g) => (
+                    <option value={g} key={g}>
+                      {g === "all" ? "Tất cả cấp học" : g}
                     </option>
                   ))}
                 </select>
@@ -235,7 +277,7 @@ export default function DocumentsPage() {
                   ))}
                 </select>
 
-                <label className="inline-flex items-center gap-2 text-sm">
+                <label className="inline-flex items-center gap-2 text-sm ml-2">
                   <input type="checkbox" checked={onlyRecent} onChange={(e) => setOnlyRecent(e.target.checked)} />
                   Gần đây
                 </label>
@@ -263,7 +305,9 @@ export default function DocumentsPage() {
                           <div className="flex items-start justify-between">
                             <div>
                               <h3 className="font-semibold text-gray-800">{doc.title}</h3>
-                              <div className="text-xs text-gray-500 mt-1">{doc.subject} {doc.course ? `• ${doc.course}` : ""}</div>
+                              <div className="text-xs text-gray-500 mt-1">
+                                {doc.subject} {doc.course ? `• ${doc.course}` : ""} {doc.grade ? `• ${doc.grade}` : ""} {doc.category ? `• ${doc.category}` : ""}
+                              </div>
                             </div>
                             <div className="flex flex-col items-end gap-2">
                               <button
@@ -337,7 +381,9 @@ export default function DocumentsPage() {
                               <div className="flex items-start justify-between">
                                 <div>
                                   <h3 className="font-semibold text-gray-800">{doc.title}</h3>
-                                  <div className="text-xs text-gray-500 mt-1">{doc.subject} • {doc.course}</div>
+                                  <div className="text-xs text-gray-500 mt-1">
+                                    {doc.subject} • {doc.course} {doc.grade ? `• ${doc.grade}` : ""} {doc.category ? `• ${doc.category}` : ""}
+                                  </div>
                                 </div>
                                 <div className="flex flex-col items-end gap-2">
                                   <button onClick={() => handleToggleFav(doc.id)} className="text-yellow-500 hover:text-yellow-600">
