@@ -17,6 +17,7 @@ import AboutCeo from "./pages/AboutCeo"; // About CEO page
 import PracticePage from "@/pages/PracticePage"; // NEW: Practice (Thi thử) page
 import ExamStartPage from "@/pages/ExamStartPage"; // Exam start screen
 import ExamAttemptPage from "@/pages/ExamAttemptPage"; // Exam attempt screen
+import DocumentsPage from "@/pages/DocumentsPage"; // NEW: Documents page
 
 const queryClient = new QueryClient();
 
@@ -46,6 +47,9 @@ const App = () => (
           <Route path="/thi-thu/:examId/start" element={<ExamStartPage />} />
           {/* Exam attempt screen */}
           <Route path="/thi-thu/:examId/attempt" element={<ExamAttemptPage />} />
+
+          {/* NEW: Documents page */}
+          <Route path="/tai-lieu" element={<DocumentsPage />} />
 
           <Route path="*" element={<NotFound />} />
         </Routes>

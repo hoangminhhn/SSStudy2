@@ -75,6 +75,11 @@ const NavLinks: React.FC = () => {
         <Link to="#" className="text-gray-700 hover:text-blue-600 font-medium">
           Sách
         </Link>
+
+        {/* NEW: Tài liệu link placed to the right of 'Sách' */}
+        <Link to="/tai-lieu" className="text-gray-700 hover:text-blue-600 font-medium">
+          Tài liệu
+        </Link>
       </nav>
     </div>
   );
