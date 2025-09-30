@@ -443,40 +443,6 @@ export default function DocumentsPage() {
 
               <aside className="space-y-6">
                 <Card className="p-4">
-                  <h4 className="font-semibold mb-2">Tài liệu của tôi (nhanh)</h4>
-                  {!isLoggedIn ? (
-                    <div className="text-sm text-gray-600">Đăng nhập để xem khóa và tài liệu.</div>
-                  ) : (
-                    userCourses.map((c) => {
-                      const docsForCourse = ALL_DOCS.filter((d) => d.course === c.title);
-                      return (
-                        <div key={c.id} className="border rounded p-2 bg-white">
-                          <div className="flex items-center justify-between">
-                            <div className="text-sm font-medium">{c.title}</div>
-                            <div className="text-xs text-gray-500">{docsForCourse.length}</div>
-                          </div>
-                          <div className="mt-2 flex gap-2 flex-wrap">
-                            {docsForCourse.slice(0, 3).map((d) => (
-                              <button key={d.id} onClick={() => handleView(d)} className="text-xs bg-gray-100 px-2 py-1 rounded">
-                                {d.title.length > 24 ? d.title.slice(0, 24) + "…" : d.title}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      );
-                    })
-                  )}
-
-                  <div className="mt-3 flex justify-end">
-                    <Button onClick={() => {
-                      // If already on my tab, scroll; otherwise switch then scroll
-                      setActiveTab("my");
-                      setTimeout(() => purchasedRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }), 120);
-                    }} variant="outline">Xem tất cả</Button>
-                  </div>
-                </Card>
-
-                <Card className="p-4">
                   <h4 className="font-semibold mb-3">Gần đây truy cập</h4>
                   {recent.length === 0 ? (
                     <div className="text-sm text-gray-500">Chưa có lịch sử truy cập.</div>
