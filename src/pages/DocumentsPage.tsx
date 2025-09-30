@@ -17,6 +17,7 @@ import {
   SheetTitle,
   SheetClose,
 } from "@/components/ui/sheet";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 type Doc = {
   id: string;
@@ -124,6 +125,7 @@ export default function DocumentsPage() {
   // UI helpers
   const purchasedRef = useRef<HTMLDivElement | null>(null);
   const [isMyDocsOpen, setIsMyDocsOpen] = useState(false); // mobile sheet
+  const [activeTab, setActiveTab] = useState<string>("free"); // 'free' | 'my'
 
   useEffect(() => {
     const rawFav = localStorage.getItem("docs_favorites");
@@ -151,6 +153,15 @@ export default function DocumentsPage() {
   useEffect(() => {
     localStorage.setItem("docs_recent", JSON.stringify(recent.slice(0, 20)));
   }, [recent]);
+
+  // If user logs in/out we may switch default tab
+  useEffect(() => {
+    if (isLoggedIn) {
+      setActiveTab("my");
+    } else {
+      setActiveTab("free");
+    }
+  }, [isLoggedIn]);
 
   const subjects = useMemo(() => ["all", ...Array.from(new Set(ALL_DOCS.map((d) => d.subject)))], []);
   const categories = useMemo(() => ["all", ...Array.from(new Set(ALL_DOCS.map((d) => d.category).filter(Boolean) as string[]))], []);
@@ -198,10 +209,12 @@ export default function DocumentsPage() {
   };
 
   const jumpToMyDocs = () => {
-    // On desktop we scroll, on mobile we open sheet; we decide via media query
+    // switch to 'my' tab then scroll (desktop) or open sheet (mobile)
+    setActiveTab("my");
     if (typeof window === "undefined") return;
     if (window.innerWidth >= 768) {
-      purchasedRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      // small delay to allow tab content to render then scroll
+      setTimeout(() => purchasedRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }), 120);
     } else {
       setIsMyDocsOpen(true);
     }
@@ -227,7 +240,6 @@ export default function DocumentsPage() {
               Tài liệu của tôi
             </Button>
 
-            {/* Mobile: floating quick access button (visible on small screens) */}
             <button
               onClick={() => setIsMyDocsOpen(true)}
               className="md:hidden inline-flex items-center gap-2 bg-blue-600 text-white px-3 py-2 rounded-full shadow"
@@ -263,139 +275,175 @@ export default function DocumentsPage() {
           </label>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Main content */}
-          <div className="lg:col-span-3 space-y-6">
-            {/* Free docs */}
-            <section>
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold">Tài liệu miễn phí</h2>
-                <div className="text-sm text-gray-500">Truy cập ngay</div>
-              </div>
+        {/* Tabs */}
+        <Tabs defaultValue={activeTab} value={activeTab} onValueChange={(v) => setActiveTab(v)}>
+          <TabsList className="mb-6">
+            <TabsTrigger value="free">Tài liệu miễn phí</TabsTrigger>
+            <TabsTrigger value="my">Tài liệu của tôi</TabsTrigger>
+          </TabsList>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Free tab */}
+          <TabsContent value="free">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+              <div className="lg:col-span-3 space-y-6">
                 {filteredFree.length === 0 ? (
-                  <div className="text-gray-500 p-6 bg-white rounded-md">Không tìm thấy tài liệu miễn phí phù hợp.</div>
+                  <Card className="p-6">Không tìm thấy tài liệu miễn phí phù hợp.</Card>
                 ) : (
-                  filteredFree.map((doc) => (
-                    <Card key={doc.id} className="p-4">
-                      <div className="flex items-start space-x-4">
-                        <div className="flex-shrink-0 w-12 h-12 rounded-md bg-blue-50 flex items-center justify-center text-blue-600">
-                          <BookOpen />
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-start justify-between">
-                            <div>
-                              <h3 className="font-semibold text-gray-800">{doc.title}</h3>
-                              <div className="text-xs text-gray-500 mt-1">
-                                {doc.subject} {doc.course ? `• ${doc.course}` : ""} {doc.grade ? `• ${doc.grade}` : ""} {doc.category ? `• ${doc.category}` : ""}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {filteredFree.map((doc) => (
+                      <Card key={doc.id} className="p-4">
+                        <div className="flex items-start space-x-4">
+                          <div className="flex-shrink-0 w-12 h-12 rounded-md bg-blue-50 flex items-center justify-center text-blue-600">
+                            <BookOpen />
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-start justify-between">
+                              <div>
+                                <h3 className="font-semibold text-gray-800">{doc.title}</h3>
+                                <div className="text-xs text-gray-500 mt-1">
+                                  {doc.subject} {doc.course ? `• ${doc.course}` : ""} {doc.grade ? `• ${doc.grade}` : ""} {doc.category ? `• ${doc.category}` : ""}
+                                </div>
+                              </div>
+                              <div className="flex flex-col items-end gap-2">
+                                <button aria-label="Yêu thích" onClick={() => handleToggleFav(doc.id)} className="text-yellow-500 hover:text-yellow-600">
+                                  <Star className={favorites[doc.id] ? "text-yellow-400" : "text-gray-300"} />
+                                </button>
                               </div>
                             </div>
-                            <div className="flex flex-col items-end gap-2">
-                              <button aria-label="Yêu thích" onClick={() => handleToggleFav(doc.id)} className="text-yellow-500 hover:text-yellow-600">
-                                <Star className={favorites[doc.id] ? "text-yellow-400" : "text-gray-300"} />
-                              </button>
+
+                            <p className="mt-3 text-sm text-gray-600 line-clamp-2">{doc.summary}</p>
+
+                            <div className="mt-4 flex items-center gap-3">
+                              <Button size="sm" onClick={() => handleView(doc)}>Xem <Download size={14} className="ml-2" /></Button>
+                              <Badge variant="secondary" className="bg-green-50 text-green-700">{doc.free ? "Miễn phí" : "Khóa"}</Badge>
                             </div>
                           </div>
-
-                          <p className="mt-3 text-sm text-gray-600 line-clamp-2">{doc.summary}</p>
-
-                          <div className="mt-4 flex items-center gap-3">
-                            <Button size="sm" onClick={() => handleView(doc)}>Xem <Download size={14} className="ml-2" /></Button>
-                            <Badge variant="secondary" className="bg-green-50 text-green-700">{doc.free ? "Miễn phí" : "Khóa"}</Badge>
-                          </div>
                         </div>
-                      </div>
-                    </Card>
-                  ))
+                      </Card>
+                    ))}
+                  </div>
                 )}
               </div>
-            </section>
 
-            {/* Purchased docs (anchor) */}
-            <section ref={purchasedRef}>
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold">Tài liệu cho học viên</h2>
-                <div className="text-sm text-gray-500">Tài liệu theo khóa bạn đã mua</div>
-              </div>
-
-              {!isLoggedIn ? (
-                <Card className="p-6">
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                    <div className="flex-1">
-                      <p className="text-gray-700 mb-2">Đăng nhập để xem tài liệu thuộc các khóa bạn đã mua.</p>
-                      <p className="text-sm text-gray-500">Dùng nút mô phỏng để thử trải nghiệm.</p>
+              {/* Right utilities column */}
+              <aside className="space-y-6">
+                <Card className="p-4">
+                  <h4 className="font-semibold mb-2">Tiện ích</h4>
+                  <div className="text-sm text-gray-600 space-y-2">
+                    <div><strong>Yêu thích:</strong> {Object.keys(favorites).filter((k) => favorites[k]).length}</div>
+                    <div>
+                      <strong>Gợi ý theo môn:</strong>
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {["Toán", "Lý", "Anh"].map((s) => (
+                          <button key={s} className="text-xs bg-gray-100 px-2 py-1 rounded-md" onClick={() => { setSubjectFilter(s); showSuccess(`Hiển thị ${s}`); }}>{s}</button>
+                        ))}
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Button onClick={() => setIsLoggedIn(true)}>Mô phỏng đăng nhập</Button>
+                    <div>
+                      <strong>Lọc nhanh theo khóa:</strong>
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {courses.filter((c) => c !== "all").slice(0, 4).map((c) => (
+                          <button key={c} className="text-xs bg-gray-100 px-2 py-1 rounded-md" onClick={() => setCourseFilter(c)}>{c}</button>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </Card>
-              ) : (
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    {userCourses.map((c) => (
-                      <Badge key={c.id} className="bg-blue-50 text-blue-700" variant="secondary">{c.title}</Badge>
-                    ))}
-                    <div className="ml-auto text-sm text-gray-500">Bạn có {purchasedDocs.length} tài liệu</div>
-                  </div>
 
-                  {filteredPurchased.length === 0 ? (
-                    <Card className="p-6">Không có tài liệu nào cho các khóa đã chọn / bộ lọc của bạn.</Card>
+                <Card className="p-4">
+                  <h4 className="font-semibold mb-3">Gần đây truy cập</h4>
+                  {recent.length === 0 ? (
+                    <div className="text-sm text-gray-500">Chưa có lịch sử truy cập.</div>
                   ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {filteredPurchased.map((doc) => (
-                        <Card key={doc.id} className="p-4">
-                          <div className="flex items-start space-x-4">
-                            <div className="flex-shrink-0 w-12 h-12 rounded-md bg-purple-50 flex items-center justify-center text-purple-600">
-                              <BookOpen />
-                            </div>
-                            <div className="flex-1">
-                              <div className="flex items-start justify-between">
-                                <div>
-                                  <h3 className="font-semibold text-gray-800">{doc.title}</h3>
-                                  <div className="text-xs text-gray-500 mt-1">
-                                    {doc.subject} • {doc.course} {doc.grade ? `• ${doc.grade}` : ""} {doc.category ? `• ${doc.category}` : ""}
+                    <ul className="space-y-2 text-sm">
+                      {recent.map((id) => {
+                        const doc = ALL_DOCS.find((d) => d.id === id);
+                        if (!doc) return null;
+                        return (
+                          <li key={id} className="flex items-center justify-between">
+                            <div className="truncate">{doc.title}</div>
+                            <Button variant="ghost" size="sm" onClick={() => handleView(doc)}>Mở</Button>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  )}
+                </Card>
+              </aside>
+            </div>
+          </TabsContent>
+
+          {/* My docs tab */}
+          <TabsContent value="my">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+              <div className="lg:col-span-3 space-y-6">
+                {!isLoggedIn ? (
+                  <Card className="p-6">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                      <div className="flex-1">
+                        <p className="text-gray-700 mb-2">Đăng nhập để xem tài liệu thuộc các khóa bạn đã mua.</p>
+                        <p className="text-sm text-gray-500">Dùng nút mô phỏng để thử trải nghiệm.</p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Button onClick={() => setIsLoggedIn(true)}>Mô phỏng đăng nhập</Button>
+                      </div>
+                    </div>
+                  </Card>
+                ) : (
+                  <>
+                    <div ref={purchasedRef}>
+                      <div className="flex items-center gap-3 mb-2">
+                        {userCourses.map((c) => (
+                          <Badge key={c.id} className="bg-blue-50 text-blue-700">{c.title}</Badge>
+                        ))}
+                        <div className="ml-auto text-sm text-gray-500">Bạn có {purchasedDocs.length} tài liệu</div>
+                      </div>
+
+                      {filteredPurchased.length === 0 ? (
+                        <Card className="p-6">Không có tài liệu nào cho các khóa đã chọn / bộ lọc của bạn.</Card>
+                      ) : (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          {filteredPurchased.map((doc) => (
+                            <Card key={doc.id} className="p-4">
+                              <div className="flex items-start space-x-4">
+                                <div className="flex-shrink-0 w-12 h-12 rounded-md bg-purple-50 flex items-center justify-center text-purple-600">
+                                  <BookOpen />
+                                </div>
+                                <div className="flex-1">
+                                  <div className="flex items-start justify-between">
+                                    <div>
+                                      <h3 className="font-semibold text-gray-800">{doc.title}</h3>
+                                      <div className="text-xs text-gray-500 mt-1">
+                                        {doc.subject} • {doc.course} {doc.grade ? `• ${doc.grade}` : ""} {doc.category ? `• ${doc.category}` : ""}
+                                      </div>
+                                    </div>
+                                    <div className="flex flex-col items-end gap-2">
+                                      <button onClick={() => handleToggleFav(doc.id)} className="text-yellow-500 hover:text-yellow-600">
+                                        <Star className={favorites[doc.id] ? "text-yellow-400" : "text-gray-300"} />
+                                      </button>
+                                    </div>
+                                  </div>
+
+                                  <p className="mt-3 text-sm text-gray-600 line-clamp-2">{doc.summary}</p>
+
+                                  <div className="mt-4 flex items-center gap-3">
+                                    <Button size="sm" onClick={() => handleView(doc)}>Mở tài liệu <Download size={14} className="ml-2" /></Button>
+                                    <Badge className="bg-violet-50 text-violet-700">Khóa của bạn</Badge>
                                   </div>
                                 </div>
-                                <div className="flex flex-col items-end gap-2">
-                                  <button onClick={() => handleToggleFav(doc.id)} className="text-yellow-500 hover:text-yellow-600">
-                                    <Star className={favorites[doc.id] ? "text-yellow-400" : "text-gray-300"} />
-                                  </button>
-                                </div>
                               </div>
-
-                              <p className="mt-3 text-sm text-gray-600 line-clamp-2">{doc.summary}</p>
-
-                              <div className="mt-4 flex items-center gap-3">
-                                <Button size="sm" onClick={() => handleView(doc)}>Mở tài liệu <Download size={14} className="ml-2" /></Button>
-                                <Badge className="bg-violet-50 text-violet-700">Khóa của bạn</Badge>
-                              </div>
-                            </div>
-                          </div>
-                        </Card>
-                      ))}
+                            </Card>
+                          ))}
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-              )}
-            </section>
-          </div>
+                  </>
+                )}
+              </div>
 
-          {/* Right column - sticky quick panel + utilities */}
-          <aside className="space-y-6">
-            {/* Quick my-docs panel - sticky on desktop */}
-            <div className="hidden lg:block sticky top-24">
-              <Card className="p-4">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h4 className="font-semibold">Tài liệu của tôi</h4>
-                    <p className="text-xs text-gray-500 mt-1">Truy cập nhanh tài liệu thuộc khóa bạn đã mua</p>
-                  </div>
-                  <div className="text-sm text-gray-500">{isLoggedIn ? `${purchasedDocs.length}` : "0"}</div>
-                </div>
-
-                <div className="mt-3 space-y-2">
+              <aside className="space-y-6">
+                <Card className="p-4">
+                  <h4 className="font-semibold mb-2">Tài liệu của tôi (nhanh)</h4>
                   {!isLoggedIn ? (
                     <div className="text-sm text-gray-600">Đăng nhập để xem khóa và tài liệu.</div>
                   ) : (
@@ -418,60 +466,39 @@ export default function DocumentsPage() {
                       );
                     })
                   )}
-                </div>
 
-                <div className="mt-3 flex justify-end">
-                  <Button onClick={jumpToMyDocs} variant="outline">Xem tất cả</Button>
-                </div>
-              </Card>
+                  <div className="mt-3 flex justify-end">
+                    <Button onClick={() => {
+                      // If already on my tab, scroll; otherwise switch then scroll
+                      setActiveTab("my");
+                      setTimeout(() => purchasedRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }), 120);
+                    }} variant="outline">Xem tất cả</Button>
+                  </div>
+                </Card>
+
+                <Card className="p-4">
+                  <h4 className="font-semibold mb-3">Gần đây truy cập</h4>
+                  {recent.length === 0 ? (
+                    <div className="text-sm text-gray-500">Chưa có lịch sử truy cập.</div>
+                  ) : (
+                    <ul className="space-y-2 text-sm">
+                      {recent.map((id) => {
+                        const doc = ALL_DOCS.find((d) => d.id === id);
+                        if (!doc) return null;
+                        return (
+                          <li key={id} className="flex items-center justify-between">
+                            <div className="truncate">{doc.title}</div>
+                            <Button variant="ghost" size="sm" onClick={() => handleView(doc)}>Mở</Button>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  )}
+                </Card>
+              </aside>
             </div>
-
-            {/* Utilities */}
-            <Card className="p-4">
-              <h4 className="font-semibold mb-2">Tiện ích</h4>
-              <div className="text-sm text-gray-600 space-y-2">
-                <div><strong>Yêu thích:</strong> {Object.keys(favorites).filter((k) => favorites[k]).length}</div>
-                <div>
-                  <strong>Gợi ý theo môn:</strong>
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    {["Toán", "Lý", "Anh"].map((s) => (
-                      <button key={s} className="text-xs bg-gray-100 px-2 py-1 rounded-md" onClick={() => { setSubjectFilter(s); showSuccess(`Hiển thị ${s}`); }}>{s}</button>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <strong>Lọc nhanh theo khóa:</strong>
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    {courses.filter((c) => c !== "all").slice(0, 4).map((c) => (
-                      <button key={c} className="text-xs bg-gray-100 px-2 py-1 rounded-md" onClick={() => setCourseFilter(c)}>{c}</button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </Card>
-
-            {/* Recent */}
-            <Card className="p-4">
-              <h4 className="font-semibold mb-3">Gần đây truy cập</h4>
-              {recent.length === 0 ? (
-                <div className="text-sm text-gray-500">Chưa có lịch sử truy cập.</div>
-              ) : (
-                <ul className="space-y-2 text-sm">
-                  {recent.map((id) => {
-                    const doc = ALL_DOCS.find((d) => d.id === id);
-                    if (!doc) return null;
-                    return (
-                      <li key={id} className="flex items-center justify-between">
-                        <div className="truncate">{doc.title}</div>
-                        <Button variant="ghost" size="sm" onClick={() => handleView(doc)}>Mở</Button>
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
-            </Card>
-          </aside>
-        </div>
+          </TabsContent>
+        </Tabs>
       </main>
 
       <Footer />
