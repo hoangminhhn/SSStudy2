@@ -18,93 +18,8 @@ import {
   SheetClose,
 } from "@/components/ui/sheet";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-
-type Doc = {
-  id: string;
-  title: string;
-  subject: string;
-  course?: string | null;
-  summary?: string;
-  free: boolean;
-  url?: string;
-  category?: string;
-  grade?: string;
-};
-
-const FREE_DOCS: Doc[] = [
-  {
-    id: "f-1",
-    title: "Tổng hợp công thức lượng giác",
-    subject: "Toán",
-    summary: "Tóm tắt các công thức lượng giác thường gặp, dạng bài và mẹo giải.",
-    free: true,
-    url: "/docs/tong-hop-luong-giac.pdf",
-    category: "Tổng hợp",
-    grade: "Lớp 12",
-  },
-  {
-    id: "f-2",
-    title: "Bảng công thức đạo hàm nguyên hàm",
-    subject: "Toán",
-    summary: "Các công thức nguyên hàm, đạo hàm cơ bản dùng cho luyện thi.",
-    free: true,
-    url: "/docs/bang-cong-thuc-deriv.pdf",
-    category: "Tổng hợp",
-    grade: "Lớp 11",
-  },
-  {
-    id: "f-3",
-    title: "Words to know - Phrasal verbs cơ bản",
-    subject: "Anh",
-    summary: "Tập hợp các phrasal verbs phổ biến trong phần đọc và viết.",
-    free: true,
-    url: "/docs/phrasal-verbs.pdf",
-    category: "Tham khảo",
-    grade: "Lớp 12",
-  },
-];
-
-const ALL_DOCS: Doc[] = [
-  ...FREE_DOCS,
-  {
-    id: "c-math-1",
-    title: "Bộ đề chuyên đề Toán - Buổi 1",
-    subject: "Toán",
-    course: "Master HSA - Toán 12",
-    summary: "Bộ đề buổi 1 kèm lời giải chi tiết.",
-    free: false,
-    url: "/docs/master-hsa-buoi-1.pdf",
-    category: "Luyện đề",
-    grade: "Lớp 12",
-  },
-  {
-    id: "c-math-2",
-    title: "Tổng hợp bài tập PT, BPT",
-    subject: "Toán",
-    course: "Master HSA - Toán 12",
-    summary: "Bài tập luyện tập và hướng dẫn nhanh.",
-    free: false,
-    url: "/docs/pt-bpt.pdf",
-    category: "Tổng hợp",
-    grade: "Lớp 12",
-  },
-  {
-    id: "c-physics-1",
-    title: "Bài tập Vật lý - Điện xoay chiều",
-    subject: "Lý",
-    course: "Vật lý chuyên sâu",
-    summary: "Bài tập theo chủ đề và đáp án chi tiết.",
-    free: false,
-    url: "/docs/dien-xoay-chieu.pdf",
-    category: "Luyện đề",
-    grade: "Lớp 12",
-  },
-];
-
-const DEMO_USER_COURSES = [
-  { id: "course-1", title: "Master HSA - Toán 12" },
-  { id: "course-2", title: "Vật lý chuyên sâu" },
-];
+import { ALL_DOCS, FREE_DOCS, DEMO_USER_COURSES } from "@/data/docsData";
+import { useNavigate, Link } from "react-router-dom";
 
 export default function DocumentsPage() {
   const [query, setQuery] = useState("");
@@ -126,6 +41,8 @@ export default function DocumentsPage() {
   const purchasedRef = useRef<HTMLDivElement | null>(null);
   const [isMyDocsOpen, setIsMyDocsOpen] = useState(false); // mobile sheet
   const [activeTab, setActiveTab] = useState<string>("free"); // 'free' | 'my'
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const rawFav = localStorage.getItem("docs_favorites");
@@ -168,14 +85,14 @@ export default function DocumentsPage() {
   const grades = useMemo(() => ["all", ...Array.from(new Set(ALL_DOCS.map((d) => d.grade).filter(Boolean) as string[]))], []);
   const courses = useMemo(() => ["all", ...Array.from(new Set(ALL_DOCS.map((d) => d.course).filter(Boolean) as string[]))], []);
 
-  const freeDocs = useMemo(() => ALL_DOCS.filter((d) => d.free), []);
+  const freeDocs = useMemo(() => FREE_DOCS, []);
   const purchasedDocs = useMemo(() => {
     if (!isLoggedIn) return [];
     const myCourseTitles = userCourses.map((c) => c.title);
     return ALL_DOCS.filter((d) => d.course && myCourseTitles.includes(d.course));
   }, [isLoggedIn, userCourses]);
 
-  const applyFilters = (list: Doc[]) => {
+  const applyFilters = (list: typeof ALL_DOCS) => {
     let result = list;
     if (query.trim()) {
       const q = query.toLowerCase();
@@ -189,8 +106,8 @@ export default function DocumentsPage() {
     return result;
   };
 
-  const filteredFree = useMemo(() => applyFilters(freeDocs), [freeDocs, query, subjectFilter, courseFilter, onlyRecent, categoryFilter, gradeFilter, recent]);
-  const filteredPurchased = useMemo(() => applyFilters(purchasedDocs), [purchasedDocs, query, subjectFilter, courseFilter, onlyRecent, categoryFilter, gradeFilter, recent]);
+  const filteredFree = useMemo(() => applyFilters(freeDocs as any), [freeDocs, query, subjectFilter, courseFilter, onlyRecent, categoryFilter, gradeFilter, recent]);
+  const filteredPurchased = useMemo(() => applyFilters(purchasedDocs as any), [purchasedDocs, query, subjectFilter, courseFilter, onlyRecent, categoryFilter, gradeFilter, recent]);
 
   const handleToggleFav = (id: string) => {
     setFavorites((prev) => {
@@ -200,12 +117,10 @@ export default function DocumentsPage() {
     });
   };
 
-  const handleView = (doc: Doc) => {
-    setRecent((prev) => [doc.id, ...prev.filter((x) => x !== doc.id)].slice(0, 20));
-    showSuccess("Mở tài liệu (mô phỏng)");
-    if (doc.url) {
-      window.open(doc.url, "_blank");
-    }
+  const viewDetail = (docId: string) => {
+    // add to recent and navigate to detail page
+    setRecent((prev) => [docId, ...prev.filter((x) => x !== docId)].slice(0, 20));
+    navigate(`/tai-lieu/${docId}`);
   };
 
   const jumpToMyDocs = () => {
@@ -299,7 +214,11 @@ export default function DocumentsPage() {
                           <div className="flex-1">
                             <div className="flex items-start justify-between">
                               <div>
-                                <h3 className="font-semibold text-gray-800">{doc.title}</h3>
+                                <h3 className="font-semibold text-gray-800">
+                                  <Link to={`/tai-lieu/${doc.id}`} onClick={() => viewDetail(doc.id)} className="hover:underline">
+                                    {doc.title}
+                                  </Link>
+                                </h3>
                                 <div className="text-xs text-gray-500 mt-1">
                                   {doc.subject} {doc.course ? `• ${doc.course}` : ""} {doc.grade ? `• ${doc.grade}` : ""} {doc.category ? `• ${doc.category}` : ""}
                                 </div>
@@ -314,7 +233,9 @@ export default function DocumentsPage() {
                             <p className="mt-3 text-sm text-gray-600 line-clamp-2">{doc.summary}</p>
 
                             <div className="mt-4 flex items-center gap-3">
-                              <Button size="sm" onClick={() => handleView(doc)}>Xem <Download size={14} className="ml-2" /></Button>
+                              <button onClick={() => viewDetail(doc.id)}>
+                                <Button size="sm">Xem chi tiết</Button>
+                              </button>
                               <Badge variant="secondary" className="bg-green-50 text-green-700">{doc.free ? "Miễn phí" : "Khóa"}</Badge>
                             </div>
                           </div>
@@ -362,7 +283,7 @@ export default function DocumentsPage() {
                         return (
                           <li key={id} className="flex items-center justify-between">
                             <div className="truncate">{doc.title}</div>
-                            <Button variant="ghost" size="sm" onClick={() => handleView(doc)}>Mở</Button>
+                            <Button variant="ghost" size="sm" onClick={() => viewDetail(doc.id)}>Xem</Button>
                           </li>
                         );
                       })}
@@ -412,7 +333,11 @@ export default function DocumentsPage() {
                                 <div className="flex-1">
                                   <div className="flex items-start justify-between">
                                     <div>
-                                      <h3 className="font-semibold text-gray-800">{doc.title}</h3>
+                                      <h3 className="font-semibold text-gray-800">
+                                        <Link to={`/tai-lieu/${doc.id}`} onClick={() => viewDetail(doc.id)} className="hover:underline">
+                                          {doc.title}
+                                        </Link>
+                                      </h3>
                                       <div className="text-xs text-gray-500 mt-1">
                                         {doc.subject} • {doc.course} {doc.grade ? `• ${doc.grade}` : ""} {doc.category ? `• ${doc.category}` : ""}
                                       </div>
@@ -427,7 +352,9 @@ export default function DocumentsPage() {
                                   <p className="mt-3 text-sm text-gray-600 line-clamp-2">{doc.summary}</p>
 
                                   <div className="mt-4 flex items-center gap-3">
-                                    <Button size="sm" onClick={() => handleView(doc)}>Mở tài liệu <Download size={14} className="ml-2" /></Button>
+                                    <button onClick={() => viewDetail(doc.id)}>
+                                      <Button size="sm">Xem chi tiết</Button>
+                                    </button>
                                     <Badge className="bg-violet-50 text-violet-700">Khóa của bạn</Badge>
                                   </div>
                                 </div>
@@ -454,7 +381,7 @@ export default function DocumentsPage() {
                         return (
                           <li key={id} className="flex items-center justify-between">
                             <div className="truncate">{doc.title}</div>
-                            <Button variant="ghost" size="sm" onClick={() => handleView(doc)}>Mở</Button>
+                            <Button variant="ghost" size="sm" onClick={() => viewDetail(doc.id)}>Xem</Button>
                           </li>
                         );
                       })}
@@ -501,7 +428,7 @@ export default function DocumentsPage() {
                         {docsForCourse.map((d) => (
                           <div key={d.id} className="flex items-center justify-between">
                             <div className="text-sm truncate">{d.title}</div>
-                            <button onClick={() => { handleView(d); setIsMyDocsOpen(false); }} className="text-sm text-blue-600">Mở</button>
+                            <button onClick={() => { viewDetail(d.id); setIsMyDocsOpen(false); }} className="text-sm text-blue-600">Mở</button>
                           </div>
                         ))}
                       </div>

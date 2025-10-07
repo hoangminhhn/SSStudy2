@@ -12,12 +12,13 @@ import LessonDetailPageV2 from "./pages/LessonDetailPageV2";
 import CourseDetailPageV2 from "./pages/CourseDetailPageV2"; // Import the new V2 page
 import CourseDetailPageV3 from "./pages/CourseDetailPageV3"; // Import the new V3 page
 import NotFound from "./pages/NotFound";
-import About from "./pages/About"; // About page
-import AboutCeo from "./pages/AboutCeo"; // About CEO page
+import About from "@/pages/About"; // About page
+import AboutCeo from "@/pages/AboutCeo"; // About CEO page
 import PracticePage from "@/pages/PracticePage"; // NEW: Practice (Thi thử) page
 import ExamStartPage from "@/pages/ExamStartPage"; // Exam start screen
 import ExamAttemptPage from "@/pages/ExamAttemptPage"; // Exam attempt screen
 import DocumentsPage from "@/pages/DocumentsPage"; // NEW: Documents page
+import DocumentDetailPage from "@/pages/DocumentDetailPage"; // Document detail page
 
 const queryClient = new QueryClient();
 
@@ -48,8 +49,9 @@ const App = () => (
           {/* Exam attempt screen */}
           <Route path="/thi-thu/:examId/attempt" element={<ExamAttemptPage />} />
 
-          {/* NEW: Documents page */}
+          {/* Documents */}
           <Route path="/tai-lieu" element={<DocumentsPage />} />
+          <Route path="/tai-lieu/:docId" element={<DocumentDetailPage />} />
 
           <Route path="*" element={<NotFound />} />
         </Routes>
