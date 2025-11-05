@@ -237,25 +237,13 @@ const HistoryTimeline: React.FC = () => {
             </div>
           </div>
 
-          {/* Active event card */}
+          {/* Active event card (cleaned: only image + title) */}
           <div className="max-w-md mx-auto bg-white rounded-lg shadow-md overflow-hidden">
             <img src={events[mobileIndex].image} alt={events[mobileIndex].year} className="w-full h-44 object-cover" />
             <div className="p-4">
-              <div className="text-xs text-indigo-600 uppercase font-semibold mb-2">Blog</div>
-              <h3 className="text-xl font-semibold leading-snug mb-2 text-gray-900">
+              <h3 className="text-xl font-semibold leading-snug mb-1 text-gray-900">
                 {events[mobileIndex].text}
               </h3>
-              <p className="text-sm text-gray-500">
-                {events[mobileIndex].position === "top" ? "Tóm tắt: Sự kiện khởi nguồn và phát triển ban đầu." : "Tóm tắt: Giai đoạn mở rộng và phát triển quy mô."}
-              </p>
-
-              <div className="mt-4 flex items-center justify-between text-xs text-gray-500">
-                <div>{events[mobileIndex].year}</div>
-                <div className="flex items-center gap-3">
-                  <button className="text-gray-600">Share</button>
-                  <button className="text-gray-600">Read more</button>
-                </div>
-              </div>
             </div>
           </div>
 
