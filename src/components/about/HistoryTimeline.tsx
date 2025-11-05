@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 type Event = {
   year: string;
@@ -34,6 +34,7 @@ const events: Event[] = [
     image: "/images/anh-lich-su.png",
     position: "bottom",
   },
+  // You can append more events here to test horizontal scrolling on desktop.
 ];
 
 /**
@@ -43,6 +44,7 @@ const TOP_BOX_HEIGHT = 140; // px: reserved vertical space for top cards
 const CENTER_BOX_HEIGHT = 72; // px: center area where the dots/line live
 const BOTTOM_BOX_HEIGHT = 140; // px: reserved vertical space for bottom cards
 const DOT_SIZE = 14; // px diameter of the dot
+const ITEM_MIN_WIDTH = 300; // desktop item min width for horizontal track
 
 const HistoryTimeline: React.FC = () => {
   // Total timeline height (desktop) so we can avoid overlap with heading
@@ -54,6 +56,71 @@ const HistoryTimeline: React.FC = () => {
 
   // Mobile carousel state
   const [mobileIndex, setMobileIndex] = React.useState(0);
+
+  // Desktop scroll state & refs
+  const trackRef = useRef<HTMLDivElement | null>(null);
+  const [showLeftArrow, setShowLeftArrow] = useState(false);
+  const [showRightArrow, setShowRightArrow] = useState(false);
+
+  // Dragging state for desktop track
+  const dragState = useRef({ active: false, startX: 0, scrollLeft: 0 });
+
+  useEffect(() => {
+    const el = trackRef.current;
+    if (!el) return;
+
+    const updateArrows = () => {
+      setShowLeftArrow(el.scrollLeft > 4);
+      setShowRightArrow(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
+    };
+
+    updateArrows();
+
+    const onResize = () => updateArrows();
+    el.addEventListener("scroll", updateArrows, { passive: true });
+    window.addEventListener("resize", onResize);
+
+    // interval to catch layout changes
+    const interval = setInterval(updateArrows, 300);
+
+    return () => {
+      el.removeEventListener("scroll", updateArrows);
+      window.removeEventListener("resize", onResize);
+      clearInterval(interval);
+    };
+  }, []);
+
+  const scrollTrackBy = (amount: number) => {
+    const el = trackRef.current;
+    if (!el) return;
+    el.scrollBy({ left: amount, behavior: "smooth" });
+  };
+
+  const onPointerDown = (e: React.PointerEvent) => {
+    const el = trackRef.current;
+    if (!el) return;
+    dragState.current.active = true;
+    dragState.current.startX = e.clientX;
+    dragState.current.scrollLeft = el.scrollLeft;
+    (e.target as Element).setPointerCapture?.(e.pointerId);
+    el.classList.add("cursor-grabbing");
+  };
+
+  const onPointerMove = (e: React.PointerEvent) => {
+    const el = trackRef.current;
+    if (!el || !dragState.current.active) return;
+    const x = e.clientX;
+    const walk = x - dragState.current.startX;
+    el.scrollLeft = dragState.current.scrollLeft - walk;
+  };
+
+  const onPointerUp = (e: React.PointerEvent) => {
+    const el = trackRef.current;
+    if (!el) return;
+    dragState.current.active = false;
+    (e.target as Element).releasePointerCapture?.(e.pointerId);
+    el.classList.remove("cursor-grabbing");
+  };
 
   const prevMobile = () => {
     setMobileIndex((i) => (i - 1 + events.length) % events.length);
@@ -75,13 +142,13 @@ const HistoryTimeline: React.FC = () => {
           </span>
         </h2>
 
-        {/* Desktop / large: horizontal 4-column timeline (unchanged) */}
+        {/* Desktop / large: horizontal track with arrows (scrollable) */}
         <div
           className="hidden md:block relative"
-          style={{ minHeight: totalHeight + 40, paddingTop: 8 }} // extra room to avoid overlapping the heading
+          style={{ minHeight: totalHeight + 40, paddingTop: 8 }}
           aria-hidden={false}
         >
-          {/* Center dashed line positioned using computed px value so it never overlaps the heading */}
+          {/* Center dashed line (stays full width visually) */}
           <div
             className="absolute inset-x-0 pointer-events-none"
             style={{
@@ -92,7 +159,42 @@ const HistoryTimeline: React.FC = () => {
             <div className="w-full border-t-2 border-dashed border-gray-300" />
           </div>
 
-          <div className="grid grid-cols-4 gap-x-8">
+          {/* Left Arrow */}
+          {showLeftArrow && (
+            <button
+              aria-label="Scroll left"
+              onClick={() => scrollTrackBy(-Math.round((trackRef.current?.clientWidth ?? 800) * 0.6))}
+              className="absolute left-2 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-white shadow flex items-center justify-center"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="text-gray-800">
+                <path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+          )}
+
+          {/* Right Arrow */}
+          {showRightArrow && (
+            <button
+              aria-label="Scroll right"
+              onClick={() => scrollTrackBy(Math.round((trackRef.current?.clientWidth ?? 800) * 0.6))}
+              className="absolute right-2 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-white shadow flex items-center justify-center"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="text-gray-800">
+                <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+          )}
+
+          {/* Scrollable track: single-row flex, items have min-width so they form slides */}
+          <div
+            ref={trackRef}
+            className="relative z-10 flex gap-x-8 overflow-x-auto no-scrollbar py-6 px-2 touch-pan-x"
+            onPointerDown={onPointerDown}
+            onPointerMove={onPointerMove}
+            onPointerUp={onPointerUp}
+            onPointerCancel={onPointerUp}
+            style={{ WebkitOverflowScrolling: "touch" }}
+          >
             {events.map((ev, idx) => {
               const isTop = ev.position === "top";
               const isFirst = idx === 0;
@@ -100,98 +202,54 @@ const HistoryTimeline: React.FC = () => {
               const ringColor = isFirst ? "ring-orange-200" : "ring-blue-200";
 
               return (
-                <div key={ev.year} className="relative flex flex-col items-center">
-                  {/* Top box (fixed height) — if item is top, card sits here, bottom-aligned */}
-                  <div
-                    className="w-full flex items-end justify-center"
-                    style={{ height: `${TOP_BOX_HEIGHT}px` }}
-                  >
-                    {isTop ? (
-                      <div className="max-w-xs w-full text-left">
-                        <img
-                          src={ev.image}
-                          alt={`${ev.year} image`}
-                          className="w-full h-28 object-cover rounded-md shadow-sm mb-3 relative z-10"
-                        />
-                        <div>
-                          <div className="text-lg font-semibold text-gray-800">{ev.year}</div>
-                          <p className="text-sm text-gray-600 mt-2 leading-snug">{ev.text}</p>
+                <div
+                  key={ev.year}
+                  className="flex-shrink-0"
+                  style={{ minWidth: ITEM_MIN_WIDTH }}
+                >
+                  {/* item card */}
+                  <div className="relative flex flex-col items-center">
+                    {/* Top portion */}
+                    <div className="w-full flex items-end justify-center" style={{ height: TOP_BOX_HEIGHT }}>
+                      {isTop ? (
+                        <div className="w-full max-w-[260px]">
+                          <img src={ev.image} alt={`${ev.year} image`} className="w-full h-28 object-cover rounded-md shadow-sm mb-3" />
+                          <div>
+                            <div className="text-lg font-semibold text-gray-800">{ev.year}</div>
+                            <p className="text-sm text-gray-600 mt-2 leading-snug">{ev.text}</p>
+                          </div>
                         </div>
-                      </div>
-                    ) : (
-                      <div style={{ height: 0 }} />
-                    )}
-                  </div>
+                      ) : (
+                        <div style={{ height: 0 }} />
+                      )}
+                    </div>
 
-                  {/* Center box contains the dot and small vertical connector */}
-                  <div
-                    className="w-full flex items-center justify-center relative"
-                    style={{ height: `${CENTER_BOX_HEIGHT}px` }}
-                  >
-                    {/* Vertical connector: top */}
-                    {isTop && (
-                      <div
-                        className="absolute"
+                    {/* center dot */}
+                    <div className="w-full flex items-center justify-center" style={{ height: CENTER_BOX_HEIGHT }}>
+                      <span
+                        className={`${dotColor} ${ringColor} ring-4 ring-white shadow-md rounded-full inline-block`}
                         style={{
-                          left: "50%",
-                          transform: "translateX(-50%)",
-                          bottom: `${CENTER_BOX_HEIGHT / 2 + DOT_SIZE / 2}px`,
-                          width: 2,
-                          height: `${(CENTER_BOX_HEIGHT / 2) + 12}px`,
-                          background: "#E5E7EB",
+                          width: DOT_SIZE,
+                          height: DOT_SIZE,
                         }}
                         aria-hidden
                       />
-                    )}
+                    </div>
 
-                    {/* Vertical connector: bottom */}
-                    {!isTop && (
-                      <div
-                        className="absolute"
-                        style={{
-                          left: "50%",
-                          transform: "translateX(-50%)",
-                          top: `${CENTER_BOX_HEIGHT / 2 + DOT_SIZE / 2}px`,
-                          width: 2,
-                          height: `${(CENTER_BOX_HEIGHT / 2) + 12}px`,
-                          background: "#E5E7EB",
-                        }}
-                        aria-hidden
-                      />
-                    )}
-
-                    {/* Dot */}
-                    <span
-                      className={`${dotColor} ${ringColor} ring-4 ring-white shadow-md rounded-full inline-block`}
-                      style={{
-                        width: DOT_SIZE,
-                        height: DOT_SIZE,
-                        zIndex: 20,
-                      }}
-                      aria-hidden
-                    />
-                  </div>
-
-                  {/* Bottom box (fixed height) — if item is bottom, card sits here, top-aligned */}
-                  <div
-                    className="w-full flex items-start justify-center"
-                    style={{ height: `${BOTTOM_BOX_HEIGHT}px` }}
-                  >
-                    {!isTop ? (
-                      <div className="max-w-xs w-full text-left">
-                        <div>
-                          <div className="text-lg font-semibold text-gray-800">{ev.year}</div>
-                          <p className="text-sm text-gray-600 mt-2 leading-snug">{ev.text}</p>
+                    {/* Bottom portion */}
+                    <div className="w-full flex items-start justify-center" style={{ height: BOTTOM_BOX_HEIGHT }}>
+                      {!isTop ? (
+                        <div className="w-full max-w-[260px]">
+                          <div>
+                            <div className="text-lg font-semibold text-gray-800">{ev.year}</div>
+                            <p className="text-sm text-gray-600 mt-2 leading-snug">{ev.text}</p>
+                          </div>
+                          <img src={ev.image} alt={`${ev.year} image`} className="w-full h-28 object-cover rounded-md shadow-sm mt-3" />
                         </div>
-                        <img
-                          src={ev.image}
-                          alt={`${ev.year} image`}
-                          className="w-full h-28 object-cover rounded-md shadow-sm mt-3 relative z-10"
-                        />
-                      </div>
-                    ) : (
-                      <div style={{ height: 0 }} />
-                    )}
+                      ) : (
+                        <div style={{ height: 0 }} />
+                      )}
+                    </div>
                   </div>
                 </div>
               );
@@ -199,12 +257,12 @@ const HistoryTimeline: React.FC = () => {
           </div>
         </div>
 
-        {/* Mobile: show single-card carousel with header/date and navigation */}
+        {/* Mobile: show single-card carousel with header/date and navigation (unchanged) */}
         <div className="md:hidden">
           <div className="flex items-center justify-center mb-4">
             <div className="flex items-center gap-4 w-full max-w-md">
               <button
-                onClick={prevMobile}
+                onClick={() => setMobileIndex((i) => (i - 1 + events.length) % events.length)}
                 aria-label="Trước"
                 className="w-10 h-10 rounded-full bg-white shadow flex items-center justify-center"
               >
@@ -226,7 +284,7 @@ const HistoryTimeline: React.FC = () => {
               </div>
 
               <button
-                onClick={nextMobile}
+                onClick={() => setMobileIndex((i) => (i + 1) % events.length)}
                 aria-label="Tiếp"
                 className="w-10 h-10 rounded-full bg-white shadow flex items-center justify-center"
               >
@@ -237,7 +295,7 @@ const HistoryTimeline: React.FC = () => {
             </div>
           </div>
 
-          {/* Active event card (cleaned: only image + title) */}
+          {/* Active event card */}
           <div className="max-w-md mx-auto bg-white rounded-lg shadow-md overflow-hidden">
             <img src={events[mobileIndex].image} alt={events[mobileIndex].year} className="w-full h-44 object-cover" />
             <div className="p-4">
