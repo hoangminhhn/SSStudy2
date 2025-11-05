@@ -52,6 +52,19 @@ const HistoryTimeline: React.FC = () => {
   // Place it roughly in the middle of the center box
   const dashedTop = TOP_BOX_HEIGHT + Math.round(CENTER_BOX_HEIGHT / 2) - Math.round(DOT_SIZE / 2);
 
+  // Mobile carousel state
+  const [mobileIndex, setMobileIndex] = React.useState(0);
+
+  const prevMobile = () => {
+    setMobileIndex((i) => (i - 1 + events.length) % events.length);
+  };
+  const nextMobile = () => {
+    setMobileIndex((i) => (i + 1) % events.length);
+  };
+
+  // Helper to present a readable date on mobile header (keeps same sample date as design)
+  const mobileHeaderDate = "27 August 2025";
+
   return (
     <section className="py-12">
       <div className="container mx-auto px-4">
@@ -62,7 +75,7 @@ const HistoryTimeline: React.FC = () => {
           </span>
         </h2>
 
-        {/* Desktop / large: horizontal 4-column timeline */}
+        {/* Desktop / large: horizontal 4-column timeline (unchanged) */}
         <div
           className="hidden md:block relative"
           style={{ minHeight: totalHeight + 40, paddingTop: 8 }} // extra room to avoid overlapping the heading
@@ -186,35 +199,71 @@ const HistoryTimeline: React.FC = () => {
           </div>
         </div>
 
-        {/* Mobile: stacked vertical timeline — image + text together and small dot on left */}
-        <div className="md:hidden relative">
-          <div className="space-y-8">
-            {events.map((ev, idx) => {
-              const isFirst = idx === 0;
-              const dotColor = isFirst ? "bg-orange-400" : "bg-blue-500";
-              return (
-                <div key={ev.year} className="flex items-start">
-                  <div className="w-12 flex flex-col items-center">
-                    <div className="h-6 flex items-center">
-                      <div className={`w-3 h-3 rounded-full ${dotColor} ring-2 ring-white`} />
-                    </div>
-                    {idx < events.length - 1 && <div className="flex-1 w-px bg-gray-300 mt-2" />}
-                  </div>
+        {/* Mobile: show single-card carousel with header/date and navigation */}
+        <div className="md:hidden">
+          <div className="flex items-center justify-center mb-4">
+            <div className="flex items-center gap-4 w-full max-w-md">
+              <button
+                onClick={prevMobile}
+                aria-label="Trước"
+                className="w-10 h-10 rounded-full bg-white shadow flex items-center justify-center"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="text-gray-800">
+                  <path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
 
-                  <div className="ml-4 bg-white rounded-md p-3 shadow-sm flex-1">
-                    <img
-                      src={ev.image}
-                      alt={`${ev.year} image`}
-                      className="w-full h-36 object-cover rounded-md mb-3"
-                    />
-                    <div>
-                      <div className="text-lg font-semibold text-gray-800">{ev.year}</div>
-                      <p className="text-sm text-gray-600 mt-2 leading-snug">{ev.text}</p>
-                    </div>
+              <div className="flex-1 text-center">
+                <div className="text-xs text-gray-500">{mobileHeaderDate}</div>
+                <div className="flex items-center justify-center mt-2">
+                  <div className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                      <rect x="3" y="4" width="18" height="16" rx="2" stroke="white" strokeWidth="1.2" />
+                      <path d="M8 2v4M16 2v4" stroke="white" strokeWidth="1.2" strokeLinecap="round" />
+                    </svg>
                   </div>
                 </div>
-              );
-            })}
+              </div>
+
+              <button
+                onClick={nextMobile}
+                aria-label="Tiếp"
+                className="w-10 h-10 rounded-full bg-white shadow flex items-center justify-center"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="text-gray-800">
+                  <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          {/* Active event card */}
+          <div className="max-w-md mx-auto bg-white rounded-lg shadow-md overflow-hidden">
+            <img src={events[mobileIndex].image} alt={events[mobileIndex].year} className="w-full h-44 object-cover" />
+            <div className="p-4">
+              <div className="text-xs text-indigo-600 uppercase font-semibold mb-2">Blog</div>
+              <h3 className="text-xl font-semibold leading-snug mb-2 text-gray-900">
+                {events[mobileIndex].text}
+              </h3>
+              <p className="text-sm text-gray-500">
+                {events[mobileIndex].position === "top" ? "Tóm tắt: Sự kiện khởi nguồn và phát triển ban đầu." : "Tóm tắt: Giai đoạn mở rộng và phát triển quy mô."}
+              </p>
+
+              <div className="mt-4 flex items-center justify-between text-xs text-gray-500">
+                <div>{events[mobileIndex].year}</div>
+                <div className="flex items-center gap-3">
+                  <button className="text-gray-600">Share</button>
+                  <button className="text-gray-600">Read more</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Dots */}
+          <div className="mt-4 flex items-center justify-center gap-2">
+            {events.map((_, i) => (
+              <span key={i} className={`w-2 h-2 rounded-full ${i === mobileIndex ? "bg-indigo-600" : "bg-gray-300"}`} />
+            ))}
           </div>
         </div>
       </div>
