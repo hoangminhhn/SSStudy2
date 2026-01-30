@@ -19,6 +19,7 @@ import ExamStartPage from "@/pages/ExamStartPage"; // Exam start screen
 import ExamAttemptPage from "@/pages/ExamAttemptPage"; // Exam attempt screen
 import DocumentsPage from "@/pages/DocumentsPage"; // NEW: Documents page
 import DocumentDetailPage from "@/pages/DocumentDetailPage"; // Document detail page
+import DemoExerciseUI from "./pages/DemoExerciseUI"; // Demo UI Bài Tập
 
 const queryClient = new QueryClient();
 
@@ -35,6 +36,10 @@ const App = () => (
           <Route path="/courses/:courseId" element={<CourseDetailPage />} /> {/* Course Detail Page */}
           <Route path="/courses-v2/:courseId" element={<CourseDetailPageV2 />} /> {/* New Course Detail Page V2 */}
           <Route path="/courses-v3/:courseId" element={<CourseDetailPageV3 />} /> {/* New Course Detail Page V3 */}
+
+          {/* Demo UI Bài Tập */}
+          <Route path="/courses/demo-ui-bai-tap" element={<DemoExerciseUI />} />
+
           <Route path="/lesson/:lessonId" element={<LessonDetailPage />} />
           <Route path="/lesson-v2/:lessonId" element={<LessonDetailPageV2 />} />
 

@@ -53,7 +53,7 @@ const NavLinks: React.FC = () => {
               Khóa học
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="min-w-[180px]">
+          <DropdownMenuContent align="start" className="min-w-[220px]">
             <DropdownMenuItem asChild>
               <Link to="/courses" className="block w-full">
                 Khóa học (phiên bản cũ)
@@ -67,6 +67,11 @@ const NavLinks: React.FC = () => {
             <DropdownMenuItem asChild>
               <Link to="/courses-v3" className="block w-full">
                 Khóa học V3
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link to="/courses/demo-ui-bai-tap" className="block w-full">
+                Demo UI Bài Tập
               </Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
