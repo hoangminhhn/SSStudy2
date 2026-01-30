@@ -5,7 +5,8 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import BreadcrumbNav from "@/components/layout/BreadcrumbNav";
 import { Badge } from "@/components/ui/badge";
-import LessonDetailPageV2 from "./LessonDetailPageV2";
+import LessonDetailPageV2Clone from "./LessonDetailPageV2Clone";
+import { MemoryRouter, Routes, Route } from "react-router-dom";
 
 type Tab = {
   id: string;
@@ -66,10 +67,14 @@ const DemoExerciseUI: React.FC = () => {
         {/* Content area */}
         <div className="mt-6">
           {activeTab === "PA1" ? (
-            // Render the full LessonDetailPageV2 component (clone of the lesson detail V2 page)
-            // This will display the lesson detail UI for testing inside the PA1 tab.
-            // We intentionally render the page component here so you see the same layout & behavior.
-            <LessonDetailPageV2 />
+            // Provide a MemoryRouter so the cloned page receives the lessonId param
+            <div className="bg-white border rounded-md">
+              <MemoryRouter initialEntries={["/lesson-v2/buoi-1-tong-on-luong-giac-phan-1"]}>
+                <Routes>
+                  <Route path="/lesson-v2/:lessonId" element={<LessonDetailPageV2Clone />} />
+                </Routes>
+              </MemoryRouter>
+            </div>
           ) : (
             <div className="bg-white border rounded-md min-h-[320px]" aria-live="polite" aria-atomic="true">
               {/* Intentionally blank - will be filled per your instructions */}
