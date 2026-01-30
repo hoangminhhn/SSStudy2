@@ -6,7 +6,6 @@ import Footer from "@/components/layout/Footer";
 import BreadcrumbNav from "@/components/layout/BreadcrumbNav";
 import { Badge } from "@/components/ui/badge";
 import LessonDetailPageV2Clone from "./LessonDetailPageV2Clone";
-import { MemoryRouter, Routes, Route } from "react-router-dom";
 
 type Tab = {
   id: string;
@@ -67,13 +66,9 @@ const DemoExerciseUI: React.FC = () => {
         {/* Content area */}
         <div className="mt-6">
           {activeTab === "PA1" ? (
-            // Provide a MemoryRouter so the cloned page receives the lessonId param
+            // Render the cloned page and pass lessonId directly to avoid nesting routers
             <div className="bg-white border rounded-md">
-              <MemoryRouter initialEntries={["/lesson-v2/buoi-1-tong-on-luong-giac-phan-1"]}>
-                <Routes>
-                  <Route path="/lesson-v2/:lessonId" element={<LessonDetailPageV2Clone />} />
-                </Routes>
-              </MemoryRouter>
+              <LessonDetailPageV2Clone initialLessonId="buoi-1-tong-on-luong-giac-phan-1" />
             </div>
           ) : (
             <div className="bg-white border rounded-md min-h-[320px]" aria-live="polite" aria-atomic="true">
