@@ -5,6 +5,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import BreadcrumbNav from "@/components/layout/BreadcrumbNav";
 import { Badge } from "@/components/ui/badge";
+import LessonDetailPageV2 from "./LessonDetailPageV2";
 
 type Tab = {
   id: string;
@@ -62,11 +63,18 @@ const DemoExerciseUI: React.FC = () => {
       <main className="flex-grow container mx-auto px-4 py-8">
         <BreadcrumbNav courseTitle="Demo UI Bài Tập" />
 
-        {/* Content area: tabs are active but content is intentionally empty for each tab */}
+        {/* Content area */}
         <div className="mt-6">
-          <div className="bg-white border rounded-md min-h-[320px]" aria-live="polite" aria-atomic="true">
-            {/* Intentionally left blank inside each tab for future instructions */}
-          </div>
+          {activeTab === "PA1" ? (
+            // Render the full LessonDetailPageV2 component (clone of the lesson detail V2 page)
+            // This will display the lesson detail UI for testing inside the PA1 tab.
+            // We intentionally render the page component here so you see the same layout & behavior.
+            <LessonDetailPageV2 />
+          ) : (
+            <div className="bg-white border rounded-md min-h-[320px]" aria-live="polite" aria-atomic="true">
+              {/* Intentionally blank - will be filled per your instructions */}
+            </div>
+          )}
         </div>
       </main>
 
